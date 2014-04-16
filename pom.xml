@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
   <artifactId>upsilon-node</artifactId>
-  <version>0.129.0-SNAPSHOT</version>
+  <version>0.129.0</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <releaseVersion>${project.version}</releaseVersion>
@@ -101,7 +101,7 @@
 	<artifactId>maven-release-plugin</artifactId>
 	<configuration>
 		<tagNameFormat>v@{project.version}</tagNameFormat>
-		<autoVersionSubmodules></autoVersionSubmodules>
+		<autoVersionSubmodules />
 		<releaseProfiles>releases</releaseProfiles>
 	</configuration>
   </plugin>
