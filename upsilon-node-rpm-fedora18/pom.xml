@@ -131,7 +131,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../../var/upsilon-rpm-fedora18.repo</location>
+									<location>src/main/resources/upsilon-rpm-fedora18.repo</location>
 									<destination>upsilon-node-rpm.repo</destination>
 								</source>
 							</sources>

@@ -109,7 +109,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../../var/upsilon-rpm-rhel6.repo</location>
+									<location>src/main/resources/upsilon-rpm-rhel6.repo</location>
 									<destination>upsilon-node-rpm.repo</destination>
 								</source>
 							</sources>
