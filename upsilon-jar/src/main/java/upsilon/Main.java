@@ -17,7 +17,7 @@ import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
-import upsilon.management.amqp.AmqpListener;
+import upsilon.management.amqp.DaemonAmqp;
 import upsilon.util.ResourceResolver;
 import upsilon.util.SslUtil;
 import upsilon.util.UPath;
@@ -182,7 +182,7 @@ public class Main implements UncaughtExceptionHandler {
 		}
 
 		if (Configuration.instance.daemonAmqpEnabled) {
-			this.startDaemon(new AmqpListener());
+			this.startDaemon(new DaemonAmqp());
 		}
 
 		this.startDaemon(new DaemonScheduler());
