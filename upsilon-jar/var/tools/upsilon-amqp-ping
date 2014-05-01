@@ -1,0 +1,31 @@
+#!/usr/bin/python
+
+import pika
+
+QUEUE_NAME = 'upsilon-amqp-ping'
+EXCHANGE_NAME = 'ex_upsilon'
+ROUTING_KEY = 'upsilon'
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+
+channel = connection.channel()
+
+headers = dict()
+headers['upsilon-msg-type'] = 'REQ_NODE_SUMMARY'
+props = pika.BasicProperties(headers = headers)
+channel.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon', body = '', properties = props)
+
+channel.queue_declare(queue = QUEUE_NAME, durable = False)
+channel.queue_bind(queue = QUEUE_NAME, exchange = EXCHANGE_NAME, routing_key = ROUTING_KEY)
+
+def callback(ch, method, properties, body):
+	print "recv ", body
+
+	deliveryTag = properties.getDeliveryTag
+
+	ch.basicAck(deliveryTag, False)
+
+channel.basic_consume(callback, queue = QUEUE_NAME)
+channel.start_consuming();
+
+connection.close()
