@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import upsilon.Configuration;
 import upsilon.Daemon;
 import upsilon.Main;
 
@@ -51,17 +52,15 @@ public class DaemonAmqp extends Daemon implements Runnable {
 	private String QUEUE_NAME;
 
 	public DaemonAmqp() throws Exception {
-		String hostname = "localhost";
 
-		DaemonAmqp.LOG.info("Starting the AMQP listener, connecting to host: " + hostname);
-		this.start(hostname);
+		this.start();
 	}
 
 	private String generateQueueName() {
 		return "upsilon-node-" + UUID.randomUUID().toString();
 	}
 
-	private void handleMessageType(UpsilonMessageType type, String body, long deliveryTag) throws IOException {
+	private void handleMessageType(UpsilonMessageType type, String body, long deliveryTag, String replyTo) throws IOException {
 		switch (type) {
 		case REQ_NODE_SUMMARY:
 			String nodeSummary = "";
@@ -119,7 +118,9 @@ public class DaemonAmqp extends Daemon implements Runnable {
 					UpsilonMessageType type = UpsilonMessageType.lookup(typeString);
 					DaemonAmqp.LOG.debug("recv type: " + typeString + " (enum=" + type + ") body: " + body.getBytes().length + " bytes long");
 
-					this.handleMessageType(type, body, delivery.getEnvelope().getDeliveryTag());
+					String replyTo = delivery.getProperties().getReplyTo();
+
+					this.handleMessageType(type, body, delivery.getEnvelope().getDeliveryTag(), replyTo);
 				}
 			}
 		} catch (Exception e) {
@@ -129,13 +130,17 @@ public class DaemonAmqp extends Daemon implements Runnable {
 		}
 	}
 
-	public void start(String hostname) throws Exception {
+	public void start() throws Exception {
+		final String hostname = Configuration.instance.amqpHostname;
+		DaemonAmqp.LOG.info("Starting the AMQP listener, connecting to host: " + hostname);
+
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost(hostname);
 
 		try {
 			Connection connection = factory.newConnection();
 			this.channel = connection.createChannel();
+
 			this.channel.exchangeDeclare(this.EXCHANGE_NAME, "fanout");
 
 			this.QUEUE_NAME = this.generateQueueName();

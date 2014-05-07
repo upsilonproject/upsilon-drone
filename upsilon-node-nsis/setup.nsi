@@ -12,7 +12,7 @@ CRCCheck on
 InstallDir "C:\Program Files\upsilon-node\"
 AutoCloseWindow false
 ShowInstDetails show
-Icon "../../var/logodarkbg.ico"
+Icon "src/main/resources/logodarkbg.ico"
 BrandingText "Upsilon Project"
 
 VIProductVersion ${UPSILON_NODE_WIN_VERSION}
@@ -26,18 +26,18 @@ VIAddVersionKey LegalCopyright ""
   !define MUI_ABORTWARNING
   !define MUI_COMPONENTSPAGE_SMALLDESC
   
-  !define MUI_ICON "../../var/logodarkbg.ico"
+  !define MUI_ICON "src/main/resources/logodarkbg.ico"
   !define MUI_HEADERIMAGE
-  !define MUI_HEADERIMAGE_BITMAP "../../var/installer_tr.bmp"
+  !define MUI_HEADERIMAGE_BITMAP "src/main/resources/installer_tr.bmp"
   !define MUI_HEADERIMAGE_RIGHT
 
   !define MUI_DIRECTORYPAGE_VERIFYONLEAVE
 
   !define MUI_WELCOMEFINISHPAGE_BITMAP_NOSTRETCH
-  !define MUI_WELCOMEFINISHPAGE_BITMAP "../../var/installer_tl.bmp"
+  !define MUI_WELCOMEFINISHPAGE_BITMAP "src/main/resources/installer_tl.bmp"
   !define MUI_WELCOMEPAGE_TEXT "This is the installer for upsilon-node. This installer assumes you have Java (a JRE) already installed on your system."
   !insertmacro MUI_PAGE_WELCOME
-  !insertmacro MUI_PAGE_LICENSE ../../doc/COPYING.txt
+  !insertmacro MUI_PAGE_LICENSE COPYING.txt
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_INSTFILES
@@ -62,7 +62,7 @@ Section "upsilon-node"
     File ../upsilon-jar/target/upsilon-node-${UPSILON_NODE_RELEASE_VERSION}.jar
     Rename upsilon-node-${UPSILON_NODE_RELEASE_VERSION}.jar upsilon-node.jar
 
-    File ../../var/logodarkbg.ico
+    File src/main/resources/logodarkbg.ico
 
     CreateShortCut "$SMPROGRAMS\upsilon\upsilon Data Directory.lnk" "$APPDATA\upsilon-node\" "" "$INSTDIR\logodarkbg.ico" 0
 

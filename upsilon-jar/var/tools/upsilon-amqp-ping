@@ -8,21 +8,21 @@ parser.add_argument('--host', default = 'localhost')
 parser.add_argument('--timeout', default = 3, type = int);
 args = parser.parse_args();
 
-QUEUE_NAME = 'upsilon-amqp-ping'
+QUEUE_NAME_SEND = "upsilon-amqp-ping"
+QUEUE_NAME_RECV = "upsilon-amqp-ping"
 EXCHANGE_NAME = 'ex_upsilon'
 ROUTING_KEY = 'upsilon'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(args.host))
 
-callback_queue = "pingreps"
 
 headers = dict()
 headers['upsilon-msg-type'] = 'REQ_NODE_SUMMARY'
-props = pika.BasicProperties(headers = headers, reply_to = QUEUE_NAME)
+props = pika.BasicProperties(headers = headers, reply_to = QUEUE_NAME_RECV)
 
 channel = connection.channel()
-channel.queue_declare(queue = QUEUE_NAME, durable = False)
-channel.queue_bind(queue = QUEUE_NAME, exchange = EXCHANGE_NAME, routing_key = ROUTING_KEY)
+channel.queue_declare(queue = QUEUE_NAME_SEND, durable = False)
+channel.queue_bind(queue = QUEUE_NAME_SEND, exchange = EXCHANGE_NAME, routing_key = ROUTING_KEY)
 
 channel.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon', body = '', properties = props)
 
@@ -38,7 +38,7 @@ def on_timeout():
 	global connection
 	connection.close()
 
-channel.basic_consume(callback, queue = QUEUE_NAME)
+channel.basic_consume(callback, queue = QUEUE_NAME_RECV)
 connection.add_timeout(args.timeout, on_timeout)
 
 try:
