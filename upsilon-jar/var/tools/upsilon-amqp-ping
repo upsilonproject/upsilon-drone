@@ -1,31 +1,48 @@
 #!/usr/bin/python
 
 import pika
+import argparse
+
+parser = argparse.ArgumentParser();
+parser.add_argument('--host', default = 'localhost')
+parser.add_argument('--timeout', default = 3, type = int);
+args = parser.parse_args();
 
 QUEUE_NAME = 'upsilon-amqp-ping'
 EXCHANGE_NAME = 'ex_upsilon'
 ROUTING_KEY = 'upsilon'
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(args.host))
 
-channel = connection.channel()
+callback_queue = "pingreps"
 
 headers = dict()
 headers['upsilon-msg-type'] = 'REQ_NODE_SUMMARY'
-props = pika.BasicProperties(headers = headers)
-channel.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon', body = '', properties = props)
+props = pika.BasicProperties(headers = headers, reply_to = QUEUE_NAME)
 
+channel = connection.channel()
 channel.queue_declare(queue = QUEUE_NAME, durable = False)
 channel.queue_bind(queue = QUEUE_NAME, exchange = EXCHANGE_NAME, routing_key = ROUTING_KEY)
 
+channel.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon', body = '', properties = props)
+
 def callback(ch, method, properties, body):
-	print "recv ", body
+	print "recv (", len(body), "): ", body
+	print "props", properties
 
-	deliveryTag = properties.getDeliveryTag
+	ch.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
+	
+	print "-- acked"
 
-	ch.basicAck(deliveryTag, False)
+def on_timeout():
+	global connection
+	connection.close()
 
 channel.basic_consume(callback, queue = QUEUE_NAME)
-channel.start_consuming();
+connection.add_timeout(args.timeout, on_timeout)
 
-connection.close()
+try:
+	channel.start_consuming();
+except:
+	pass
+
