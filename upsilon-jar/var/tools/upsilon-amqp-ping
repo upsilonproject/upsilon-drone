@@ -2,47 +2,59 @@
 
 import pika
 import argparse
+from prettytable import PrettyTable
+
+responses = list()
+
+def callback(ch, method, properties, body):
+	global responses
+
+	responses.append({
+		"type": properties.headers['upsilon-msg-type'],
+		"identifier": properties.headers['identifier'],
+		"version": properties.headers['version']
+	});
+
+	ch.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
+	
+def on_timeout():
+	global connection
+	connection.close()
 
 parser = argparse.ArgumentParser();
 parser.add_argument('--host', default = 'localhost')
 parser.add_argument('--timeout', default = 3, type = int);
 args = parser.parse_args();
 
-QUEUE_NAME_SEND = "upsilon-amqp-ping"
-QUEUE_NAME_RECV = "upsilon-amqp-ping"
 EXCHANGE_NAME = 'ex_upsilon'
-ROUTING_KEY = 'upsilon'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(args.host))
+connection.add_timeout(args.timeout, on_timeout)
 
+QUEUE_NAME_RECV = "upsilon-amqp-ping-recv"
+channelRecv = connection.channel()
+channelRecv.queue_declare(queue = QUEUE_NAME_RECV, durable = False, auto_delete = True)
+channelRecv.queue_bind(queue = QUEUE_NAME_RECV, exchange = EXCHANGE_NAME, routing_key = "upsilon.res")
+channelRecv.basic_consume(callback, queue = QUEUE_NAME_RECV)
+
+QUEUE_NAME_SEND = "upsilon-amqp-ping-send"
+channelSend = connection.channel()
+channelSend.queue_declare(queue = QUEUE_NAME_SEND, durable = False, auto_delete = True)
+channelSend.queue_bind(queue = QUEUE_NAME_SEND, exchange = EXCHANGE_NAME, routing_key = "upsilon.cmds")
 
 headers = dict()
 headers['upsilon-msg-type'] = 'REQ_NODE_SUMMARY'
 props = pika.BasicProperties(headers = headers, reply_to = QUEUE_NAME_RECV)
-
-channel = connection.channel()
-channel.queue_declare(queue = QUEUE_NAME_SEND, durable = False)
-channel.queue_bind(queue = QUEUE_NAME_SEND, exchange = EXCHANGE_NAME, routing_key = ROUTING_KEY)
-
-channel.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon', body = '', properties = props)
-
-def callback(ch, method, properties, body):
-	print "recv (", len(body), "): ", body
-	print "props", properties
-
-	ch.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
-	
-	print "-- acked"
-
-def on_timeout():
-	global connection
-	connection.close()
-
-channel.basic_consume(callback, queue = QUEUE_NAME_RECV)
-connection.add_timeout(args.timeout, on_timeout)
+channelSend.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon.cmds', body = '', properties = props)
 
 try:
-	channel.start_consuming();
+	channelRecv.start_consuming();
 except:
 	pass
 
+table = PrettyTable(["Identifier", "Version"])
+
+for response in responses:
+	table.add_row([response['identifier'], response['version']])
+
+print table
