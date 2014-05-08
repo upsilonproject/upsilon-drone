@@ -55,8 +55,8 @@ public class DaemonAmqp extends Daemon implements Runnable {
 		this.start();
 	}
 
-	private String generateQueueName() {
-		return "upsilon-node-" + UUID.randomUUID().toString();
+	private String generateQueueName(String suffix) {
+		return "upsilon-node-" + UUID.randomUUID().toString() + "-" + suffix;
 	}
 
 	private BasicProperties getNewMsgProps(UpsilonMessageType messageType) {
@@ -150,7 +150,7 @@ public class DaemonAmqp extends Daemon implements Runnable {
 			channelAdmin.exchangeDeclare(this.EXCHANGE_NAME, "topic");
 			channelAdmin.close();
 
-			this.QUEUE_NAME_RECV = this.generateQueueName();
+			this.QUEUE_NAME_RECV = this.generateQueueName("recv");
 
 			this.channelRecv = this.connection.createChannel();
 			this.channelRecv.queueDeclare(this.QUEUE_NAME_RECV, false, false, true, queueArgs);
@@ -161,7 +161,7 @@ public class DaemonAmqp extends Daemon implements Runnable {
 			return;
 		}
 
-		DaemonAmqp.LOG.info("AMQP connection looks good.");
+		DaemonAmqp.LOG.info("AMQP connection looks good, my recv queue is: " + this.QUEUE_NAME_RECV);
 
 		this.run = true;
 	}
