@@ -29,8 +29,8 @@ import upsilon.Configuration;
 import upsilon.Daemon;
 import upsilon.Database;
 import upsilon.Main;
-import upsilon.dataStructures.StructurePeer;
 import upsilon.configuration.XmlConfigurationLoader.ConfigStatus;
+import upsilon.dataStructures.StructurePeer;
 import upsilon.util.ResourceResolver;
 
 import com.sun.jersey.core.util.Base64;
@@ -77,6 +77,11 @@ public class Index {
 			} else {
 				return null;
 			}
+		}
+
+		@XmlElement
+		public String getIdentifier() {
+			return Main.instance.node.getIdentifier();
 		}
 
 		@XmlElement
@@ -146,21 +151,6 @@ public class Index {
 		return Response.status(Status.OK).entity(new InternalStatus()).build();
 	}
 
-	@Path("/peerUpdate")
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response peerUpdate() {
-		new Thread() {
-			public void run() {
-				StructurePeer.updateAll();
-			}
-		}.run();
-
-		String htmlFile = "Peer update queued.";
-
-		return Response.status(Status.OK).entity(htmlFile).build();
-	}
-
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response getWelcomePage() throws Exception {
@@ -173,6 +163,22 @@ public class Index {
 		is.close();
 
 		htmlFile = htmlFile.replace("$version", Main.getVersion());
+
+		return Response.status(Status.OK).entity(htmlFile).build();
+	}
+
+	@Path("/peerUpdate")
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public Response peerUpdate() {
+		new Thread() {
+			@Override
+			public void run() {
+				StructurePeer.updateAll();
+			}
+		}.run();
+
+		String htmlFile = "Peer update queued.";
 
 		return Response.status(Status.OK).entity(htmlFile).build();
 	}
