@@ -34,6 +34,7 @@
 						<require>python-lxml</require>
 						<require>python-prettytable</require>
 						<require>python-dialog</require>
+						<require>python-pika</require>
 <!--
 						<require>logback</require>
 						<require>slf4j</require>
