@@ -33,9 +33,9 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:git:git://github.com/upsilonproject/upsilon-node.git</connection>
+    <connection>scm:git:git@github.com/upsilonproject/upsilon-node.git</connection>
     <developerConnection>scm:git:git@github.com:upsilonproject/upsilon-node.git</developerConnection>
-    <url>http://github.com/upsilonproject/upsilon-node</url>
+    <url>git@github.com/upsilonproject/upsilon-node.git</url>
   </scm>
 
 
