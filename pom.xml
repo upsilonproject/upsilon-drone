@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
   <artifactId>upsilon-node</artifactId>
-  <version>0.130.2-SNAPSHOT</version>
+  <version>0.130.1</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <releaseVersion>${project.version}</releaseVersion>
@@ -38,7 +38,7 @@
     <connection>scm:git:git@github.com/upsilonproject/upsilon-node.git</connection>
     <developerConnection>scm:git:git@github.com:upsilonproject/upsilon-node.git</developerConnection>
     <url>git@github.com/upsilonproject/upsilon-node.git</url>
-    <tag>HEAD</tag>
+    <tag>v0.130.1</tag>
   </scm>
 
 
