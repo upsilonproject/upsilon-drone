@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>upsilon</groupId>
 		<artifactId>upsilon-node</artifactId>
-		<version>0.130.1</version>
+		<version>0.130.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>upsilon-node-rpm-generic</artifactId>
 	<packaging>rpm</packaging>
