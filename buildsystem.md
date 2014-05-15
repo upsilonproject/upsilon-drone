@@ -9,6 +9,8 @@ This article explains how to implement a working CI/CD system with Maven & Jenki
 Maven
 -- 
 
+Maven was designed in the mindset of convention over configuration, which is all well and good only while the conventions remain the same. With the many years since Maven's initial release, conventions have changed as we've seen the introduction of things like DevOps. 
+
 Disadvantages 
 
 - SNAPSHOT builds cannot be deployed to production
