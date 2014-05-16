@@ -14,3 +14,18 @@ Maven was designed in the mindset of convention over configuration, which is all
 Disadvantages 
 
 - SNAPSHOT builds cannot be deployed to production
+
+Alternatives
+
+- Gradle
+
+Jenkins
+--
+
+Advantages
+
+- Tight integration with Maven and Java
+
+Disadvantages
+
+- 
