@@ -43,9 +43,9 @@
   <profiles>
   	<profile>
 		<id>tgz</id>
-		<module>
+		<modules>
 			<module>upsilon-node-tgz</module>
-		</module>
+		</modules>
 	</profile>
   	<profile>
 		<id>deb</id>
