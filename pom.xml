@@ -15,7 +15,6 @@
   <modules>
     <module>upsilon-jar</module>
     <module>upsilon-node-doc</module>
-    <module>upsilon-node-tgz</module>
   </modules>
 
   <!-- no repo mgmt for now
@@ -42,6 +41,12 @@
 
 
   <profiles>
+  	<profile>
+		<id>tgz</id>
+		<module>
+			<module>upsilon-node-tgz</module>
+		</module>
+	</profile>
   	<profile>
 		<id>deb</id>
 		<modules>
