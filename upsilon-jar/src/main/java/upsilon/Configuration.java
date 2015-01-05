@@ -35,7 +35,7 @@ public class Configuration {
 	public int restPort = GlobalConstants.DEF_REST_PORT;
 	public Duration queueMaintainerDelay = GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY;
 	public String passwordKeystore = "";
-	public String passwordTrustStore = "";
+	public String passwordTrustStore = ""; 
 
 	public Vector<String> trustedCertificates = new Vector<String>();
 
