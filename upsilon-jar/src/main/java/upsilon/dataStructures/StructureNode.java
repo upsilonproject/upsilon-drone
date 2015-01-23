@@ -60,12 +60,16 @@ public class StructureNode extends ConfigStructure {
 		this.setPeerUpdateRequired(true);
 	}
 	
-	private void regenerateLocalIdentifierFile(File identifierFile) throws IOException {
-		identifierFile.createNewFile();
-		
-		FileWriter writer = new FileWriter(identifierFile);
-		writer.write(UUID.randomUUID().toString());
-		writer.close();
+	private void regenerateLocalIdentifierFile(File identifierFile, String newIdentifier) {
+		try {
+			identifierFile.createNewFile();
+			
+			FileWriter writer = new FileWriter(identifierFile);
+			writer.write(newIdentifier);
+			writer.close();
+		} catch (Exception e ) { 
+			LOG.error("Could not save identifier to identity file: " + identifierFile.getAbsolutePath() + ". This identity will not persist across restarts.", e);
+		}
 	}
 
 	private void refreshIdentifier() {
@@ -76,7 +80,8 @@ public class StructureNode extends ConfigStructure {
 			File identifierFile = new File(configDir, "indentifier.txt");
 			
 			if (!identifierFile.exists()) {
-				regenerateLocalIdentifierFile(identifierFile);
+				newIdentifier = UUID.randomUUID().toString();
+				regenerateLocalIdentifierFile(identifierFile, newIdentifier);
 			} else {
 				BufferedReader reader = new BufferedReader(new FileReader(identifierFile));
 				newIdentifier = reader.readLine().trim();
