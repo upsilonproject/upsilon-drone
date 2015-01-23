@@ -68,7 +68,7 @@ public class StructureNode extends ConfigStructure {
 			writer.write(newIdentifier);
 			writer.close();
 		} catch (Exception e ) { 
-			LOG.error("Could not save identifier to identity file: " + identifierFile.getAbsolutePath() + ". This identity will not persist across restarts.", e);
+			LOG.warn("Could not save identifier to identity file: " + identifierFile.getAbsolutePath() + ". This identity will not persist across restarts.", e);
 		}
 	}
 
