@@ -97,6 +97,7 @@ public class ProcessExecutorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testUnicodeInOutput() throws Exception {
 		final StructureCommand cmd = new StructureCommand();
 		cmd.setCommandLine("src/test/resources/executionTestScripts/testMbStrings.py");
