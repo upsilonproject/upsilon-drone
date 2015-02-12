@@ -1,5 +1,3 @@
-checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'd19d3df4-0f35-40ea-ac03-8a51e4fd31be', url: 'https://github.com/upsilonproject/upsilon-node.git']]]
-
 node {
     ws {
       stage "compile"
