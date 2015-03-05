@@ -42,5 +42,5 @@ dependencies {
 applicationDistribution.from("${rootProject.projectDir}") {
 	include "README.md"
 	include "build.properties"
+	include "var/pkg/"
 }
-
