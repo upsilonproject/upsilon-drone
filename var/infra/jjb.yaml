@@ -1,0 +1,7 @@
+- job:
+    name: jjb-upsilon-node
+    description: "Compiles upsilon-node and produces a release archive"
+
+- job:
+    name: jjb-upsilon-node-rpm-fedora
+    description: "Makes a release RPM"

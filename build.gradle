@@ -36,3 +36,8 @@ dependencies {
 	testCompile group: 'org.dbunit', name: 'dbunit', version: '2.4.9'
 
 }
+
+applicationDistribution.from("${rootProject.projectDir}") {
+	include "README.md"
+	include "build.properties"
+}

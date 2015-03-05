@@ -1,3 +1,8 @@
 **/target/**
 release.properties
 **/pom.xml.releaseBackup
+**/*.settings
+**/.project
+.gradle
+build/
+build.properties
