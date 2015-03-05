@@ -1,0 +1,6 @@
+[upsilon-node]
+name=upsilon-node
+baseurl=http://upsilon-project.co.uk/repositories/fedora/
+enabled=1
+metadata_expire=1m
+gpgcheck=0

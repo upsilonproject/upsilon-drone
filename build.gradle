@@ -1,5 +1,7 @@
+version = "2.0.0"
+
 Properties buildInfo = new Properties();
-buildInfo.setProperty("version", "1.0.0")
+buildInfo.setProperty("version", version)
 buildInfo.setProperty("revision", "git rev-parse --short HEAD".execute().text.trim())
 buildInfo.setProperty("timestamp", "" + (int)(new Date().getTime()/1000))
 buildInfo.setProperty("id", buildInfo.getProperty("revision") + "-" + buildInfo.getProperty("timestamp"))
