@@ -25,8 +25,6 @@ cp README.md %{buildroot}/usr/share/doc/upsilon-node/
 mkdir -p %{buildroot}/usr/share/upsilon-node/lib/
 cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
 
-ln -sf /usr/share/upsilon-node/upsilon-node.jar %{buildroot}/usr/share/upsilon-node/lib/upsilon-node*.jar
-
 mkdir -p %{buildroot}/etc/upsilon-node/
 cp etc/config.xml.sample %{buildroot}/etc/upsilon-node/
 cp etc/logging.syslog.xml %{buildroot}/etc/upsilon-node/logging.xml
@@ -44,6 +42,14 @@ cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
 
 mkdir -p %{buildroot}/etc/yum.repos.d/
 cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.repo
+
+%post
+# symlink the main upsilon jar
+ln -sf /usr/share/upsilon-node/lib/upsilon-node*.jar /usr/share/upsilon-node/upsilon-node.jar
+
+%postun 
+# remove symlinks
+rm -rf /usr/share/upsilon-node/upsilon-node.jar
 
 %files
 %doc /usr/share/doc/upsilon-node/README.md
