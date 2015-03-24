@@ -11,7 +11,6 @@ buildInfo.store(new File('build.properties').newWriter(), null);
 print buildInfo.getProperty("id") + "\n"
 
 apply plugin: 'java'
-apply plugin: 'distribution'
 
 apply plugin: 'application'
 mainClassName = 'upsilon.Main'
@@ -40,6 +39,11 @@ dependencies {
 }
 
 applicationDistribution.from("${rootProject.projectDir}") {
+	into("etc") {
+		from "src/main/dist/etc/."
+		include "*"
+	}
+
 	include "README.md"
 	include "build.properties"
 	include "var/pkg/"
