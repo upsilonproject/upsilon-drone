@@ -37,6 +37,9 @@ mkdir -p %{buildroot}/lib/systemd/system/
 cp etc/upsilon-node.service %{buildroot}/lib/systemd/system/
 %endif
 
+mkdir -p %{buildroot}/etc/rsyslog.d/
+cp etc/upsilon.rsyslog.conf %{buildroot}/etc/rsyslog.d/upsilon-node
+
 mkdir -p %{buildroot}/etc/logrotate.d/
 cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
 
@@ -59,6 +62,7 @@ rm -rf /usr/share/upsilon-node/upsilon-node.jar
 %config(noreplace) /etc/logrotate.d/upsilon-node
 %config(noreplace) /etc/yum.repos.d/upsilon-node.repo
 %config(noreplace) /lib/systemd/system/upsilon-node.service
+%config(noreplease) /etc/rsyslog.d/upsilon-node
 
 %changelog
 * Thu Mar 05 2015 James Read <contact@jwread.com> 2.0.0-1
