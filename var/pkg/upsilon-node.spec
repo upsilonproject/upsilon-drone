@@ -15,10 +15,8 @@ Requires:	java
 %description
 Monitoring software
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %prep
+rm -rf $RPM_BUILD_ROOT
 %setup -q
 
 %build
