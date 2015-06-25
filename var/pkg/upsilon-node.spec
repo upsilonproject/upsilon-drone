@@ -16,7 +16,7 @@ Requires:	java
 Monitoring software
 
 %prep
-rm -rf $RPM_BUILD_DIR
+rm -rf $RPM_BUILD_DIR/*
 %setup -q
 
 %build
