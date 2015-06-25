@@ -28,8 +28,6 @@ cp README.md %{buildroot}/usr/share/doc/upsilon-node/
 mkdir -p %{buildroot}/usr/share/upsilon-node/lib/
 cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
 
-ln -sf /usr/share/upsilon-node/upsilon-node.jar %{buildroot}/usr/share/upsilon-node/lib/upsilon-node*.jar
-
 mkdir -p %{buildroot}/etc/upsilon-node/
 cp etc/config.xml.sample %{buildroot}/etc/upsilon-node/
 cp etc/logging.syslog.xml %{buildroot}/etc/upsilon-node/logging.xml
@@ -42,11 +40,22 @@ mkdir -p %{buildroot}/lib/systemd/system/
 cp etc/upsilon-node.service %{buildroot}/lib/systemd/system/
 %endif
 
+mkdir -p %{buildroot}/etc/rsyslog.d/
+cp etc/upsilon.rsyslog.conf %{buildroot}/etc/rsyslog.d/upsilon-node
+
 mkdir -p %{buildroot}/etc/logrotate.d/
 cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
 
 mkdir -p %{buildroot}/etc/yum.repos.d/
 cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.repo
+
+%post
+# symlink the main upsilon jar
+ln -sf /usr/share/upsilon-node/lib/upsilon-node*.jar /usr/share/upsilon-node/upsilon-node.jar
+
+%postun 
+# remove symlinks
+rm -rf /usr/share/upsilon-node/upsilon-node.jar
 
 %files
 %doc /usr/share/doc/upsilon-node/README.md
@@ -56,6 +65,7 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 %config(noreplace) /etc/logrotate.d/upsilon-node
 %config(noreplace) /etc/yum.repos.d/upsilon-node.repo
 %config(noreplace) /lib/systemd/system/upsilon-node.service
+%config(noreplease) /etc/rsyslog.d/upsilon-node
 
 %changelog
 * Thu Mar 05 2015 James Read <contact@jwread.com> 2.0.0-1
