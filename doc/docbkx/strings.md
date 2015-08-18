@@ -1,2 +1,2 @@
-System name: upsilon
-Title: Upsilon
+System name: upsilon-node
+Title: Upsilon Node

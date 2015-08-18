@@ -1,14 +1,7 @@
-version = "2.0.0"
+"buildid -n".execute()
 
 Properties buildInfo = new Properties();
-buildInfo.setProperty("version", version)
-buildInfo.setProperty("revision", "git rev-parse --short HEAD".execute().text.trim())
-buildInfo.setProperty("timestamp", "" + (int)(new Date().getTime()/1000))
-buildInfo.setProperty("id", buildInfo.getProperty("revision") + "-" + buildInfo.getProperty("timestamp"))
-
-buildInfo.store(new File('build.properties').newWriter(), null);
-
-print buildInfo.getProperty("id") + "\n"
+buildInfo.load(new File(".buildid.ini").newReader());
 
 apply plugin: 'java'
 
@@ -40,11 +33,12 @@ dependencies {
 
 applicationDistribution.from("${rootProject.projectDir}") {
 	into("etc") {
-		from "src/main/dist/etc/."
+		from "src/main/dist/etc/"
 		include "*"
 	}
 
 	include "README.md"
 	include "build.properties"
 	include "var/pkg/"
+	include ".buildid.ini"
 }
