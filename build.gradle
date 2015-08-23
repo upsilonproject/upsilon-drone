@@ -3,7 +3,9 @@ apply plugin: 'application'
 mainClassName = 'upsilon.Main'
 
 def generateBuildId() {
-	"buildid -n ".execute()
+	exec {
+		commandLine "buildid", "-n"
+	}
 
 	Properties buildId = new Properties();
 	buildId.load(new File(".buildid").newReader());
