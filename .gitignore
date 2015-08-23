@@ -6,4 +6,5 @@ release.properties
 .gradle
 build/
 build.properties
+.buildid
 **/*.swp
