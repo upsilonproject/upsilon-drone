@@ -40,7 +40,7 @@ dependencies {
 }
 
 applicationDistribution.from("${rootProject.projectDir}") {
-	into("etc") {
+	into("etc2") {
 		from "src/main/dist/etc/"
 		include "*"
 	}
