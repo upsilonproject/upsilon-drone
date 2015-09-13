@@ -7,8 +7,9 @@ def generateBuildId() {
 		commandLine "buildid", "-n"
 	}
 
+	System.out.println(new File(System.getProperty("user.dir")).absolutePath)
 	Properties buildId = new Properties();
-	buildId.load(new File(".buildid").newReader());
+	buildId.load(new File("./.buildid").newReader());
 
 	return buildId
 }
