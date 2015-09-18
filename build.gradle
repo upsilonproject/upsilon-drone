@@ -3,7 +3,10 @@ apply plugin: 'application'
 mainClassName = 'upsilon.Main'
 
 task generateBuildId << {
-	"buildid -n".execute()
+	exec {
+		commandLine: "buildid", "-n"
+	}
+
 	Properties buildId = new Properties();
 	buildId.load(new File(".buildid").newReader());
 
