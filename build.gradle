@@ -39,12 +39,15 @@ dependencies {
 
 }
 
-applicationDistribution.from(
-	files(
-		"README.md", 
-		'build.properties', 
-		'var/pkg', 
-		'.buildid',
-		"src/main/dist"
-	)) {
+applicationDistribution.from(".") {
+	include "README.md"
+	include "build.properties"
+	include ".buildid"
+}
+
+applicationDistribution.from("src/main/dist") {
+}
+
+applicationDistribution.from(".") {
+	include "var/pkg/**"
 }
