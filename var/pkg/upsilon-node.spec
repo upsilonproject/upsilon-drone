@@ -40,7 +40,7 @@ cp etc/upsilon-node.service %{buildroot}/lib/systemd/system/
 %endif
 
 mkdir -p %{buildroot}/etc/rsyslog.d/
-cp etc/upsilon.rsyslog.conf %{buildroot}/etc/rsyslog.d/upsilon-node
+cp etc/upsilon.syslog.conf %{buildroot}/etc/rsyslog.d/upsilon-node
 
 mkdir -p %{buildroot}/etc/logrotate.d/
 cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
