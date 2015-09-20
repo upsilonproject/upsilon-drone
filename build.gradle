@@ -45,9 +45,6 @@ applicationDistribution.from(".") {
 	include ".buildid"
 }
 
-applicationDistribution.from("src/main/dist") {
-}
-
 applicationDistribution.from(".") {
 	include "var/pkg/**"
 }
