@@ -21,7 +21,6 @@ rm -rf $RPM_BUILD_DIR/*
 
 %build
 mkdir -p %{buildroot}/usr/share/doc/upsilon-node
-echo "waffles"
 cp README.md %{buildroot}/usr/share/doc/upsilon-node/
 
 echo "waffles"

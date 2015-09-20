@@ -1,19 +1,20 @@
-apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'java'
 mainClassName = 'upsilon.Main'
 
-task generateBuildId << {
+def generateBuildId() {
 	exec {
-		commandLine: "buildid", "-n"
+		commandLine "buildid", "-n"
 	}
 
 	Properties buildId = new Properties();
 	buildId.load(new File(".buildid").newReader());
 
-	project.version = buildid.get("version.formatted.short")
+	return buildId
 }
 
-distZip.dependsOn generateBuildId
+Properties buildId = generateBuildId()
+version = buildId.get("version.formatted.short")
 
 repositories {
 	mavenCentral()
@@ -38,13 +39,12 @@ dependencies {
 
 }
 
-applicationDistribution.from("${rootProject.projectDir}") {
-	into("etc2") {
-		from "src/main/dist/etc/"
-	}
-
-	include "README.md"
-	include "build.properties"
-	include "var/pkg/"
-	include ".buildid"
+applicationDistribution.from(
+	files(
+		"README.md", 
+		'build.properties', 
+		'var/pkg', 
+		'.buildid',
+		"src/main/dist"
+	)) {
 }
