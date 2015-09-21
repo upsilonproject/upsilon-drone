@@ -1,6 +1,8 @@
-apply plugin: 'application'
 apply plugin: 'java'
+apply plugin: 'application'
 mainClassName = 'upsilon.Main'
+
+jar.manifest.attributes("Main-Class": mainClassName)
 
 def generateBuildId() {
 	exec {
