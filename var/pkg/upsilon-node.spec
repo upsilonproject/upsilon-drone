@@ -17,7 +17,7 @@ Monitoring software
 
 %prep
 rm -rf $RPM_BUILD_DIR/*
-%setup -q -n %{buildid_tag}
+%setup -q -n usilon-node-%{buildid_tag}
 
 %build
 mkdir -p %{buildroot}/usr/share/doc/upsilon-node
