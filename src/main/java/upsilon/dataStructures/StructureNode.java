@@ -77,7 +77,7 @@ public class StructureNode extends ConfigStructure {
 		
 		try {
 			File configDir = ResourceResolver.getInstance().getConfigDir();
-			File identifierFile = new File(configDir, "indentifier.txt");
+			File identifierFile = new File(configDir, "identifier.txt");
 			
 			if (!identifierFile.exists()) {
 				newIdentifier = UUID.randomUUID().toString();
