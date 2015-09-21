@@ -16,7 +16,7 @@ def generateBuildId() {
 }
 
 Properties buildId = generateBuildId()
-version = buildId.get("version.formatted.short")
+version = buildId.get("tag")
 
 repositories {
 	mavenCentral()
