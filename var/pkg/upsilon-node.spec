@@ -1,6 +1,6 @@
 Name:		upsilon-node
-Version:	2.1.0
-Release:	1%{?dist}
+Version:	%{buildid_version}
+Release:	%{buildid_timestamp}1%{?dist}
 Summary:	Monitoring software
 BuildArch:	noarch
 
@@ -17,7 +17,7 @@ Monitoring software
 
 %prep
 rm -rf $RPM_BUILD_DIR/*
-%setup -q
+%setup -q -n %{buildid_tag}
 
 %build
 mkdir -p %{buildroot}/usr/share/doc/upsilon-node
