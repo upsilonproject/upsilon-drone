@@ -48,14 +48,6 @@ cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
 mkdir -p %{buildroot}/etc/yum.repos.d/
 cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.repo
 
-%post
-# symlink the main upsilon jar
-ln -sf /usr/share/upsilon-node/lib/upsilon-node*.jar /usr/share/upsilon-node/upsilon-node.jar
-
-%postun 
-# remove symlinks
-rm -rf /usr/share/upsilon-node/upsilon-node.jar
-
 %files
 %doc /usr/share/doc/upsilon-node/README.md
 /usr/share/upsilon-node/lib/*
