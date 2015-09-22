@@ -1,4 +1,6 @@
 language: java
+notifications:
+    email: false
 before_script:
     - mysql -e 'create database upsilon'
     - mysql upsilon < upsilon-jar/var/upsilon.sql
