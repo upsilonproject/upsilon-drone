@@ -161,7 +161,7 @@ public class Main implements UncaughtExceptionHandler {
 
 		Main.LOG.info("Upsilon " + Main.getVersion());
 		Main.LOG.info("----------");
-		Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
+		Main.LOG.trace("CP: " + System.getProperty("java.class.path"));
 		Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
 		try {
