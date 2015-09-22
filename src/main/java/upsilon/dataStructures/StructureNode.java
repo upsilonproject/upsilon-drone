@@ -30,6 +30,8 @@ public class StructureNode extends ConfigStructure {
 	private String identifier = "unidentifiedNode";
 	private String instanceApplicationVersion = "???";
 
+	private boolean triedCreatingIdentifierFile = false;
+
 	@Override
 	@XmlElement
 	public String getIdentifier() {
@@ -79,7 +81,9 @@ public class StructureNode extends ConfigStructure {
 			File configDir = ResourceResolver.getInstance().getConfigDir();
 			File identifierFile = new File(configDir, "identifier.txt");
 			
-			if (!identifierFile.exists()) {
+			if (!identifierFile.exists() && !this.triedCreatingIdentifierFile) {
+				this.triedCreatingIdentifierFile = true;
+
 				newIdentifier = UUID.randomUUID().toString();
 				regenerateLocalIdentifierFile(identifierFile, newIdentifier);
 			} else {
@@ -92,8 +96,8 @@ public class StructureNode extends ConfigStructure {
 		} 
 
 		if (!this.identifier.equals(newIdentifier)) {
-			this.setDatabaseUpdateRequired(true);
 			this.identifier = newIdentifier;
+			this.setDatabaseUpdateRequired(true);
 		}
 	}
 
