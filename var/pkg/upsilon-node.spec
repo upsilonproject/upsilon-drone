@@ -1,13 +1,13 @@
 Name:		upsilon-node
-Version:	2.1.0
-Release:	1%{?dist}
+Version:	%{buildid_version}
+Release:	%{buildid_timestamp}1%{?dist}
 Summary:	Monitoring software
 BuildArch:	noarch
 
 Group:		Applications/System
 License:	GPLv2
 URL:		http://upsilon-project.co.uk
-Source0:	upsilon-node-%{version}.zip
+Source0:	upsilon-node-%{buildid_tag}.zip
 
 BuildRequires:	java
 Requires:	java
@@ -17,12 +17,13 @@ Monitoring software
 
 %prep
 rm -rf $RPM_BUILD_DIR/*
-%setup -q
+%setup -q -n upsilon-node-%{buildid_tag}
 
 %build
 mkdir -p %{buildroot}/usr/share/doc/upsilon-node
 cp README.md %{buildroot}/usr/share/doc/upsilon-node/
 
+echo "waffles"
 mkdir -p %{buildroot}/usr/share/upsilon-node/lib/
 cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
 
@@ -39,21 +40,13 @@ cp etc/upsilon-node.service %{buildroot}/lib/systemd/system/
 %endif
 
 mkdir -p %{buildroot}/etc/rsyslog.d/
-cp etc/upsilon.rsyslog.conf %{buildroot}/etc/rsyslog.d/upsilon-node
+cp etc/upsilon.syslog.conf %{buildroot}/etc/rsyslog.d/upsilon-node
 
 mkdir -p %{buildroot}/etc/logrotate.d/
 cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
 
 mkdir -p %{buildroot}/etc/yum.repos.d/
 cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.repo
-
-%post
-# symlink the main upsilon jar
-ln -sf /usr/share/upsilon-node/lib/upsilon-node*.jar /usr/share/upsilon-node/upsilon-node.jar
-
-%postun 
-# remove symlinks
-rm -rf /usr/share/upsilon-node/upsilon-node.jar
 
 %files
 %doc /usr/share/doc/upsilon-node/README.md
@@ -63,7 +56,7 @@ rm -rf /usr/share/upsilon-node/upsilon-node.jar
 %config(noreplace) /etc/logrotate.d/upsilon-node
 %config(noreplace) /etc/yum.repos.d/upsilon-node.repo
 %config(noreplace) /lib/systemd/system/upsilon-node.service
-%config(noreplease) /etc/rsyslog.d/upsilon-node
+%config(noreplace) /etc/rsyslog.d/upsilon-node
 
 %changelog
 * Thu Mar 05 2015 James Read <contact@jwread.com> 2.0.0-1

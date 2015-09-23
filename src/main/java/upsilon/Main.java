@@ -44,8 +44,8 @@ public class Main implements UncaughtExceptionHandler {
 
 			try {
 				final Properties props = new Properties();
-				props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
-				Main.releaseVersion = props.getProperty("releaseVersion");
+				props.load(Main.class.getResourceAsStream("/.buildid"));
+				Main.releaseVersion = props.getProperty("tag");
 			} catch (IOException | NullPointerException e) {
 				Main.LOG.warn("Could not get release version from jar.", e);
 			}
@@ -161,7 +161,7 @@ public class Main implements UncaughtExceptionHandler {
 
 		Main.LOG.info("Upsilon " + Main.getVersion());
 		Main.LOG.info("----------");
-		Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
+		Main.LOG.trace("CP: " + System.getProperty("java.class.path"));
 		Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
 		try {
