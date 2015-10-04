@@ -8,3 +8,5 @@ build/
 build.properties
 .buildid
 **/*.swp
+/bin/
+**/*.pyc
