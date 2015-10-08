@@ -55,8 +55,13 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 %config(noreplace) /etc/upsilon-node/logging.xml
 %config(noreplace) /etc/logrotate.d/upsilon-node
 %config(noreplace) /etc/yum.repos.d/upsilon-node.repo
-%config(noreplace) /lib/systemd/system/upsilon-node.service
 %config(noreplace) /etc/rsyslog.d/upsilon-node
+
+%if 0%{?rhel} == 6
+%config(noreplace) /etc/init.d/upsilon-node
+%else
+%config(noreplace) /lib/systemd/system/upsilon-node.service
+%endif
 
 %changelog
 * Thu Mar 05 2015 James Read <contact@jwread.com> 2.0.0-1
