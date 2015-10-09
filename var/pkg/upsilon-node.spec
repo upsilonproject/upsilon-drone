@@ -34,7 +34,9 @@ mkdir -p %{buildroot}/usr/share/upsilon-node/lib/
 cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
 
 mkdir -p %{buildroot}/usr/share/upsilon-node/home/
+
 mkdir -p %{buildroot}/usr/share/upsilon-node/tools/
+cp -r var/tools/* %{buildroot}/usr/share/upsilon-node/tools/ 
 
 mkdir -p %{buildroot}/etc/upsilon-node/
 cp etc/config.xml.sample %{buildroot}/etc/upsilon-node/
