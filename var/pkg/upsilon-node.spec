@@ -34,6 +34,7 @@ mkdir -p %{buildroot}/usr/share/upsilon-node/lib/
 cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
 
 mkdir -p %{buildroot}/usr/share/upsilon-node/home/
+mkdir -p %{buildroot}/usr/share/upsilon-node/tools/
 
 mkdir -p %{buildroot}/etc/upsilon-node/
 cp etc/config.xml.sample %{buildroot}/etc/upsilon-node/
@@ -60,6 +61,7 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 %doc /usr/share/doc/upsilon-node/README.md
 /usr/share/upsilon-node/lib/*
 /usr/share/upsilon-node/home/
+/usr/share/upsilon-node/tools/*
 %config(noreplace) /etc/upsilon-node/config.xml.sample
 %config(noreplace) /etc/upsilon-node/logging.xml
 %config(noreplace) /etc/logrotate.d/upsilon-node
