@@ -21,7 +21,7 @@ rm -rf $RPM_BUILD_DIR/*
 
 %pre
 /usr/bin/getent group upsilon || /usr/sbin/groupadd -r upsilon
-/usr/bin/getent passwd upsilon || /usr/sbin/useradd -r -d /usr/share/upsilon-node/home/ -s /sbin/nologin upsilon
+/usr/bin/getent passwd upsilon || /usr/sbin/useradd -r -d /usr/share/upsilon-node/home/ -s /sbin/nologin -g upsilon upsilon
 
 %postun
 /usr/sbin/userdel upsilon
