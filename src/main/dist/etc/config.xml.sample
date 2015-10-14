@@ -17,6 +17,10 @@ http://upsilon-project.co.uk/site/index.php/Config.xml
 http://upsilon-project.co.uk/site/index.php/Upsilon-node
 !-->
 <config>
+	<!--
+	<peer address = "upsilon.example.com" />
+	!-->
+
     <system crypto = "false">
     	<!--
 	Remove this comment if you would like a local database.

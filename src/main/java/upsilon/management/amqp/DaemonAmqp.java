@@ -151,7 +151,7 @@ public class DaemonAmqp extends Daemon implements Runnable {
 
 			this.connection = factory.newConnection();
 			Channel channelAdmin = this.connection.createChannel();
-			channelAdmin.exchangeDeclare(this.EXCHANGE_NAME, "topic");
+			channelAdmin.exchangeDeclare(this.EXCHANGE_NAME, "x-federation-upstream", true);
 			channelAdmin.close();
 
 			this.QUEUE_NAME_RECV = this.generateQueueName("recv");
