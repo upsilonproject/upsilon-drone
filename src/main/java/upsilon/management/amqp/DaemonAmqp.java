@@ -22,7 +22,7 @@ import com.rabbitmq.client.QueueingConsumer;
 
 public class DaemonAmqp extends Daemon implements Runnable {
 	private enum UpsilonMessageType {
-		RES_NODE_SUMMARY, REQ_NODE_SUMMARY, UNKNOWN;
+		REQ_COMMAND_CREATE, REQ_SERVICE_CREATE, RES_NODE_SUMMARY, REQ_NODE_SUMMARY, UNKNOWN;
 
 		public static UpsilonMessageType lookup(String typeString) {
 			UpsilonMessageType ret;
@@ -56,7 +56,7 @@ public class DaemonAmqp extends Daemon implements Runnable {
 	}
 
 	private String generateQueueName(String suffix) {
-		return "upsilon-node-" + UUID.randomUUID().toString() + "-" + suffix;
+		return "upsilon-node-" + Main.instance.node.getIdentifier() + "-" + suffix;
 	}
 
 	private BasicProperties getNewMsgProps(UpsilonMessageType messageType) {
@@ -93,6 +93,10 @@ public class DaemonAmqp extends Daemon implements Runnable {
 		case RES_NODE_SUMMARY:
 			DaemonAmqp.LOG.debug("res version summary:\n" + body);
 			this.channelRecv.basicAck(deliveryTag, false);
+			break;
+		case REQ_COMMAND_CREATE:
+			break;
+		case REQ_SERVICE_CREATE:
 			break;
 		case UNKNOWN:
 			this.channelRecv.basicAck(deliveryTag, false);
