@@ -64,6 +64,7 @@ public class Main implements UncaughtExceptionHandler {
 		}
 
 		Main.xmlLoader.setUrl(new UPath(ResourceResolver.getInstance().getConfigDir(), "config.xml"));
+		Main.node.refresh();
 		Main.instance.startup();
 	}
 
