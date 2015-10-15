@@ -146,12 +146,12 @@ public class DaemonAmqp extends Daemon implements Runnable {
 
 		try {
 			Map<String, Object> queueArgs = new HashMap<String, Object>();
-			queueArgs.put("upsilon-version", Main.getVersion());
+			queueArgs.put("upsilon-node-version", Main.getVersion());
 			queueArgs.put("upsilon-node-identifier", Main.instance.node.getIdentifier());
 
 			this.connection = factory.newConnection();
 			Channel channelAdmin = this.connection.createChannel();
-			channelAdmin.exchangeDeclare(this.EXCHANGE_NAME, "x-federation-upstream", true);
+			channelAdmin.exchangeDeclare(this.EXCHANGE_NAME, "topic", true);
 			channelAdmin.close();
 
 			this.QUEUE_NAME_RECV = this.generateQueueName("recv");
