@@ -159,11 +159,11 @@ public class Main implements UncaughtExceptionHandler {
 		Main.setupLogging();
 		SslUtil.init();
 
-		Main.node.refresh();
+		this.node.refresh();
 
 		Main.LOG.info("Upsilon " + Main.getVersion());
 		Main.LOG.info("----------");
-		Main.LOG.info("Identifier: " + Main.node.getIdentifier());
+		Main.LOG.info("Identifier: " + this.node.getIdentifier());
 		Main.LOG.trace("CP: " + System.getProperty("java.class.path"));
 		Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
