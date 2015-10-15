@@ -24,7 +24,10 @@ rm -rf $RPM_BUILD_DIR/*
 /usr/bin/getent passwd upsilon || /usr/sbin/useradd -r -d /usr/share/upsilon-node/home/ -s /sbin/nologin -g upsilon upsilon
 
 %postun
-/usr/sbin/userdel upsilon
+
+if [ "$1" -eq 0 ]; then
+	/usr/sbin/userdel upsilon
+fi
 
 %build
 mkdir -p %{buildroot}/usr/share/doc/upsilon-node
