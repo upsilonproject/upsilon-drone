@@ -10,7 +10,7 @@ URL:		http://upsilon-project.co.uk
 Source0:	upsilon-node-%{buildid_tag}.zip
 
 BuildRequires:	java
-Requires:	java
+Requires:	java python
 
 %description
 Monitoring software
