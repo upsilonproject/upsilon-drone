@@ -2,6 +2,7 @@ package upsilon;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Properties;
 import java.util.Vector;
@@ -11,19 +12,20 @@ import java.util.logging.LogManager;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import upsilon.configuration.DirectoryWatcher;
 import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
-import upsilon.management.amqp.DaemonAmqp;
+import upsilon.management.amqp.DaemonAmqpHeatbeater;
+import upsilon.management.amqp.DaemonConnectionHandler;
 import upsilon.util.ResourceResolver;
 import upsilon.util.SslUtil;
 import upsilon.util.UPath;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
 
 public class Main implements UncaughtExceptionHandler {
 	public static final Main instance = new Main();
@@ -44,8 +46,14 @@ public class Main implements UncaughtExceptionHandler {
 
 			try {
 				final Properties props = new Properties();
-				props.load(Main.class.getResourceAsStream("/.buildid"));
-				Main.releaseVersion = props.getProperty("tag");
+				final InputStream buildIdFile = Main.class.getResourceAsStream("/.buildid");
+
+				if (buildIdFile == null) {
+					Main.LOG.warn("buildid file could not be got as a stream.");
+				} else {
+					props.load(buildIdFile);
+					Main.releaseVersion = props.getProperty("tag");
+				}
 			} catch (IOException | NullPointerException e) {
 				Main.LOG.warn("Could not get release version from jar.", e);
 			}
@@ -76,15 +84,15 @@ public class Main implements UncaughtExceptionHandler {
 
 		try {
 			if (loggingConfiguration.exists()) {
-				Main.LOG.info("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
-
-				for (Logger logger : ((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList()) {
+				for (final Logger logger : ((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList()) {
 					logger.detachAndStopAllAppenders();
 				}
 
 				final JoranConfigurator loggerConfigurator = new JoranConfigurator();
 				loggerConfigurator.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
 				loggerConfigurator.doConfigure(loggingConfiguration);
+
+				Main.LOG.debug("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
 			}
 		} catch (final Exception e) {
 			Main.LOG.warn("Could not set up logging config.", e);
@@ -133,7 +141,7 @@ public class Main implements UncaughtExceptionHandler {
 		if (Database.instance != null) {
 			try {
 				Database.instance.disconnect();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				Main.LOG.error("SQL Error during disconnect: " + e.getMessage());
 			}
 		}
@@ -173,7 +181,7 @@ public class Main implements UncaughtExceptionHandler {
 			if (!Main.xmlLoader.getValidator().isParseClean()) {
 				throw new IllegalStateException("Parse is unclean.");
 			}
-		} catch (IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			Main.xmlLoader.stopFileWatchers();
 
 			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
@@ -185,7 +193,8 @@ public class Main implements UncaughtExceptionHandler {
 		}
 
 		if (Configuration.instance.daemonAmqpEnabled) {
-			this.startDaemon(new DaemonAmqp());
+			this.startDaemon(DaemonConnectionHandler.instance);
+			this.startDaemon(new DaemonAmqpHeatbeater());
 		}
 
 		this.startDaemon(new DaemonScheduler());
