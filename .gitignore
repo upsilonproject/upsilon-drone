@@ -10,3 +10,5 @@ build.properties
 **/*.swp
 /bin/
 **/*.pyc
+.classpath
+gradle-app.setting
