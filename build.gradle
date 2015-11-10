@@ -1,24 +1,24 @@
 apply plugin: 'java'
 apply plugin: 'application'
-mainClassName = 'upsilon.Main'
-
-jar.manifest.attributes("Main-Class": mainClassName)
-jar.from(".buildid")
+mainClassName = 'upsilon.node.Main'
 
 def generateBuildId() {
 	exec {
 		commandLine "buildid", "-n"
 	}
 
-	System.out.println(new File(System.getProperty("user.dir")).absolutePath)
 	Properties buildId = new Properties();
-	buildId.load(new File("./.buildid").newReader());
+	buildId.load(new File(projectDir.absolutePath + "/.buildid").newReader());
 
 	return buildId
 }
 
 Properties buildId = generateBuildId()
 version = buildId.get("tag")
+
+jar.manifest.attributes("Main-Class": mainClassName)
+jar.from(".buildid")
+
 
 repositories {
 	mavenCentral()

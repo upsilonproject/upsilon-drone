@@ -12,3 +12,5 @@ build.properties
 **/*.pyc
 .classpath
 gradle-app.setting
+**/*.orig
+**/*.swo
