@@ -4,7 +4,7 @@ mainClassName = 'upsilon.node.Main'
 
 def generateBuildId() {
 	exec {
-		commandLine "buildid", "-n"
+		commandLine "buildid", "-n", "-p"
 	}
 
 	Properties buildId = new Properties();
