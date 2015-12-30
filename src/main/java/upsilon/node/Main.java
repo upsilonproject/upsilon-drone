@@ -52,8 +52,8 @@ public class Main implements UncaughtExceptionHandler {
 				final Properties props = new Properties();
 				final InputStream buildIdFile = Main.class.getResourceAsStream("/.buildid");
 
-				if (buildIdFile == null) {
-					Main.LOG.warn("buildid file could not be got as a stream.");
+				if (buildIdFile == null) { 
+					Main.LOG.debug("buildid file could not be got as a stream.");
 				} else {
 					props.load(buildIdFile);
 					Main.releaseVersion = props.getProperty("tag");
@@ -187,10 +187,12 @@ public class Main implements UncaughtExceptionHandler {
 			Main.configurationLoader.load(validator.getValidatedConfiguration(), true);
 		} catch (final Exception e) {
 			Main.configurationLoader.stopFileWatchers();
-			
-			for (SAXParseException parseError : validator.getParseErrors()) {
-				Main.LOG.error(parseError.toString()); 
-			} 
+
+			if (validator != null) {
+				for (SAXParseException parseError : validator.getParseErrors()) {
+					Main.LOG.error(parseError.toString()); 
+				} 
+			}
 			
 			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
 			return;

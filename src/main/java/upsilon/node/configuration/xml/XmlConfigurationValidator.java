@@ -71,10 +71,10 @@ public class XmlConfigurationValidator implements ErrorHandler, ConfigurationVal
 		dbf.setSchema(this.selectSchema());
 
 		if (!path.exists()) {
-			XmlConfigurationValidator.LOG.warn("Wont parse non existant configuration file: " + path);
+			LOG.warn("Wont parse non existant configuration file: " + path);
 		} else if (!path.isFile()) {
-			XmlConfigurationValidator.LOG.warn("Wont parse thing on filesystem, it does not look like a file: " + path);
-		}
+			LOG.warn("Wont parse thing on filesystem, it does not look like a file: " + path);
+		}   
 
 		this.builder = dbf.newDocumentBuilder();
 		this.builder.setErrorHandler(this);
