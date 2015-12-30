@@ -124,7 +124,7 @@ public class DaemonConnectionHandler extends Daemon implements Runnable {
 
 					final String replyTo = delivery.getProperties().getReplyTo();
 
-					this.handler.handleMessageType(type, body, delivery.getEnvelope().getDeliveryTag(), replyTo, this.channel);
+					this.handler.handleMessageType(type, headers, body, delivery.getEnvelope().getDeliveryTag(), replyTo, this.channel);
 				}
 			} catch (final Exception e) {
 				DaemonConnectionHandler.LOG.error("AMQP daemon: " + e.toString());

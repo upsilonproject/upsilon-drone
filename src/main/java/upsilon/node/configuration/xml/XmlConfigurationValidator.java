@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXParseException; 
 
 import upsilon.node.configuration.ConfigurationValidator;
 import upsilon.node.configuration.ValidatedConfiguration;
@@ -116,6 +116,10 @@ public class XmlConfigurationValidator implements ErrorHandler, ConfigurationVal
 			this.parse();
 
 			if (this.hasErrors()) {
+				for (SAXParseException e : this.parseErrors) {
+					LOG.warn(e.toString());
+				} 
+				
 				throw new Exception("Cannot get ValidatedConfiguration because it has parse errors.");
 			}
 		}
@@ -130,7 +134,7 @@ public class XmlConfigurationValidator implements ErrorHandler, ConfigurationVal
 	public boolean isAux() {
 		return this.isAux;
 	}
-
+ 
 	public boolean isParseClean() throws Exception {
 		if (!this.isParsed) {
 			throw new Exception("Parse not even attempted");

@@ -16,4 +16,12 @@ public class PathTest {
 		UPath path2 = new UPath("/etc/sample.conf");
 		Assert.assertEquals("sample.conf", path2.getFilename());
 	} 
+	
+	@Test 
+	public void testAbsolutePath() throws Exception {
+		String absolutePath = "/opt/test/foo";
+		UPath path = new UPath(absolutePath);
+		 
+		Assert.assertEquals(absolutePath, path.getAbsolutePath());
+	}
 }

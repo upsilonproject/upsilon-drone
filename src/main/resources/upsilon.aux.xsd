@@ -53,7 +53,7 @@
 	
 	<xs:complexType name="service">
 		<xs:sequence> 
-			<xs:element minOccurs="0" maxOccurs="unbounded" name="argument" type="xs:string" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="argument" type="argument" />
 		</xs:sequence>
 		<xs:attribute name="id" type="identifier" use="required"></xs:attribute>
 		<xs:attribute name="minDelay" type="intervalType" use="optional"></xs:attribute>

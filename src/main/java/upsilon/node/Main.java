@@ -9,8 +9,11 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
+import javax.xml.bind.Validator;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.xml.sax.SAXParseException;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -175,14 +178,20 @@ public class Main implements UncaughtExceptionHandler {
 		Main.LOG.trace("CP: " + System.getProperty("java.class.path"));
 		Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
+		XmlConfigurationValidator validator = null;
+		
 		try {
 			final UPath mainConfigPath = new UPath(ResourceResolver.getInstance().getConfigDir(), "config.xml");
-			final XmlConfigurationValidator validator = new XmlConfigurationValidator(mainConfigPath, false);
-
+			validator = new XmlConfigurationValidator(mainConfigPath, false);
+			
 			Main.configurationLoader.load(validator.getValidatedConfiguration(), true);
-		} catch (final IllegalStateException e) {
+		} catch (final Exception e) {
 			Main.configurationLoader.stopFileWatchers();
-
+			
+			for (SAXParseException parseError : validator.getParseErrors()) {
+				Main.LOG.error(parseError.toString()); 
+			} 
+			
 			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
 			return;
 		}

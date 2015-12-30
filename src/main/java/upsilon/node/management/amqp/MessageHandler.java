@@ -1,5 +1,7 @@
 package upsilon.node.management.amqp;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,12 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.AMQP.BasicProperties.Builder;
-import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Channel;  
 
-import upsilon.node.Main;
+import upsilon.node.Main; 
 import upsilon.node.configuration.ValidatedConfiguration;
 import upsilon.node.configuration.xml.XmlConfigurationLoader;
 import upsilon.node.configuration.xml.XmlConfigurationValidator;
+import upsilon.node.util.UPath;
+import upsilon.node.util.Util;
 
 public class MessageHandler {
 	private static final transient Logger LOG = LoggerFactory.getLogger(MessageHandler.class);
@@ -34,7 +38,7 @@ public class MessageHandler {
 		return builder;
 	}
 
-	public void handleMessageType(final UpsilonMessageType type, final String body, final long deliveryTag, final String replyTo, final Channel channel) throws Exception {
+	public void handleMessageType(final UpsilonMessageType type, Map<String,Object> headers, final String body, final long deliveryTag, final String replyTo, final Channel channel) throws Exception {
 		switch (type) {
 		case REQ_NODE_SUMMARY:
 			String nodeSummary = "";
@@ -62,7 +66,18 @@ public class MessageHandler {
 			System.out.println("service create SS");
 
 			break;
-		case UNKNOWN:
+		case UPDATED_NODE_CONFIG:
+			String configIdentifier = headers.get("remote-config-source-identifier").toString();
+			UPath configPath = new UPath(Main.getConfigurationOverridePath() + File.separator + configIdentifier + ".xml");
+    	 		   
+			FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
+			configWriter.write(body);  
+			configWriter.flush();    
+			configWriter.close(); 
+			
+			Main.instance.getConfigurationLoader().load(configPath, true, true);
+			break;
+		case UNKNOWN:  
 		default:
 			MessageHandler.LOG.warn("Unsupported upsilon message type: " + type);
 			channel.basicAck(deliveryTag, false);

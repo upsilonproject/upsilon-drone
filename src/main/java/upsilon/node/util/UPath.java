@@ -48,7 +48,9 @@ public class UPath {
 	}
 
 	public String getAbsolutePath() {
-		return this.url.toString();
+		String protocol = url.getProtocol(); 
+		 
+		return this.url.toExternalForm().replace(protocol + ":", ""); 
 	}
 
 	public String getFilename() {
@@ -155,4 +157,14 @@ public class UPath {
 	public String toString() {
 		return this.url.toString();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof UPath) {
+			return this.getAbsolutePath().equals(((UPath) obj).getAbsolutePath());
+		} else {  
+			return super.equals(obj);
+		}
+	}
+
 }

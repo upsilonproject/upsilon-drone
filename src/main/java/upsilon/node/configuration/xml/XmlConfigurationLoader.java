@@ -185,8 +185,12 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		if (vcfg.isSourceFile() && watch) {
 			final UPath path = vcfg.getSourceFile();
 
-			fcw = new FileChangeWatcher(path, this, isAux);
-			this.fileWatchers.put(path, fcw);
+			if (fileWatchers.containsKey(path)) {
+				fcw = fileWatchers.get(path);
+			} else {
+				fcw = new FileChangeWatcher(path, this, isAux);
+				this.fileWatchers.put(path, fcw);
+			} 
 
 			if (watch) {
 				fcw.start();
