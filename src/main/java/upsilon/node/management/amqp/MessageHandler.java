@@ -18,6 +18,7 @@ import upsilon.node.configuration.xml.XmlConfigurationLoader;
 import upsilon.node.configuration.xml.XmlConfigurationValidator;
 import upsilon.node.util.UPath;
 import upsilon.node.util.Util;
+import upsilon.node.util.ResourceResolver;
 
 public class MessageHandler {
 	private static final transient Logger LOG = LoggerFactory.getLogger(MessageHandler.class);
