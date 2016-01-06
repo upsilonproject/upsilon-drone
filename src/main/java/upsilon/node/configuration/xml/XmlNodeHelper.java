@@ -57,12 +57,19 @@ class XmlNodeHelper extends ConfigurationNode<Node> {
 
 	@Override
 	public String getNodeName() {
+		
 		return this.node.getNodeName();
 	}
 
 	@Override
 	public String getNodeValue() {
-		return this.node.getFirstChild().getNodeValue();
+		Node firstChild = this.node.getFirstChild();
+
+		if (firstChild == null || firstChild.getNodeValue() == null) {
+			return "";
+		}
+
+		return firstChild.getNodeValue();
 	}
 
 	@Override
