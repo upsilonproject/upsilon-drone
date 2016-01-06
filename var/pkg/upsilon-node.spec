@@ -67,6 +67,7 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 /usr/share/upsilon-node/lib/*
 /usr/share/upsilon-node/home/
 /usr/share/upsilon-node/tools/*
+%attr(755, upsilon, upsilon) /etc/upsilon-node/
 %config(noreplace) /etc/upsilon-node/config.xml.sample
 %config(noreplace) /etc/upsilon-node/logging.xml
 %config(noreplace) /etc/logrotate.d/upsilon-node
