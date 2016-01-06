@@ -68,7 +68,7 @@ public class MessageHandler {
 			break;
 		case UPDATED_NODE_CONFIG:
 			String configIdentifier = headers.get("remote-config-source-identifier").toString();
-			UPath configPath = new UPath(Main.getConfigurationOverridePath() + File.separator + configIdentifier + ".xml");
+			UPath configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + configIdentifier + ".xml");
     	 		   
 			FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
 			configWriter.write(body);  
