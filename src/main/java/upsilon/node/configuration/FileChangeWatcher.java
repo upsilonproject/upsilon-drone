@@ -68,6 +68,8 @@ public class FileChangeWatcher {
 		this.l = l;
 		this.isAux = isAux;
 
+		FileChangeWatcher.LOG.info("Constructed file watcher for: " + path);
+
 		FileChangeWatcher.updateMtime(path, path.lastModified());
 
 		this.setupMonitoringThread();
