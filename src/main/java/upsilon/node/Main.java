@@ -25,6 +25,7 @@ import upsilon.node.dataStructures.CollectionOfStructures;
 import upsilon.node.dataStructures.StructureNode;
 import upsilon.node.dataStructures.StructurePeer;
 import upsilon.node.management.amqp.DaemonAmqpHeatbeater;
+import upsilon.node.management.amqp.DaemonAmqpServiceUpdater;
 import upsilon.node.management.amqp.DaemonConnectionHandler;
 import upsilon.node.util.DirectoryWatcher;
 import upsilon.node.util.ResourceResolver;
@@ -205,6 +206,7 @@ public class Main implements UncaughtExceptionHandler {
 		if (Configuration.instance.daemonAmqpEnabled) {
 			this.startDaemon(DaemonConnectionHandler.instance);
 			this.startDaemon(new DaemonAmqpHeatbeater());
+			this.startDaemon(new DaemonAmqpServiceUpdater());  
 		}
 
 		this.startDaemon(new DaemonScheduler());

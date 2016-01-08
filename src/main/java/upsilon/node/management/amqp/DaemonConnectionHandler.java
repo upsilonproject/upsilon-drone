@@ -15,6 +15,7 @@ import com.rabbitmq.client.QueueingConsumer;
 
 import upsilon.node.Configuration;
 import upsilon.node.Daemon;
+import upsilon.node.Database;
 import upsilon.node.Main;
 import upsilon.node.util.Util;
 
@@ -62,8 +63,13 @@ public class DaemonConnectionHandler extends Daemon implements Runnable {
 			this.channel = this.connection.createChannel();
 			this.channel.queueDeclare(this.QUEUE_NAME_RECV, false, false, true, queueArgs);
 			this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.cmds");
-			this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.res"); 
-			this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.node.heartbeats"); 
+			
+			if (Database.instance != null) {
+				LOG.info("Active database connection, will subsuscribe to addtional AMQP routes"); 
+				this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.res"); 
+				this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.node.heartbeats");
+				this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.node.serviceresults");
+			}
 
 			this.consumerRecv = new QueueingConsumer(this.channel);
 

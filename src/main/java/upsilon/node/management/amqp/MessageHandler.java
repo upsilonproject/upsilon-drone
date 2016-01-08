@@ -148,6 +148,25 @@ public class MessageHandler {
 			channel.basicAck(deliveryTag, false);
 			
 			break; 
+		case SERVICE_CHECK_RESULT:
+			if (Database.instance != null) {
+				StructureRemoteService srs = new StructureRemoteService();
+				srs.setIdentifier(helper.getHeaderString("identifier")); 
+				srs.setCommandIdentifier(helper.getHeaderString("command-identifier"));
+				srs.setDatabaseUpdateRequired(true);
+				srs.setDescription(helper.getHeaderString("description"));
+				srs.setExecutable(helper.getHeaderString("executable"));
+				srs.setNodeIdentifier("node-identifier");
+				srs.setOutput(body); 
+				srs.setResultConsequtiveCount(helper.getHeaderInt("consequtive-count"));
+				srs.setKarmaString(helper.getHeaderString("karma"));
+				
+				Configuration.instance.remoteServices.add(srs);
+			}
+			
+			channel.basicAck(deliveryTag, false);
+			
+			break;
 		case UNKNOWN:  
 		default:
 			MessageHandler.LOG.warn("Unsupported upsilon message type: " + type);
