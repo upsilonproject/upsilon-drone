@@ -131,8 +131,8 @@ public class MessageHandler {
 			
 		case HEARTBEAT:
 		case RES_NODE_SUMMARY:
-			LOG.debug(body); 
-			
+			LOG.debug("Node heartbeat from: " + helper.getHeaderString("node-identifier"));  
+			 
 			if (Database.instance != null) {
 				StructureNode node = new StructureNode();
 				node.setDatabaseUpdateRequired(true);
