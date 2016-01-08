@@ -21,7 +21,7 @@ http://upsilon-project.co.uk/site/index.php/Upsilon-node
 	<peer address = "upsilon.example.com" />
 	!-->
 
-    <system crypto = "false">
+    <system crypto = "false" amqpHost = "localhost">
     	<!--
 	Remove this comment if you would like a local database.
 	Good for first time testing of upsilon-node.
@@ -29,21 +29,19 @@ http://upsilon-project.co.uk/site/index.php/Upsilon-node
 	!-->
     </system>
 
-    <!--
-    The nagios ping command is defined here to save you some time, if you have 
-    it installed on your system. The two example services defined in this file
-    use the standard system `ping` to make it quicker to get up and running,
-    but consider using the nagios ping command in the future, it is far better.
-    <command id = "checkPingNagios" exec = "/usr/lib64/nagios/plugins/check_ping -H $ARG1 -w 75,10% -c 125,10% -p 3" />
-    !-->
-
+	<!--
     <command id = "checkPing" exec = "/bin/ping -c 1 $ADDRESS -W 2" />
+	!-->
 
+	<!--
     <service id = "pingGoogle" commandRef = "checkPing">
         <argument name = "ADDRESS">google.com</argument>
     </service>
+	!-->
 
+	<!--
     <service id = "pingBbc" commandRef = "checkPing">
         <argument name = "ADDRESS">bbc.co.uk</argument>
     </service>
+	!-->
 </config>

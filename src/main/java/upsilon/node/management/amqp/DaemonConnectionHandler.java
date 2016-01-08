@@ -56,12 +56,14 @@ public class DaemonConnectionHandler extends Daemon implements Runnable {
 			final Channel channelAdmin = this.connection.createChannel();
 			channelAdmin.exchangeDeclare(DaemonConnectionHandler.EXCHANGE_NAME, "topic", true);
 			channelAdmin.close();
-
+ 
 			this.QUEUE_NAME_RECV = this.generateQueueName("recv");
 
 			this.channel = this.connection.createChannel();
 			this.channel.queueDeclare(this.QUEUE_NAME_RECV, false, false, true, queueArgs);
 			this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.cmds");
+			this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.res"); 
+			this.channel.queueBind(this.QUEUE_NAME_RECV, DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.node.heartbeats"); 
 
 			this.consumerRecv = new QueueingConsumer(this.channel);
 
