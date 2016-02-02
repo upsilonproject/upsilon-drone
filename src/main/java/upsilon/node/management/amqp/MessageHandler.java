@@ -168,7 +168,9 @@ public class MessageHandler {
 				srs.setOutput(body); 
 				srs.setResultConsequtiveCount(helper.getHeaderInt("consequtive-count"));
 				srs.setKarmaString(helper.getHeaderString("karma"));
-				srs.setLastUpdated(Instant.now());
+				srs.setLastUpdated(Instant.now()); // faked
+				srs.setLastChanged(Instant.now()); // faked
+				srs.setEstimatedNextCheck(Instant.now()); // caked
 				
 				Configuration.instance.remoteServices.add(srs);
 			}
