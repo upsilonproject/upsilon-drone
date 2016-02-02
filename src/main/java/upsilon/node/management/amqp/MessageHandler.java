@@ -8,6 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.joda.time.Instant;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.AMQP.BasicProperties.Builder;
 import com.rabbitmq.client.Channel;
@@ -166,6 +168,7 @@ public class MessageHandler {
 				srs.setOutput(body); 
 				srs.setResultConsequtiveCount(helper.getHeaderInt("consequtive-count"));
 				srs.setKarmaString(helper.getHeaderString("karma"));
+				srs.setLastUpdated(Instant.now());
 				
 				Configuration.instance.remoteServices.add(srs);
 			}
