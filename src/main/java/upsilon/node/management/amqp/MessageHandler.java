@@ -117,18 +117,24 @@ public class MessageHandler {
 			break;
 		case UPDATED_NODE_CONFIG:
 			channel.basicAck(deliveryTag, false);
-			
-			String configIdentifier = headers.get("remote-config-source-identifier").toString();
-			UPath configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + configIdentifier + ".xml");
-    	 		   
-			FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
-			configWriter.write(body);  
-			configWriter.flush();    
-			configWriter.close(); 
-			
-			Main.instance.getConfigurationLoader().load(configPath, false, true);
-			break;
-			
+
+			String nodeIdentifier = headers.get("node-identifier").toString();
+
+			if (Main.instance.node.getIdentifier().equals(nodeIdentifier)) {
+				String configIdentifier = headers.get("remote-config-source-identifier").toString();
+				UPath configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + configIdentifier + ".xml");
+					   
+				FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
+				configWriter.write(body);  
+				configWriter.flush();    
+				configWriter.close(); 
+				
+				Main.instance.getConfigurationLoader().load(configPath, false, true);
+			} else {
+				LOG.debug("Irrelevant node config received for: " + nodeIdentifier);
+			}
+		
+			break;			
 		case HEARTBEAT:
 		case RES_NODE_SUMMARY:
 			LOG.debug("Node heartbeat from: " + helper.getHeaderString("node-identifier"));  
