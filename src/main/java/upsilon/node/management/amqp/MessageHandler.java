@@ -164,7 +164,7 @@ public class MessageHandler {
 				srs.setDatabaseUpdateRequired(true);
 				srs.setDescription(helper.getHeaderString("description"));
 				srs.setExecutable(helper.getHeaderString("executable"));
-				srs.setNodeIdentifier("node-identifier");
+				srs.setNodeIdentifier(helper.getHeaderString("node-identifier"));
 				srs.setOutput(body); 
 				srs.setResultConsequtiveCount(helper.getHeaderInt("consequtive-count"));
 				srs.setKarmaString(helper.getHeaderString("karma"));
