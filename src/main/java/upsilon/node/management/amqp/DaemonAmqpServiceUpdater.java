@@ -42,7 +42,6 @@ public class DaemonAmqpServiceUpdater extends Daemon {
 	private void pushService (Channel channel, StructureService service) {
 		final Map<String, Object> headers = MessageHandler.getNewMessageHeaders(UpsilonMessageType.SERVICE_CHECK_RESULT);
 		headers.put("identifier", service.getIdentifier());  
-		headers.put("output", service.getOutput());
 		headers.put("karma", service.getKarmaString()); 
 		headers.put("node-identifier", Main.instance.node.getIdentifier()); 
 		
@@ -52,7 +51,7 @@ public class DaemonAmqpServiceUpdater extends Daemon {
 
 		try { 
 			DaemonAmqpServiceUpdater.LOG.debug("Pushing service: " + service.getIdentifier());
-			channel.basicPublish(DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.node.serviceresults", builder.build(), (new Date()).toString().getBytes());
+			channel.basicPublish(DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.node.serviceresults", builder.build(), service.getOutput().toString().getBytes());
 		} catch (final IOException e) {
 			e.printStackTrace();
 		} 
