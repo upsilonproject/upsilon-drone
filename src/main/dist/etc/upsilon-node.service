@@ -7,7 +7,7 @@ User=upsilon
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=upsilon-node
-ExecStart=/usr/bin/java -Djava.net.preferIPv4Stack=true -cp '/usr/share/upsilon-node/lib/*' upsilon.node.Main
+ExecStart=/usr/share/upsilon-node/bin/upsilon-node
 
 [Install]  
 WantedBy=multi-user.target
