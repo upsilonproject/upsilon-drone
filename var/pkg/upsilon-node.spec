@@ -30,8 +30,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %build
+# Docs
 mkdir -p %{buildroot}/usr/share/doc/upsilon-node
 cp README.md %{buildroot}/usr/share/doc/upsilon-node/
+
+# Share dir 
+mkdir -p %{buildroot}/usr/share/upsilon-node/bin/
+cp bin/nix-native/upsilon-node %{buildroot}/usr/share/upsilon-node/bin/
 
 mkdir -p %{buildroot}/usr/share/upsilon-node/lib/
 cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
