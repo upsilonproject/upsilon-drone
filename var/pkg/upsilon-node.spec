@@ -69,6 +69,7 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 
 %files
 %doc /usr/share/doc/upsilon-node/README.md
+/usr/share/upsilon-node/bin/*
 /usr/share/upsilon-node/lib/*
 /usr/share/upsilon-node/home/
 /usr/share/upsilon-node/tools/*
