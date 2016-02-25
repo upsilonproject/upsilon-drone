@@ -3,9 +3,13 @@
 
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
 
-Vagrant.require_plugin "vagrant-libvirt"
-
 Vagrant.configure("2") do |config|
+
+  config.vm.define :centos71 do |centos71|
+  	centos71.vm.box = "centos/7"
+	#centos71.vm.network :public_network, :adaptor => 1, :dev => 'em1'
+    centos71.vm.provision "shell", inline: "curl http://ci.teratan.net/repositories/pub/upsilon-node-rpm-fedora/upsilon-node-rpm-fedora.repo > /etc/yum.repos.d/upsilon-node.repo"
+  end
 
   config.vm.define :centos64 do |centos64|
   	centos64.vm.box = "centos6.4"
