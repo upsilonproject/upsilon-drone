@@ -52,4 +52,5 @@ applicationDistribution.from(".") {
 applicationDistribution.from(".") {
 	include "var/pkg/**"
 	include "var/tools/"
+	include "var/smoketests/"
 }
