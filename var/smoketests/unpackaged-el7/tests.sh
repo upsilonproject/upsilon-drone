@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/share/upsilon-node/bin/nix-native/upsilon-node
+/usr/share/upsilon-node/bin/upsilon-node
