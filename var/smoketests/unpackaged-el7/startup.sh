@@ -1,13 +1,15 @@
 #!/bin/bash
 
 function onErr() {
-	echo "Non-Zero exit status, $(caller $((n++)))"
+	STATUS=$?
+	echo "Exit status in startup.sh, status: $STATUS at $(caller $((n++)))"
+	exit $STATUS
 }
 
 trap onErr ERR
 
 UUID=`uuidgen`
-docker create $UUID
+docker create upsilon-node --name $UUID
 docker start $UUID
 docker exec -it $UUID /usr/share/upsilon-node/bin/tools/upsilon-test-envionment
 docker stop $UUID
