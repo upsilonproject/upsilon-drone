@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function onError() {
+function onErr() {
 	echo "Non-Zero exit status, $(caller $((n++)))"
 }
 
