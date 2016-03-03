@@ -1,6 +1,6 @@
 # This makefile relies on a built distribution (built by gradle) 3 levels up. 
 # It's mostly intended for a jenkins job.
-idefault:
+default:
 	rm -rf bin etc lib
 	cp -r ../../../bin ./
 	cp -r ../../../etc ./

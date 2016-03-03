@@ -1,9 +1,14 @@
 #!/bin/bash
+
+function onError() {
+	echo "Non-Zero exit status, $(caller $((n++)))"
+}
+
+trap onErr ERR
+
 UUID=`uuidgen`
-docker run -itd --name $UUID upsilon-node
-docker cp tests.sh $UUID:/opt/
 docker create $UUID
 docker start $UUID
-docker exec $UUID /opt/tests.sh
+docker exec -it $UUID /usr/share/upsilon-node/bin/tools/upsilon-test-envionment
 docker stop $UUID
 docker rm $UUID
