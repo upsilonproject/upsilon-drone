@@ -6,4 +6,4 @@ ADD bin/nix-native/upsilon-node /usr/share/upsilon-node/bin/upsilon-node
 ADD lib /usr/share/upsilon-node/lib/
 ADD var/tools/ /usr/share/upsilon-node/bin/tools
 RUN mkdir /etc/upsilon-node/
-ADD config.xml /etc/upsilon-node/
+ADD etc/config.xml /etc/upsilon-node/
