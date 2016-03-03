@@ -74,9 +74,11 @@ test("python-lxml", module_exists("lxml"))
 #test("python-dialog", module_exists("dialog"))i
 
 test("Upsilon share directory exists", os.path.isdir(upsilonDirectory))
-test("Upsilon share directory contains upsilon-node.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon-node.jar")))
 test("Upsilon config dir exists", os.path.isdir(configDirectory))
 test("Upsilon config.xml exists", os.path.isfile(os.path.join(configDirectory, "config.xml")))
+
+if not isInsideContainer():
+	test("Upsilon share directory contains upsilon-node.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon-node.jar")))
 
 test("Upsilon legacy share directory does not exist", not os.path.isdir("/usr/share/upsilon/"))
 test("Upsilon legacy conf directory does not exist", not os.path.isdir("/etc/upsilon/"))
