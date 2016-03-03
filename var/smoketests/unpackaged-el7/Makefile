@@ -5,6 +5,7 @@ default:
 	cp -r ../../../bin/ ./
 	cp -r ../../../lib/ ./
 	cp -r ../../../etc ./
+	cp -r ../../../var ./
 	sed 's/localhost/upsilon/' ../../../etc/config.xml.sample > config.xml
 
 	docker build -t upsilon-node . 
