@@ -8,8 +8,7 @@ function onErr() {
 
 trap onErr ERR
 
-UUID=`uuidgen`
-docker create upsilon-node --name $UUID
+UUID=$(docker create upsilon-node)
 docker start $UUID
 docker exec -it $UUID /usr/share/upsilon-node/bin/tools/upsilon-test-envionment
 docker stop $UUID
