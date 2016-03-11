@@ -6,7 +6,7 @@ default:
 	cp -r ../../../etc ./
 	cp -r ../../../lib ./
 	cp -r ../../../var/tools ./bin/
-	cp etc/config.xml.sample > etc/config.xml
+	cp etc/config.xml.sample etc/config.xml
 
 	docker build -t upsilon-node . 
 	./startup.sh
