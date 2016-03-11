@@ -27,6 +27,5 @@ internalStatus.add_row(["Encryption (SSL/TLS)", bool2string(xml.xpath("//crypto/
 internalStatus.add_row(["Start time", xml.xpath("//startTime/text()")[0]])
 internalStatus.add_row(["PID", xml.xpath("//pid/text()")[0]])
 internalStatus.add_row(["Java VM", xml.xpath("//vm/text()")[0]])
-internalStatus.add_row(["Java Classpath", xml.xpath("//classpath/text()")[0]])
 
 print internalStatus
