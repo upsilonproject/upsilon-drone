@@ -21,7 +21,7 @@ http://upsilon-project.co.uk/site/index.php/Upsilon-node
 	<peer address = "upsilon.example.com" />
 	!-->
 
-    <system crypto = "false" amqpHost = "localhost">
+    <system crypto = "false" amqpHost = "upsilon">
     	<!--
 	Remove this comment if you would like a local database.
 	Good for first time testing of upsilon-node.
