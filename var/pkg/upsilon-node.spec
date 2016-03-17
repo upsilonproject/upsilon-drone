@@ -43,8 +43,8 @@ cp -r lib/* %{buildroot}/usr/share/upsilon-node/lib/
 
 mkdir -p %{buildroot}/usr/share/upsilon-node/home/
 
-mkdir -p %{buildroot}/usr/share/upsilon-node/tools/
-cp -r var/tools/* %{buildroot}/usr/share/upsilon-node/tools/ 
+mkdir -p %{buildroot}/sbin/
+cp -r var/tools/* %{buildroot}/sbin/ 
 
 mkdir -p %{buildroot}/etc/upsilon-node/
 cp etc/config.xml.sample %{buildroot}/etc/upsilon-node/
@@ -72,7 +72,7 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 /usr/share/upsilon-node/bin/*
 /usr/share/upsilon-node/lib/*
 /usr/share/upsilon-node/home/
-/usr/share/upsilon-node/tools/*
+/sbin/*
 %attr(755, upsilon, upsilon) /etc/upsilon-node/
 %attr(644, upsilon, upsilon) /etc/upsilon-node/*
 %config(noreplace) /etc/upsilon-node/config.xml.sample
