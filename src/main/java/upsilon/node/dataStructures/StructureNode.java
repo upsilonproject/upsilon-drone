@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import upsilon.node.Configuration;
 import upsilon.node.Main;
 import upsilon.node.util.ResourceResolver;
+import upsilon.node.util.Util;
 
 @XmlRootElement
 public class StructureNode extends ConfigStructure {
@@ -62,22 +63,26 @@ public class StructureNode extends ConfigStructure {
 	private void refreshIdentifier() {
 		String newIdentifier = "unknownIdentifier";
 
-		try {
-			final File configDir = ResourceResolver.getInstance().getConfigDir();
-			final File identifierFile = new File(configDir, "identifier.txt");
+		if (!Util.isBlank(System.getenv("UPSILON_IDENTIFIER"))) {
+			newIdentifier = System.getenv("UPSILON_IDENTIFIER");
+		} else {
+			try {
+				final File configDir = ResourceResolver.getInstance().getConfigDir();
+				final File identifierFile = new File(configDir, "identifier.txt");
 
-			if (!identifierFile.exists() && !this.triedCreatingIdentifierFile) {
-				this.triedCreatingIdentifierFile = true;
+				if (!identifierFile.exists() && !this.triedCreatingIdentifierFile) {
+					this.triedCreatingIdentifierFile = true;
 
-				newIdentifier = UUID.randomUUID().toString();
-				this.regenerateLocalIdentifierFile(identifierFile, newIdentifier);
-			} else {
-				final BufferedReader reader = new BufferedReader(new FileReader(identifierFile));
-				newIdentifier = reader.readLine().trim();
-				reader.close();
+					newIdentifier = UUID.randomUUID().toString();
+					this.regenerateLocalIdentifierFile(identifierFile, newIdentifier);
+				} else {
+					final BufferedReader reader = new BufferedReader(new FileReader(identifierFile));
+					newIdentifier = reader.readLine().trim();
+					reader.close();
+				}
+			} catch (final IOException e) {
+				StructureNode.LOG.error("Could not get a valid identifier for this node, using 'unknownIdentifier': ", e);
 			}
-		} catch (final IOException e) {
-			StructureNode.LOG.error("Could not get a valid identifier for this node, using 'unknownIdentifier': ", e);
 		}
 
 		if (!this.identifier.equals(newIdentifier)) {
