@@ -31,6 +31,7 @@ import upsilon.node.util.DirectoryWatcher;
 import upsilon.node.util.ResourceResolver;
 import upsilon.node.util.SslUtil;
 import upsilon.node.util.UPath;
+import upsilon.node.util.Util;
 
 public class Main implements UncaughtExceptionHandler {
 	public static final Main instance = new Main();
@@ -167,18 +168,7 @@ public class Main implements UncaughtExceptionHandler {
 		Thread.setDefaultUncaughtExceptionHandler(this);
 	}
 
-	private void startup() throws Exception {
-		Main.setupLogging();
-		SslUtil.init();
-
-		this.node.refresh();
-
-		Main.LOG.info("Upsilon " + Main.getVersion());
-		Main.LOG.info("----------");
-		Main.LOG.info("Identifier: " + this.node.getIdentifier());
-		Main.LOG.trace("CP: " + System.getProperty("java.class.path"));
-		Main.LOG.trace("OS: " + System.getProperty("os.name"));
-
+	private void parseInitialConfiguration() throws Exception {
 		XmlConfigurationValidator validator = null;
 		
 		try {
@@ -195,9 +185,30 @@ public class Main implements UncaughtExceptionHandler {
 				} 
 			}
 			
-			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
-			return;
+			throw new Exception("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
 		}
+	}
+	
+	private void parseConfigurationEnvironmentVariables() {
+		if (Util.isBlank(System.getenv("UPSILON_CONFIG_SYSTEM_AMQPHOST"))) {
+			Configuration.instance.amqpHostname = System.getenv("UPSILON_CONFIG_SYSTEM_AMQPHOST");
+		}
+	}
+
+	private void startup() throws Exception {
+		Main.setupLogging();
+		SslUtil.init();
+
+		this.node.refresh();
+
+		Main.LOG.info("Upsilon " + Main.getVersion());
+		Main.LOG.info("----------");
+		Main.LOG.info("Identifier: " + this.node.getIdentifier());
+		Main.LOG.trace("CP: " + System.getProperty("java.class.path"));
+		Main.LOG.trace("OS: " + System.getProperty("os.name"));
+
+		this.parseConfigurationEnvironmentVariables();
+		this.parseInitialConfiguration();
 
 		if (Configuration.instance.daemonRestEnabled) {
 			this.startDaemon(new DaemonRest());

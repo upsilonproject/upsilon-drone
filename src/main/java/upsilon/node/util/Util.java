@@ -96,4 +96,16 @@ public class Util {
 		copy(r, sb);
 		return sb;
 	}
+
+	public static boolean isBlank(String s) {
+		if (s == null) {
+			return true;
+		}
+
+		if (s.isEmpty()) {
+			return true;
+		}
+
+		return false;
+	}
 }

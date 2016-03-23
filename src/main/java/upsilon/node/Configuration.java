@@ -78,7 +78,10 @@ public class Configuration {
 				this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonRestEnabled", GlobalConstants.DEF_DAEMON_REST_ENABLED);
 
 				this.daemonAmqpEnabled = node.getAttributeValueOrDefault("daemonAmqpEnabled", GlobalConstants.DEF_DAEMON_AMQP_ENABLED);
-				this.amqpHostname = node.getAttributeValueOrDefault("amqpHost", GlobalConstants.DEF_AMQP_HOST);
+
+				if (node.hasAttribute("amqpHost")) {
+					this.amqpHostname = node.getAttributeValueOrDefault("amqpHost", GlobalConstants.DEF_AMQP_HOST);
+				}
 
 				this.isCryptoEnabled = node.getAttributeValueOrDefault("crypto", GlobalConstants.DEF_CRYPTO_ENABLED);
 				this.maxThreadsRestKernel = node.getAttributeValueOrDefault("maxThreadsRestKernel", 1);
