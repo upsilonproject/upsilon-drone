@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 function onErr() {
 	STATUS=$?
@@ -12,6 +12,8 @@ UUID=$(docker create upsilon-node)
 docker start $UUID
 
 sleep 10 # upsilon-node needs time to start it's internals for testing
+docker ps
+docker inspect $UUID > docker-inspect.log
 
 docker exec -i $UUID /usr/share/upsilon-node/bin/tools/upsilon-test-envionment
 docker stop $UUID
