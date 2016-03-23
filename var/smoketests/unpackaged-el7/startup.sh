@@ -11,7 +11,8 @@ trap onErr ERR
 UUID=$(docker create upsilon-node)
 docker start $UUID
 
-sleep 10 # upsilon-node needs time to start it's internals for testing
+sleep 15 # upsilon-node needs time to start it's internals for testing
+
 docker ps
 docker inspect $UUID > docker-inspect.log
 

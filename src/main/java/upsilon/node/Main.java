@@ -160,7 +160,10 @@ public class Main implements UncaughtExceptionHandler {
 	}
 
 	private void startDaemon(final Daemon r) {
-		final Thread t = new Thread(r, r.getClass().getSimpleName());
+		String daemonName = r.getClass().getSimpleName();
+		Main.LOG.info("Starting daemon: " + daemonName);
+
+		final Thread t = new Thread(r, daemonName);
 		this.daemons.add(r);
 
 		t.start();

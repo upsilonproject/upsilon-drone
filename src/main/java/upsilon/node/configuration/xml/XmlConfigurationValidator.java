@@ -153,6 +153,8 @@ public class XmlConfigurationValidator implements ErrorHandler, ConfigurationVal
 			throw new Exception("Cannot parse the configuration twice. ");
 		}
 
+		LOG.info("XmlConfigurationValidator is validing: " + this.sourcePath);
+
 		final Document doc = this.builder.parse(this.is);
 
 		this.isParsed = true;
