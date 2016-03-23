@@ -194,6 +194,7 @@ public class Main implements UncaughtExceptionHandler {
 	
 	private void parseConfigurationEnvironmentVariables() {
 		if (!Util.isBlank(System.getenv("UPSILON_CONFIG_SYSTEM_AMQPHOST"))) {
+			Main.LOG.info("Setting AMQPHost from ENV: " + System.getenv("UPSILON_CONFIG_SYSTEM_AMQPHOST"));
 			Configuration.instance.amqpHostname = System.getenv("UPSILON_CONFIG_SYSTEM_AMQPHOST");
 		}
 	}
