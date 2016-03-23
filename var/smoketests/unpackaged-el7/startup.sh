@@ -17,5 +17,6 @@ docker ps
 docker inspect $UUID > docker-inspect.log
 
 docker exec -i $UUID /usr/share/upsilon-node/bin/tools/upsilon-test-envionment
+docker logs $UUID
 docker stop $UUID
 docker rm $UUID
