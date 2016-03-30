@@ -100,6 +100,7 @@ public class MessageHandler {
 			respHeaders.put("node-identifier", Main.instance.node.getIdentifier());
 			respHeaders.put("node-version", Main.getVersion());
 			respHeaders.put("node-service-count", Configuration.instance.services.size());	
+			respHeaders.put("node-type", Main.instance.node.getType());
  
 			channel.basicPublish(DaemonConnectionHandler.EXCHANGE_NAME, "upsilon.res", getBuilderFromHeaders(respHeaders).build(), nodeSummary.getBytes());
 
