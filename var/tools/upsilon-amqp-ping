@@ -3,6 +3,7 @@
 import pika
 import argparse
 from prettytable import PrettyTable
+import sys
 
 responses = list()
 
@@ -39,8 +40,13 @@ args = parser.parse_args();
 
 EXCHANGE_NAME = 'ex_upsilon'
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(args.server))
-connection.add_timeout(args.timeout, on_timeout)
+try:
+	connection = pika.BlockingConnection(pika.ConnectionParameters(args.server))
+	connection.add_timeout(args.timeout, on_timeout)
+except pika.exceptions.ConnectionClosed as e:
+	print "The AMQP Connection was unexpectedly closed while trying to connect."
+	print "Server address:", args.server
+	sys.exit()
 
 QUEUE_NAME_RECV = "upsilon-amqp-ping-recv"
 channelRecv = connection.channel()
@@ -59,6 +65,7 @@ props = pika.BasicProperties(headers = headers, reply_to = QUEUE_NAME_RECV)
 channelSend.basic_publish(exchange = EXCHANGE_NAME, routing_key = 'upsilon.cmds', body = '', properties = props)
 
 try:
+	print "Waiting " + str(args.timeout) + " seconds for responses to pings."
 	channelRecv.start_consuming();
 except Exception as e:
 	print e
