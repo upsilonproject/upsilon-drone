@@ -193,7 +193,7 @@ public class Database {
 			pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
 			pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
 			pstmt.setInt(++pindex, n.getServiceCount());
-			pstmt.setInt(++pindex, n.getType());
+			pstmt.setString(++pindex, n.getType());
 			pstmt.setString(++pindex, n.getInstanceApplicationVersion());
 			pstmt.execute();
 			pstmt.close();
