@@ -123,19 +123,25 @@ public class Main implements UncaughtExceptionHandler {
 	}
 
 	public String guessNodeType(final Database db, final CollectionOfStructures<StructurePeer> peers) {
-		if ((db == null) && !peers.isEmpty()) {
-			return "service-node";
+		Vector<String> elements = new Vector<>();
+
+		if (Configuration.instance.daemonAmqpEnabled) {
+			elements.add("amqp");
 		}
 
-		if ((db != null) && peers.isEmpty()) {
-			return "super-node";
+		if (Configuration.instance.daemonRestEnabled) {
+			elements.add("rest");
 		}
 
-		if ((db == null) && peers.isEmpty()) {
-			return "useless-testing-node";
+		if (db != null) {
+			elements.add("db");
 		}
 
-		return "non-standard-node";
+		if (!peers.isEmpty()) {
+			elements.add("peers");
+		}
+
+		return String.join(", ", elements);
 	}
 
 	public void shutdown() {
