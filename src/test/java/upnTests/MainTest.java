@@ -36,14 +36,15 @@ public class MainTest {
     public void testNodeType() throws Exception {
         final CollectionOfStructures<StructurePeer> peers = new CollectionOfStructures<>("testingStructure");
 
-        Assert.assertEquals("useless-testing-node", Main.instance.guessNodeType(null, peers));
+        Assert.assertEquals("amqp, rest", Main.instance.guessNodeType(null, peers));
 
-        Assert.assertEquals("super-node", Main.instance.guessNodeType(new Database(null, null, null, 0, null), peers));
+        Assert.assertEquals("amqp, rest, db", Main.instance.guessNodeType(new Database(null, null, null, 0, null), peers));
 
         peers.register(new StructurePeer("localhost", 100));
-        Assert.assertEquals("service-node", Main.instance.guessNodeType(null, peers));
+        Assert.assertEquals("amqp, rest, peers", Main.instance.guessNodeType(null, peers));
 
-        Assert.assertEquals("non-standard-node", Main.instance.guessNodeType(new Database(null, null, null, 0, null), peers));
+        Assert.assertEquals("amqp, rest, db, peers", Main.instance.guessNodeType(new Database(null, null, null, 0, null), peers));
+
     }
 
     @Ignore
