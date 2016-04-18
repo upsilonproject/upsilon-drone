@@ -32,6 +32,7 @@ public class DaemonAmqpHeatbeater extends Daemon {
 				headers.put("node-identifier", Main.instance.node.getIdentifier());
 				headers.put("node-version", Main.getVersion());
 				headers.put("node-service-count", Configuration.instance.services.size());	
+				headers.put("node-configs", Main.instance.getConfigurationLoader().getStatusesString());
 				
 				Builder builder = MessageHandler.getBuilderFromHeaders(headers);
 				

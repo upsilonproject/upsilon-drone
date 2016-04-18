@@ -80,6 +80,14 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 				this.stringParseErrors.add("Line: " + e.getLineNumber() + " Message: " + e.getMessage());
 			}
 		}
+
+		public boolean hasErrors() {
+			return !this.stringParseErrors.isEmpty();
+		}
+
+		public String toString() {
+			return this.getSourceTag() + "," + this.lastParsed.toDateTime().getMillis() + "," + this.hasErrors();
+		}
 	}
 
 	private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);
@@ -143,6 +151,10 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 
 	public Collection<ConfigStatus> getStatuses() {
 		return XmlConfigurationLoader.configStatuses.values();
+	}
+
+	public String getStatusesString() {
+		return getStatuses().toString();
 	}
 
 	public FileChangeWatcher load(final UPath path, final boolean watch, final boolean isAux) throws Exception {
