@@ -47,7 +47,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		@XmlElement
 		public boolean isAux = false;
 
-		public String remoteId = "unset";
+		private String remoteId = "unset";
 
 		@XmlElementWrapper(name = "parseErrors")
 		@XmlElement(name = "error")
@@ -91,6 +91,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 			this.remoteId = remoteId;
 		}
 
+		@XmlElement
 		public String getRemoteId() {
 			return this.remoteId;
 		}
