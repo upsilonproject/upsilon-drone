@@ -184,7 +184,7 @@ public class Main implements UncaughtExceptionHandler {
 			final UPath mainConfigPath = new UPath(ResourceResolver.getInstance().getConfigDir(), "config.xml");
 			validator = new XmlConfigurationValidator(mainConfigPath, false);
 			
-			Main.configurationLoader.load(validator.getValidatedConfiguration(), true);
+			Main.configurationLoader.load("config.xml", validator.getValidatedConfiguration(), true);
 		} catch (final Exception e) {
 			Main.configurationLoader.stopFileWatchers();
 

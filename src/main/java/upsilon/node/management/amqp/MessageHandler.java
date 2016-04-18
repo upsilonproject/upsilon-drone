@@ -113,7 +113,7 @@ public class MessageHandler {
 			final ValidatedConfiguration vcfg = validator.getValidatedConfiguration();
 
 			final XmlConfigurationLoader loader = new XmlConfigurationLoader();
-			loader.load(vcfg, false);
+			loader.load("fragment", vcfg, false);
 
 			System.out.println("service create SS");
 
@@ -132,7 +132,7 @@ public class MessageHandler {
 				configWriter.flush();    
 				configWriter.close(); 
 				
-				Main.instance.getConfigurationLoader().load(configPath, false, true);
+				Main.instance.getConfigurationLoader().load(headers.get("remote-config-id").toString(), configPath, false, true);
 			} else {
 				LOG.debug("Irrelevant node config received for: " + nodeIdentifier);
 			}

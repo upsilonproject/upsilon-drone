@@ -47,6 +47,8 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		@XmlElement
 		public boolean isAux = false;
 
+		public String remoteId = "unset";
+
 		@XmlElementWrapper(name = "parseErrors")
 		@XmlElement(name = "error")
 		private final Vector<String> stringParseErrors = new Vector<String>();
@@ -85,8 +87,16 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 			return !this.stringParseErrors.isEmpty();
 		}
 
+		public void setRemoteId(String remoteId) {
+			this.remoteId = remoteId;
+		}
+
+		public String getRemoteId() {
+			return this.remoteId;
+		}
+
 		public String toString() {
-			return this.getSourceTag() + ":" + this.lastParsed.toDateTime().getMillis() + ":" + this.hasErrors();
+			return this.getSourceTag() + ":" + this.getRemoteId() +  "" + this.lastParsed.toDateTime().getMillis() + ":" + this.hasErrors();
 		}
 	}
 
@@ -119,7 +129,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 	@Override
 	public void fileChanged(final UPath url, final boolean isAux) {
 		try {
-			this.load(url, false, isAux);
+			this.load("change", url, false, isAux);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -157,7 +167,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		return getStatuses().toString();
 	}
 
-	public FileChangeWatcher load(final UPath path, final boolean watch, final boolean isAux) throws Exception {
+	public FileChangeWatcher load(String remoteId, final UPath path, final boolean watch, final boolean isAux) throws Exception {
 		ValidatedConfiguration vcfg = null;
 		XmlConfigurationValidator validator = null;
 
@@ -165,6 +175,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		vcfg = validator.getValidatedConfiguration();
 
 		final ConfigStatus configStatus = this.getConfigStatus(path.getAbsolutePath());
+		configStatus.setRemoteId(remoteId);
 
 		XmlConfigurationLoader.LOG.info("Reparse of configuration of file {}. Schema: {}. Validation status: {}", new Object[] { validator.getSource(), Util.bool2s(validator.isAux(), "AUX", "MAIN"), Util.bool2s(validator.isParseClean(), "VALID", "INVALID") });
 		configStatus.isAux = validator.isAux();
@@ -183,14 +194,14 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 			}
 		}
 
-		return this.load(vcfg, watch, isAux);
+		return this.load(remoteId, vcfg, watch, isAux);
 	}
 
-	public void load(final ValidatedConfiguration validatedConfiguration, final boolean b) {
-		this.load(validatedConfiguration, b, false);
+	public void load(String remoteId, final ValidatedConfiguration validatedConfiguration, final boolean b) {
+		this.load(remoteId, validatedConfiguration, b, false);
 	}
 
-	public FileChangeWatcher load(final ValidatedConfiguration vcfg, final boolean watch, final boolean isAux) {
+	public FileChangeWatcher load(String remoteId, final ValidatedConfiguration vcfg, final boolean watch, final boolean isAux) {
 		XmlConfigurationLoader.LOG.info("XMLConfigurationLoader is loading file: " + vcfg.getSourceTag());
 		FileChangeWatcher fcw = null;
 
@@ -217,7 +228,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 	@Override
 	public void onNewFile(final File f) {
 		try {
-			this.load(new UPath(f), true, true);
+			this.load("local", new UPath(f), true, true);
 		} catch (final Exception e) {
 			XmlConfigurationLoader.LOG.warn("Informed of new file in a directory, but the configuration loader encountered an exception: " + e.getMessage());
 		}
@@ -261,7 +272,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 
 					try {
 						final XmlConfigurationValidator validator = new XmlConfigurationValidator(path, true);
-						this.load(validator.getValidatedConfiguration(), false, true);
+						this.load("config.xml", validator.getValidatedConfiguration(), false, true);
 					} catch (final Exception e) {
 						XmlConfigurationLoader.LOG.error("Could not parse included configuration:" + e);
 					}
