@@ -86,7 +86,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		}
 
 		public String toString() {
-			return this.getSourceTag() + "," + this.lastParsed.toDateTime().getMillis() + "," + this.hasErrors();
+			return this.getSourceTag() + ":" + this.lastParsed.toDateTime().getMillis() + ":" + this.hasErrors();
 		}
 	}
 

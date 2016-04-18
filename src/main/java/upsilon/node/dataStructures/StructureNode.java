@@ -27,6 +27,7 @@ public class StructureNode extends ConfigStructure {
 	private int serviceCount;
 	private String identifier = "unidentifiedNode";
 	private String instanceApplicationVersion = "???";
+	private String configs = "";
 
 	private boolean triedCreatingIdentifierFile = false;
 
@@ -49,6 +50,11 @@ public class StructureNode extends ConfigStructure {
 	@XmlAttribute
 	public String getType() {
 		return this.type;
+	}
+
+	@XmlAttribute
+	public String getConfigs() {
+		return this.configs;
 	}
 
 	public void refresh() {
@@ -133,6 +139,10 @@ public class StructureNode extends ConfigStructure {
 
 	public void setType(final String type) {
 		this.type = type;
+	}
+
+	public void setConfigs(final String configs) {
+		this.configs = configs;
 	}
 
 	@Override

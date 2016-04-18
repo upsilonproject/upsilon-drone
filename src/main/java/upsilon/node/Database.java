@@ -184,7 +184,7 @@ public class Database {
 		this.log.debug("Updating node: " + n.getIdentifier() + "(type: " + n.getType() + ")");
 
 		int pindex = 0;
-		final String sql = "INSERT INTO nodes (identifier, serviceType, lastUpdated) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lastUpdated = ?, serviceCount = ?, serviceType = ?, instanceApplicationVersion = ? ";
+		final String sql = "INSERT INTO nodes (identifier, serviceType, lastUpdated) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lastUpdated = ?, serviceCount = ?, serviceType = ?, configs = ?, instanceApplicationVersion = ? ";
 
 		try {
 			final PreparedStatement pstmt = this.conn.prepareStatement(sql);
@@ -194,6 +194,7 @@ public class Database {
 			pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
 			pstmt.setInt(++pindex, n.getServiceCount());
 			pstmt.setString(++pindex, n.getType());
+			pstmt.setString(++pindex, n.getConfigs());
 			pstmt.setString(++pindex, n.getInstanceApplicationVersion());
 			pstmt.execute();
 			pstmt.close();

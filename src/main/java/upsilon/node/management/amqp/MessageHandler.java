@@ -149,7 +149,8 @@ public class MessageHandler {
 				node.setInstanceApplicationVersion(helper.getHeaderString("node-version"));
 				node.setServiceCount((helper.getHeaderInt("node-service-count")));
 				node.setSource("amqp");  
-				node.setType(helper.getHeaderString("node-type")); 
+				node.setType(helper.getHeaderString("node-type"));
+				node.setConfigs(helper.getHeaderString("node-configs")); 
 				
 				Configuration.instance.remoteNodes.register(node);
 			} 
