@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
@@ -198,10 +199,22 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		return this.load(remoteId, vcfg, watch, isAux);
 	}
 
-	public void load(String remoteId, final ValidatedConfiguration validatedConfiguration, final boolean b) {
-		this.load(remoteId, validatedConfiguration, b, false);
+	public FileChangeWatcher load(final UPath path, final boolean watch, final boolean isAux) throws Exception {
+		return this.load(UUID.randomUUID().toString(), path, watch, isAux);
 	}
 
+	public FileChangeWatcher load(String remoteId, final ValidatedConfiguration validatedConfiguration, final boolean b) {
+		return this.load(remoteId, validatedConfiguration, b, false);
+	}
+
+	public FileChangeWatcher load(final ValidatedConfiguration validatedConfiguration, final boolean watch) {
+		return this.load(UUID.randomUUID().toString(), validatedConfiguration, watch, false);
+	}	
+
+	public FileChangeWatcher load(final ValidatedConfiguration validatedConfiguration, final boolean watch, final boolean isAux) {
+		return this.load(UUID.randomUUID().toString(), validatedConfiguration, watch, isAux);
+	}
+	
 	public FileChangeWatcher load(String remoteId, final ValidatedConfiguration vcfg, final boolean watch, final boolean isAux) {
 		XmlConfigurationLoader.LOG.info("XMLConfigurationLoader is loading file: " + vcfg.getSourceTag());
 		FileChangeWatcher fcw = null;

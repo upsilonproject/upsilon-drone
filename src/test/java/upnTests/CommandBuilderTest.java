@@ -42,7 +42,7 @@ public class CommandBuilderTest {
 		validator.parse();
 
 		final XmlConfigurationLoader loader = new XmlConfigurationLoader();
-		loader.load(validator.getValidatedConfiguration(), false);
+		loader.load("test", validator.getValidatedConfiguration(), false);
 
 		Assert.assertTrue(validator.isParseClean());
 

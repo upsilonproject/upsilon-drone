@@ -25,7 +25,7 @@ public class ServiceInheritance {
 		final UPath before = new UPath("src/test/resources/fragments/serviceInheritance/config.xml");
 		final XmlConfigurationValidator validator = new XmlConfigurationValidator(before);
 		final XmlConfigurationLoader loader = new XmlConfigurationLoader();
-		loader.load(validator.getValidatedConfiguration(), false);
+		loader.load("remoteId", validator.getValidatedConfiguration(), false);
 
 		Assert.assertEquals(validator.getSourcePath(), before);
 		Assert.assertTrue(validator.isParseClean());

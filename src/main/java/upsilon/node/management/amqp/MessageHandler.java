@@ -21,6 +21,7 @@ import upsilon.node.configuration.ValidatedConfiguration;
 import upsilon.node.configuration.xml.XmlConfigurationLoader;
 import upsilon.node.configuration.xml.XmlConfigurationValidator;
 import upsilon.node.dataStructures.StructureNode;
+import upsilon.node.dataStructures.StructureService;
 import upsilon.node.dataStructures.StructureRemoteService;
 import upsilon.node.util.UPath;
 import upsilon.node.util.Util;
@@ -179,6 +180,24 @@ public class MessageHandler {
 			
 			channel.basicAck(deliveryTag, false);
 			
+			break;
+		case EXECUTE_SINGLE:
+			String serviceIdentifier = headers.get("service-identifier").toString();
+			String nodeIdentifier2 = headers.get("node-identifier").toString();
+
+			if (Main.instance.node.getIdentifier().equals(nodeIdentifier2)) {
+				StructureService service = Configuration.instance.services.get(serviceIdentifier);
+
+				if (service == null) {
+					MessageHandler.LOG.warn("Could not find service to EXECUTE_SINGLE: " + serviceIdentifier);
+				} else {
+					MessageHandler.LOG.info("Enqueued service due to EXECUTE_SINGLE: " + serviceIdentifier);
+					Main.instance.queueMaintainer.queueUrgent(service);			
+				}
+			}
+			
+			channel.basicAck(deliveryTag, false);
+
 			break;
 		case UNKNOWN:  
 		default:
