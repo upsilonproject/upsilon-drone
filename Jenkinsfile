@@ -1,10 +1,45 @@
 node {
+	stage "Prep"
+	checkout scm
+
 	stage "Compile"
-	echo "erm"
+	sh 'gradle distZip'
+
+	stage "Smoke"
+	echo "Smokin' :)"
 
 	stage "Package"
-	echo "building packages"
+	parallel 
+	docker-fedora: {
+
+	}, 
+	rpm-fedora: {
+
+	}, 
+	rpm-el6: {
+
+	}, 
+	rpm-el7: {
+
+	}, 
+	failFast: true
+
 
 	stage "Publish"
-	echo "publishing packages"
+
+	parallel 
+	publish-docker-fedora: {
+
+	},
+	publish-rpm-fedora: {
+
+	},
+	publish-rpm-el6: {
+
+	},
+	publish-rpm-el7: {
+
+	},
+	failFast: true
+
 }
