@@ -1,6 +1,8 @@
 node {
 	stage "Prep"
 	def gradle = tool 'gradle'
+	echo "${gradle}"
+
 	checkout scm
 
 	stage "Compile"
