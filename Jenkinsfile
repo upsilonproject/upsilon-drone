@@ -9,8 +9,7 @@ node {
 	echo "Smokin' :)"
 
 	stage "Package"
-	parallel 
-	docker-fedora: {
+	parallel docker-fedora: {
 
 	}, 
 	rpm-fedora: {
@@ -27,8 +26,7 @@ node {
 
 	stage "Publish"
 
-	parallel 
-	publish-docker-fedora: {
+	parallel publish-docker-fedora: {
 
 	},
 	publish-rpm-fedora: {
