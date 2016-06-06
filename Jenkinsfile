@@ -9,37 +9,26 @@ node {
 	echo "Smokin' :)"
 
 	stage "Package"
-	parallel 
-	dockerFedora: {
+	parallel dockerFedora: {
 
-	}, 
-	rpmFedora: {
+	}, rpmFedora: {
 
-	}, 
-	rpmEl6: {
+	}, rpmEl6: {
 
-	}, 
-	rpmEl7: {
+	}, rpmEl7: {
 
-	}, 
-	failFast: true
+	}, failFast: true
 
 
 	stage "Publish"
 
-	parallel 
-	publishDockerFedora: {
+	parallel publishDockerFedora: {
 
-	},
-	publishRpmFedora: {
+	}, publishRpmFedora: {
 
-	},
-	publishRpmEl6: {
+	}, publishRpmEl6: {
 
-	},
-	publishRpmEl7: {
+	}, publishRpmEl7: {
 
-	},
-	failFast: true
-
+	}, failFast: true
 }
