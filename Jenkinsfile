@@ -1,12 +1,11 @@
 node {
 	stage "Prep"
 	def gradle = tool 'gradle'
-	echo "${gradle}"
 
 	checkout scm
 
 	stage "Compile"
-	sh '${gradle}/bin/gradle distZip'
+	sh "${gradle}/bin/gradle distZip"
 
 	stage "Smoke"
 	echo "Smokin' :)"
