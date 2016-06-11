@@ -2,5 +2,6 @@ language: java
 notifications:
     email: false
 before_script:
+    - rpm -U http://ci.teratan.net/repositories/pub/buildid-rpm-el7/latest
     - mysql -e 'create database upsilon'
     - mysql upsilon < upsilon-jar/var/upsilon.sql
