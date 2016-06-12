@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class DaemonAmqpHeatbeater extends Daemon {
 				} 
 			}
 
-			Util.lazySleep(Duration.standardSeconds(60));
+			Util.lazySleep(Duration.ofSeconds(60));
 		}
 	}
 

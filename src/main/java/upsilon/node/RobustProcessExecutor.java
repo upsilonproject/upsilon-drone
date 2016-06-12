@@ -10,7 +10,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.joda.time.Duration;
+import java.time.Duration;
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,11 +111,11 @@ public class RobustProcessExecutor implements Callable<Integer> {
 				} catch (InterruptedException | TimeoutException e) {
 					RobustProcessExecutor.this.log.warn("Timeout exceeded while waiting for service check to complete: " + RobustProcessExecutor.this.service.getIdentifier());
 
-					RobustProcessExecutor.this.service.addResult(ResultKarma.TIMEOUT, "Timeout of " + Math.max(GlobalConstants.DEF_TIMEOUT.getStandardSeconds(), RobustProcessExecutor.this.service.getTimeout().getStandardSeconds()) + " exceeded");
+					RobustProcessExecutor.this.service.addResult(ResultKarma.TIMEOUT, "Timeout of " + Math.max(GlobalConstants.DEF_TIMEOUT.get(SECONDS), RobustProcessExecutor.this.service.getTimeout().get(SECONDS)) + " exceeded");
 				} finally {
 					RobustProcessExecutor.this.destroy();
 				}
-
+ 
 				RobustProcessExecutor.this.log.info("Executed service check: " + RobustProcessExecutor.this.service.getIdentifier() + " = " + RobustProcessExecutor.this.service.getResult() + " (" + RobustProcessExecutor.this.service.getResultConsequtiveCount() + " consecutive). Delay until next check " + RobustProcessExecutor.this.service.getFlexiTimer().getCurrentDelay() + " , which is " + RobustProcessExecutor.this.service.getSecondsRemaining() + " seconds from now");
 			}
 		};
@@ -142,8 +144,8 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 		this.future = RobustProcessExecutor.monitoringThreadPool.submit(this);
 
-		final long timeout = Math.max(this.timeout.getStandardSeconds(), GlobalConstants.DEF_TIMEOUT.getStandardSeconds());
+		final long timeout = Math.max(this.timeout.get(SECONDS), GlobalConstants.DEF_TIMEOUT.get(SECONDS));
 
-		return this.future.get(timeout, TimeUnit.SECONDS);
-	}
+		return this.future.get(timeout, TimeUnit.SECONDS); 
+	} 
 }

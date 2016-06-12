@@ -9,7 +9,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.joda.time.Duration;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +60,8 @@ public class Util {
 	}
 
 	public static void lazySleep(final Duration howLong) {
-		try {
-			Thread.sleep(howLong.getMillis());
+		try {  
+			Thread.sleep(howLong.get(ChronoUnit.MILLIS));
 		} catch (final InterruptedException e) {
 			Util.LOG.warn("Insomnia in thread.", e);
 		}
@@ -98,7 +100,7 @@ public class Util {
 	}
 
 	public static boolean isBlank(String s) {
-		if (s == null) {
+		if (s == null) { 
 			return true;
 		}
 

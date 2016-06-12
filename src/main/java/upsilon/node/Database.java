@@ -229,14 +229,14 @@ public class Database {
 			stmt.setLong(paramIndex++, s.getSecondsRemaining());
 			stmt.setString(paramIndex++, s.getOutput());
 			stmt.setString(paramIndex++, s.getFinalCommandLine(s));
-			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
+			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastUpdated().toEpochMilli()));
 			stmt.setLong(paramIndex++, s.getResultConsequtiveCount());
-			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastChanged().toDate().getTime()));
-			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getEstimatedNextCheck().toDate().getTime()));
+			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastChanged().toEpochMilli()));
+			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getEstimatedNextCheck().toEpochMilli()));
 			stmt.setBoolean(paramIndex++, s.isLocal());
 			stmt.setString(paramIndex++, s.getNodeIdentifier());
 			stmt.setString(paramIndex++, s.getCommandIdentifier());
-
+			
 			stmt.execute();
 			stmt.close();
 		} catch (final Exception e) {
@@ -248,9 +248,9 @@ public class Database {
 		try {
 			final PreparedStatement stmt = this.conn.prepareStatement(sql);
 			stmt.setString(1, s.getIdentifier());
-			stmt.setTimestamp(2, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
+			stmt.setTimestamp(2, new java.sql.Timestamp(s.getLastUpdated().toEpochMilli()));
 			stmt.setString(3, s.getKarmaString());
-			stmt.setString(4, s.getOutput());
+			stmt.setString(4, s.getOutput()); 
 			stmt.execute();
 			stmt.close();
 		} catch (final Exception e) {

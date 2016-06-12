@@ -2,7 +2,7 @@ package upsilon.node.dataStructures;
 
 import java.util.HashMap;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 public interface AbstractService {
 	public HashMap<String, String> getArguments();
@@ -16,7 +16,7 @@ public interface AbstractService {
 	public abstract String getExecutable();
 
 	public abstract String getFinalCommandLine(AbstractService s);
-
+ 
 	public String getIdentifier();
 
 	public abstract String getKarmaString();

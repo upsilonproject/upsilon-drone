@@ -2,7 +2,7 @@ package upsilon.node.management.rest.server.util;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 
 public class DurationAdapter extends XmlAdapter<String, Duration> {
 

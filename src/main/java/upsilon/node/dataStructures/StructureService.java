@@ -7,8 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.joda.time.Duration;
-import org.joda.time.Instant;
+import java.time.Duration;
+import java.time.Instant; 
 
 import upsilon.node.Configuration;
 import upsilon.node.Main;
@@ -25,12 +25,12 @@ public class StructureService extends ConfigStructure implements AbstractService
 	private StructureCommand command;
 	@XmlElement
 	private ResultKarma karma;
-	private final MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(60), Duration.standardSeconds(5), "service timer");
+	private final MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(60), Duration.ofSeconds(5), "service timer");
 	private boolean register = true;
 	private String output = "(not yet executed)";
 	private HashMap<String, String> arguments = new HashMap<String, String>();
 	private transient Duration timeoutSeconds = GlobalConstants.DEF_TIMEOUT;
-
+ 
 	private StructureService dependsOn;
 
 	public void addResult(final ResultKarma karma, final String output) {
@@ -238,9 +238,9 @@ public class StructureService extends ConfigStructure implements AbstractService
 			final HashMap<String, String> arguments = new HashMap<>();
 
 			int argpos = 0;
-			for (final ConfigurationNode elArgument : el.getChildElements("argument")) {
+			for (final ConfigurationNode<?> elArgument : el.getChildElements("argument")) {
 				String argName;
-
+ 
 				if (elArgument.hasAttribute("name")) {
 					argName = "$" + elArgument.getAttributeValue("name", ""); // named
 				} else {

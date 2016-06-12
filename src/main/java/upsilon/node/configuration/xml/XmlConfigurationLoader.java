@@ -17,7 +17,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -70,7 +70,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 
 		@XmlElement
 		public String getLastParsed() {
-			return this.lastParsed.toDateTime().toString();
+			return this.lastParsed.toString();
 		}
 
 		@XmlElement
@@ -98,8 +98,8 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 		}
 
 		public String toString() {
-			return this.getSourceTag() + ":" + this.getRemoteId() +  ":" + this.lastParsed.toDateTime().getMillis() + ":" + this.hasErrors();
-		}
+			return this.getSourceTag() + ":" + this.getRemoteId() +  ":" + this.lastParsed.toEpochMilli() + ":" + this.hasErrors();
+		} 
 	}
 
 	private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);

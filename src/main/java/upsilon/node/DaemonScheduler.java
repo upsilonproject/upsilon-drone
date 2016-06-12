@@ -80,7 +80,7 @@ public class DaemonScheduler extends Daemon {
 
 			this.setStatus("updating db and peers");
 			Database.updateAll();
-			StructurePeer.updateAll();
+			StructurePeer.updateAll(); 
 		}
 
 		DaemonScheduler.LOG.warn("Queue maintenance thread shutdown.");

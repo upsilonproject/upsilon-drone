@@ -2,7 +2,7 @@ package upsilon.node.configuration.abstractDom;
 
 import java.util.Vector;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 
 public abstract class ConfigurationNode<C> {
 	public class ConfigurationNodeCollection extends Vector<ConfigurationNode<C>> {
@@ -63,7 +63,7 @@ public abstract class ConfigurationNode<C> {
 	public <T> T getAttributeValueOrParentOrDefault(final String key, final T def) {
 		if (this.hasAttribute(key)) {
 			final String val = this.getAttributeValueUnchecked(key);
-
+ 
 			if (def instanceof Duration) {
 				return (T) Duration.parse(val);
 			} else if (def instanceof Integer) {
@@ -127,9 +127,9 @@ public abstract class ConfigurationNode<C> {
 		return this.getFirstChildElement(string) != null;
 	}
 
-	public void setParent(final ConfigurationNode search) {
+	public void setParent(final ConfigurationNode<C> search) {
 		this.parent = search;
-	}
+	} 
 
 	public void setSource(final String source) {
 	}

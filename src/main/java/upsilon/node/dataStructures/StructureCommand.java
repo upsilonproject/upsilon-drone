@@ -152,8 +152,8 @@ public class StructureCommand extends ConfigStructure {
 	}
 
 	@Override
-	public void update(final ConfigurationNode el) {
-		this.setIdentifier(el.getAttributeValueUnchecked("id"));
+	public void update(final ConfigurationNode<?> el) {
+		this.setIdentifier(el.getAttributeValueUnchecked("id")); 
 		this.setCommandLine(el.getAttributeValueUnchecked("exec"));
 	}
 }

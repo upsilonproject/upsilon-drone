@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.joda.time.Instant;
-
+import java.time.Instant;
+ 
 @XmlRootElement
 public class StructureRemoteService implements AbstractService {
 	private String karma = "karma";

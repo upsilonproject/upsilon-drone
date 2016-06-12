@@ -9,8 +9,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
-import javax.xml.bind.Validator;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.xml.sax.SAXParseException;

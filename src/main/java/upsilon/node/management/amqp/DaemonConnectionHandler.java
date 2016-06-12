@@ -3,14 +3,14 @@ package upsilon.node.management.amqp;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.LongString;
+import com.rabbitmq.client.LongString; 
 import com.rabbitmq.client.QueueingConsumer;
 
 import upsilon.node.Configuration;
@@ -115,8 +115,8 @@ public class DaemonConnectionHandler extends Daemon implements Runnable {
 				// The connection can be open and not accepting new
 				// channels/consumers, like when it is shutting down. to sleep
 				// for a moment to see if the connection is still good.
-				Util.lazySleep(Duration.standardSeconds(1));
-
+				Util.lazySleep(Duration.ofSeconds(1));
+ 
 				final QueueingConsumer.Delivery delivery = this.consumerRecv.nextDelivery();
 
 				final String body = new String(delivery.getBody());

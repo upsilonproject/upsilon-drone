@@ -1,10 +1,9 @@
 package upsilon.node.management.amqp;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +34,10 @@ public class DaemonAmqpServiceUpdater extends Daemon {
 				
 			}
 
-			Util.lazySleep(Duration.standardSeconds(60));
+			Util.lazySleep(Duration.ofSeconds(60));
 		}
 	}
-	
+	 
 	private void pushService (Channel channel, StructureService service) {
 		final Map<String, Object> headers = MessageHandler.getNewMessageHeaders(UpsilonMessageType.SERVICE_CHECK_RESULT);
 		headers.put("identifier", service.getIdentifier());  

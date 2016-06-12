@@ -3,8 +3,11 @@ package upsilon.node.util;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.joda.time.Duration;
-import org.joda.time.Instant;
+import javax.xml.datatype.DatatypeConstants;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import upsilon.node.dataStructures.ResultKarma;
 
@@ -19,11 +22,11 @@ public class MutableFlexiTimer extends FlexiTimer {
 
 		this.setName(name);
 	}
- 
-	private void recalculateDelay() {
-		this.currentDelay = this.sleepMin.plus((this.inc.getMillis() * this.consecutiveCount));
+    
+	private void recalculateDelay() { 
+		this.currentDelay = this.sleepMin.plusSeconds(this.inc.getSeconds() * this.consecutiveCount); 
 		this.currentDelay = FlexiTimer.getPeriodWithinBounds(this.currentDelay, this.sleepMin, this.sleepMax);
-	}
+	} 
  
 	public void setAbrupt(boolean isAbrupt) {
 		this.isAbrupt = isAbrupt;
@@ -43,12 +46,12 @@ public class MutableFlexiTimer extends FlexiTimer {
 		this.recalculateDelay();
 	}
 
-	public final void setMin(Duration min) { 
-		if (min.isShorterThan(GlobalConstants.MIN_SERVICE_EXECUTION_DELAY)) {
+	public final void setMin(Duration min) {
+		if (min.compareTo(GlobalConstants.MIN_SERVICE_EXECUTION_DELAY) == DatatypeConstants.LESSER) {
 			throw new IllegalArgumentException("Flexitimer minimum is below the threshold of: " + GlobalConstants.MIN_SERVICE_EXECUTION_DELAY);
 		} 
 
-		this.sleepMin = min;
+		this.sleepMin = min; 
 		this.recalculateDelay();
 	}
 
@@ -95,9 +98,9 @@ public class MutableFlexiTimer extends FlexiTimer {
 	}
 
 	public void touch(Date touchDate) {
-		this.lastTouched = new Instant(touchDate.getTime());
-	}
-
+		this.lastTouched = touchDate.toInstant();
+	} 
+ 
 	public Instant getLastChanged() {
 		return lastChanged; 
 	}

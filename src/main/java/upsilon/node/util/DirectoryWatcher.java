@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Vector;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +61,9 @@ public class DirectoryWatcher implements Runnable {
 
 	@Override
 	public void run() {
-		try {
+		try { 
 			while (this.continueMonitoring) {
-				Util.lazySleep(Duration.standardSeconds(5));
+				Util.lazySleep(Duration.ofSeconds(5)); 
 
 				for (File f : this.path.listFiles()) {
 					if (f.isFile() && f.getName().endsWith("xml") && !index.contains(f)) {

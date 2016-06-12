@@ -7,9 +7,9 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.Period;
+import java.time.Duration;
+import java.time.Instant; 
+import java.time.temporal.ChronoUnit;
 
 import upsilon.node.dataStructures.ResultKarma;
 
@@ -25,9 +25,9 @@ public class FlexiTimer {
 		}
 	}
 
-	public static Duration getPeriodWithinBounds(final Duration test, final Duration min, final Duration max) {
-		return Duration.standardSeconds(FlexiTimer.getIntWithinBounds(test.getStandardSeconds(), min.getStandardSeconds(), max.getStandardSeconds()));
-	}
+	public static Duration getPeriodWithinBounds(final Duration test, final Duration min, final Duration max) { 
+		return Duration.ofSeconds(FlexiTimer.getIntWithinBounds(test.getSeconds(), min.getSeconds(), max.getSeconds()));
+	} 
 
 	protected Duration sleepMin = GlobalConstants.MIN_SERVICE_SLEEP;
 	protected Duration sleepMax = GlobalConstants.MAX_SERVICE_SLEEP;
@@ -99,11 +99,11 @@ public class FlexiTimer {
 	}
 
 	public long getSecondsRemaining(final Date from) {
-		final Instant fromTime = new Instant(from.getTime());
+		final Instant fromTime = from.toInstant();
 		final Instant nextDue = this.lastTouched.plus(this.currentDelay);
-
-		return new Period(fromTime, nextDue).toStandardDuration().getStandardSeconds();
-
+ 
+		return ChronoUnit.SECONDS.between(fromTime, nextDue);
+		
 		// return lastTouched.plus(currentDelay).minus(from.getTime())
 		// return
 		// currentDelay.plus(lastTouched.getTime()).minus(from.getTime()).getStandardSeconds();

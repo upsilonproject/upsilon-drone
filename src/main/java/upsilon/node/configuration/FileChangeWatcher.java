@@ -1,5 +1,6 @@
 package upsilon.node.configuration;
 
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -116,9 +117,9 @@ public class FileChangeWatcher {
 	private synchronized void watchForChanges() {
 		while (FileChangeWatcher.this.continueMonitoring) {
 			try {
-				this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.getMillis());
-
-				this.checkForModification();
+				this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.get(ChronoUnit.MILLIS));
+  
+				this.checkForModification(); 
 			} catch (final InterruptedException | IllegalStateException e) {
 				this.continueMonitoring = false;
 			}
