@@ -21,7 +21,7 @@ def buildRpm(dist) {
     sh 'mkdir -p SPECS SOURCES'                                                    
     sh "cp build/distributions/*.zip SOURCES/upsilon-node.zip"                                  
                                                                                    
-    sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/upsilon-node.spec" "upsilon-node-*/.upsilon-node.rpmmacro" -d SPECS/'
+    sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/upsilon-node.spec" "upsilon-node-*/.upsilon-node.rpmmacro" -d SPECS/'
     sh "find ${env.WORKSPACE}"                                                     
                                                                                    
     sh "rpmbuild -ba SPECS/upsilon-node.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
