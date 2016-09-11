@@ -1,13 +1,13 @@
 Name:		upsilon-node
-Version:	%{buildid_version}
-Release:	%{buildid_timestamp}1%{?dist}
+Version:	%{version_formatted_short}
+Release:	%{timestamp}1%{?dist}
 Summary:	Monitoring software
 BuildArch:	noarch
 
 Group:		Applications/System
 License:	GPLv2
 URL:		http://upsilon-project.co.uk
-Source0:	upsilon-node-%{buildid_tag}.zip
+Source0:	upsilon-node.zip
 
 BuildRequires:	java
 Requires:	java python
@@ -17,7 +17,7 @@ Monitoring software
 
 %prep
 rm -rf $RPM_BUILD_DIR/*
-%setup -q -n upsilon-node-%{buildid_tag}
+%setup -q -n upsilon-node-%{tag}
 
 %pre
 /usr/bin/getent group upsilon || /usr/sbin/groupadd -r upsilon
