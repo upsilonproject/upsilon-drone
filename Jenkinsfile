@@ -40,7 +40,7 @@ node {
 	stage "Compile"
 	sh "${gradle}/bin/gradle distZip"
 
-	stash includes "build/distributions/*.zip", name: "binaries"
+	stash includes:"build/distributions/*.zip", name: "binaries"
 }
 
 node {
