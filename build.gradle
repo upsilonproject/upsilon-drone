@@ -8,7 +8,7 @@ def generateBuildId() {
 	}
 
 	exec {
-		commandLine "buildid", "-qf", "rpmmacro", ">", ".buildid.rpmmacro"
+		commandLine "buildid", "-qf", "rpmmacro", "-W", ".buildid.rpmmacro"
 	}
 
 	Properties buildId = new Properties();
