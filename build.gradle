@@ -7,6 +7,10 @@ def generateBuildId() {
 		commandLine "buildid", "-n", "-p"
 	}
 
+	exec {
+		commandLine "buildid", "-qf", "rpmmacro", ">", ".buildid.rpmmacro"
+	}
+
 	Properties buildId = new Properties();
 	buildId.load(new File(projectDir.absolutePath + "/.buildid").newReader());
 
