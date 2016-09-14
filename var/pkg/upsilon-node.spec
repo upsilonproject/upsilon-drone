@@ -2,7 +2,7 @@
 
 Name:		upsilon-node
 Version:	%{version_formatted_short}
-Release:	%{timestamp}1%{?dist}
+Release:	%{timestamp}.%{?dist}
 Summary:	Monitoring software
 BuildArch:	noarch
 
