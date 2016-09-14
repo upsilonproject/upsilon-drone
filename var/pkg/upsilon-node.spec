@@ -1,3 +1,5 @@
+%include SPECS/.upsilon-node.rpmmacro
+
 Name:		upsilon-node
 Version:	%{version_formatted_short}
 Release:	%{timestamp}1%{?dist}

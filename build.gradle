@@ -8,7 +8,7 @@ def generateBuildId() {
 	}
 
 	exec {
-		commandLine "buildid", "-qf", "rpmmacro", "-W", ".buildid.rpmmacro"
+		commandLine "buildid", "-qf", "rpmmacro", "-W", ".upsilon-node.rpmmacro"
 	}
 
 	Properties buildId = new Properties();
@@ -50,6 +50,7 @@ applicationDistribution.from(".") {
 	include "README.md"
 	include "build.properties"
 	include ".buildid"
+	include ".upsilon-node.rpmmacro"
 }
 
 applicationDistribution.from(".") {
