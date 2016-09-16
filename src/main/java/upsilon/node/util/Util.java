@@ -61,7 +61,7 @@ public class Util {
 
 	public static void lazySleep(final Duration howLong) {
 		try {  
-			Thread.sleep(howLong.getSeconds() / 1000);
+			Thread.sleep(howLong.getSeconds() * 1000);
 		} catch (final InterruptedException e) {
 			Util.LOG.warn("Insomnia in thread.", e);
 		}
