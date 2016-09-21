@@ -117,7 +117,7 @@ public class FileChangeWatcher {
 	private synchronized void watchForChanges() {
 		while (FileChangeWatcher.this.continueMonitoring) {
 			try {
-				this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.get(ChronoUnit.MILLIS));
+				this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.getSeconds() / 1000));
   
 				this.checkForModification(); 
 			} catch (final InterruptedException | IllegalStateException e) {
