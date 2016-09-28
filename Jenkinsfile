@@ -42,6 +42,8 @@ node buildDeb(dist) {
     sh "find ${env.WORKSPACE}"                                                     
 
 	sh "cd /var/pkg/deb/; dpkg-buildpackage"
+
+
                                                                                    
 }
                                                                                    
@@ -79,7 +81,7 @@ node {
 }
 
 node {
-	buildDeb("ubuntu-16.4")
+//	buildDeb("ubuntu-16.4")
 }
 
 
