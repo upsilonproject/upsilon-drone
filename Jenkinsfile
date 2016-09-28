@@ -8,10 +8,8 @@ properties(
         ]                                                                          
     ]                                                                              
 )                                                                                  
-                                                                                   
-def buildRpm(dist) {                                                               
-    deleteDir()                                                                    
-                                                                                   
+
+def prepareEnv() {
     unstash 'binaries'                                                             
                                                                                    
     env.WORKSPACE = pwd()                                                          
@@ -20,14 +18,32 @@ def buildRpm(dist) {
                                                                                    
     sh 'mkdir -p SPECS SOURCES'                                                    
     sh "cp build/distributions/*.zip SOURCES/upsilon-node.zip"                                  
+}
                                                                                    
+def buildRpm(dist) {                                                               
+    deleteDir()                                                                    
+
+	prepareEnv()
+                                                                                                                                                                      
     sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/upsilon-node.spec" "upsilon-node-*/.upsilon-node.rpmmacro" -d SPECS/'
     sh "find ${env.WORKSPACE}"                                                     
                                                                                    
     sh "rpmbuild -ba SPECS/upsilon-node.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
                                                                                    
     archive 'RPMS/noarch/*.rpm'                                                    
-}                                                                                  
+}                    
+
+node buildDeb(dist) {
+	deleteDir()
+	
+	prepareEnv()
+	
+	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/deb/" -d . '
+    sh "find ${env.WORKSPACE}"                                                     
+
+	sh "cd /var/pkg/deb/; dpkg-buildpackage"
+                                                                                   
+}
                                                                                    
 node {
 	stage "Prep"
@@ -60,6 +76,10 @@ node {
                                                                                    
 node {                                                                             
     buildRpm("fc24")                                                               
+}
+
+node {
+	buildDeb("ubuntu-16.4")
 }
 
 
