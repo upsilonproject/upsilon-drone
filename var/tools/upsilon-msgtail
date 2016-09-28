@@ -1,0 +1,53 @@
+#!/usr/bin/python
+
+from upsilonCommon import amqp, config
+
+def onMessage(chan, method, properties, body):
+	msgtype = properties.headers['upsilon-msg-type']
+	sourceIdentifier = "unknown"
+	ignore = False
+
+	if "node-identifier" in properties.headers:
+		sourceIdentifier = properties.headers["node-identifier"]
+
+	if args.identifier is not None and sourceIdentifier != args.identifier:
+		ignore = True
+	
+	if args.types != None and msgtype not in args.types:
+		ignore = True
+
+	if ignore:
+		if args.debug:
+			print "filtering", msgtype, "from:", sourceIdentifier
+
+		return
+
+
+	print msgtype, "from:", sourceIdentifier
+
+	if args.headers:
+		for header in properties.headers:
+			print header, "=", properties.headers[header]
+
+		print
+
+	if args.body:
+		print body
+	print "---"
+#	print chan, method, properties, body
+
+parser = config.commonArgumentParser();
+parser.add_argument('types', nargs = '?', default = None)
+parser.add_argument('--body', '-A', action = 'store_false');
+parser.add_argument('--headers', '-L', action = 'store_true');
+parser.add_argument('--identifier', '-I', default = None)
+args = parser.parse_args();
+
+chan = amqp.newChannel(args.server, "msgtail")
+amqp.bindEverything(chan, queue = "msgtail")
+chan.basic_consume(onMessage, queue = "msgtail")
+
+try:
+	chan.start_consuming()
+except KeyboardInterrupt:
+	pass
