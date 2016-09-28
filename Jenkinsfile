@@ -33,7 +33,7 @@ def buildRpm(dist) {
     archive 'RPMS/noarch/*.rpm'                                                    
 }                    
 
-node buildDeb(dist) {
+def buildDeb(dist) {
 	deleteDir()
 	
 	prepareEnv()
