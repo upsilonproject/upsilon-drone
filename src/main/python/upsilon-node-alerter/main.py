@@ -2,11 +2,9 @@
 
 import os, sys
 
-sys.path.insert(1, os.path.abspath("../"))
-
-from common.util import log
-from common.sql import newSqlConnection
-from common.amqp import newAmqpConnection
+from upsilon.logger import *
+from upsilon.sql import newSqlConnection
+from upsilon.amqp import newAmqpConnection
 from config import RuntimeConfig
 
 config = RuntimeConfig()
