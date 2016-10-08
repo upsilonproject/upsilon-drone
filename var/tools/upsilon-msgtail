@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from upsilonCommon import amqp, config
+from upsilon import amqp, config
 
 def onMessage(chan, method, properties, body):
 	msgtype = properties.headers['upsilon-msg-type']

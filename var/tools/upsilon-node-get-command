@@ -3,7 +3,8 @@
 import errno
 import yum 
 import argparse
-from upsiloncommon import error, getHttpClient, getHttpContent
+from upsilon.http import getHttpClient, getHttpContent
+from upsilon.config import error
 import re
 
 parser = argparse.ArgumentParser()

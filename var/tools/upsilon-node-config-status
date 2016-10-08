@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from upsiloncommon import *
+from upsilon.http import *
 from lxml import etree
 from prettytable import PrettyTable
 import argparse

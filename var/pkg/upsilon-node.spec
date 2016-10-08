@@ -12,7 +12,7 @@ URL:		http://upsilon-project.co.uk
 Source0:	upsilon-node.zip
 
 BuildRequires:	java
-Requires:	java python
+Requires:	java python upsilon-pycommon
 
 %description
 Monitoring software
@@ -71,6 +71,9 @@ cp etc/upsilon-node.logrotate %{buildroot}/etc/logrotate.d/upsilon-node
 mkdir -p %{buildroot}/etc/yum.repos.d/
 cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.repo
 
+mkdir -p %{buildroot}/usr/share/man1/
+cp etc/manpage/*.gz /usr/share/man1/
+
 
 %files
 %doc /usr/share/doc/upsilon-node/README.md
@@ -86,6 +89,7 @@ cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.re
 %config(noreplace) /etc/logrotate.d/upsilon-node
 %config(noreplace) /etc/yum.repos.d/upsilon-node.repo
 %config(noreplace) /etc/rsyslog.d/upsilon-node
+%doc /usr/share/man1/*.gz
 
 %if 0%{?rhel} == 6
 %config(noreplace) /etc/init.d/upsilon-node

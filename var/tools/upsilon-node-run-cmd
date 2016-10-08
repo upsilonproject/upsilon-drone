@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from upsiloncommon import error
+from upsilon.config import error
 import argparse
 from lxml import etree
 import re
