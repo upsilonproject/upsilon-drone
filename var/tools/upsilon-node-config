@@ -5,6 +5,7 @@ import time
 from sys import exit
 import argparse
 from upsilon import *
+from upsilon.logger import *
 
 try:
 	from dialog import *
