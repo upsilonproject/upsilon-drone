@@ -216,12 +216,13 @@ public class Database {
 
 		this.log.debug("updating service:" + s.getIdentifier());
 
-		String sql = "INSERT INTO services (identifier, description, executable, karma) VALUES (?, ?, ?, '') ON DUPLICATE KEY UPDATE karma = ?, secondsRemaining = ?, output = ?, commandLine = ?, lastUpdated = ?, consecutiveCount = ?, lastChanged = ?, estimatedNextCheck = ?, isLocal = ?, node = ?, commandIdentifier = ?";
+		String sql = "INSERT INTO services (identifier, node, description, executable, karma) VALUES (?, ?, ?, ?, '') ON DUPLICATE KEY UPDATE karma = ?, secondsRemaining = ?, output = ?, commandLine = ?, lastUpdated = ?, consecutiveCount = ?, lastChanged = ?, estimatedNextCheck = ?, isLocal = ?, node = ?, commandIdentifier = ?";
 
 		try {
 			int paramIndex = 1;
 			final PreparedStatement stmt = this.conn.prepareStatement(sql);
 			stmt.setString(paramIndex++, s.getIdentifier());
+			stmt.setString(paramIndex++, s.getNodeIdentifier());
 			stmt.setString(paramIndex++, s.getDescription());
 			stmt.setString(paramIndex++, s.getExecutable());
 
