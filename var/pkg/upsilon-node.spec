@@ -72,7 +72,7 @@ mkdir -p %{buildroot}/etc/yum.repos.d/
 cp etc/upsilon-node-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-node.repo
 
 mkdir -p %{buildroot}/usr/share/man1/
-cp etc/manpage/*.gz /usr/share/man1/
+cp etc/manpage/*.gz %{buildroot}/usr/share/man1/
 
 
 %files
