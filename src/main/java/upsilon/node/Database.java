@@ -244,14 +244,15 @@ public class Database {
 			this.log.error("Insert new/update service: " + s.getDescription(), e);
 		}
 
-		sql = "INSERT INTO service_check_results (service, checked, karma, output) VALUES (?, ?, ?, ?) ";
+		sql = "INSERT INTO service_check_results (service, node, checked, karma, output) VALUES (?, ?, ?, ?, ?) ";
 
 		try {
 			final PreparedStatement stmt = this.conn.prepareStatement(sql);
 			stmt.setString(1, s.getIdentifier());
-			stmt.setTimestamp(2, new java.sql.Timestamp(s.getLastUpdated().toEpochMilli()));
-			stmt.setString(3, s.getKarmaString());
-			stmt.setString(4, s.getOutput()); 
+			stmt.setString(2, s.getNodeIdentifier());
+			stmt.setTimestamp(3, new java.sql.Timestamp(s.getLastUpdated().toEpochMilli()));
+			stmt.setString(4, s.getKarmaString());
+			stmt.setString(5, s.getOutput()); 
 			stmt.execute();
 			stmt.close();
 		} catch (final Exception e) {
