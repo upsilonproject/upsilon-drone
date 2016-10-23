@@ -50,12 +50,12 @@ def buildDeb(dist) {
 node {
 	stage("Prep") {                                                                                
 		deleteDir()
-		def gradle = tool 'gradle'
-
 		checkout scm
 	}
 
 	stage("Compile") {
+		def gradle = tool 'gradle'
+
 		sh "${gradle}/bin/gradle distZip"
 
 		stash includes:"build/distributions/*.zip", name: "binaries"
