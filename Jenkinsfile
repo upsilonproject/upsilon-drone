@@ -46,42 +46,43 @@ def buildDeb(dist) {
 
                                                                                    
 }
-                                                                                   
-node {
-	stage "Prep"
-
-	deleteDir()
-	def gradle = tool 'gradle'
-
-	checkout scm
-
-	stage "Compile"
-	sh "${gradle}/bin/gradle distZip"
-
-	stash includes:"build/distributions/*.zip", name: "binaries"
-}
 
 node {
-	stage "Smoke"
-	echo "Smokin' :)"
-}
+	stage("Prep") {                                                                                
+		deleteDir()
+		def gradle = tool 'gradle'
 
-stage "Package"
+		checkout scm
+	}
 
-node {                                                                             
-    buildRpm("el7")                                                                
-}                                                                                  
-                                                                                   
-node {                                                                             
-    buildRpm("el6")                                                                
-}                                                                                  
-                                                                                   
-node {                                                                             
-    buildRpm("fc24")                                                               
+	stage("Compile") {
+		sh "${gradle}/bin/gradle distZip"
+
+		stash includes:"build/distributions/*.zip", name: "binaries"
+	}
 }
 
 node {
-//	buildDeb("ubuntu-16.4")
+	stage("Smoke") {
+		echo "Smokin' :)"
+	}
 }
 
+stage("Package") {
+	node {                                                                             
+		buildRpm("el7")                                                                
+	}                                                                                  
+																					   
+	node {                                                                             
+		buildRpm("el6")                                                                
+	}                                                                                  
+																					   
+	node {                                                                             
+		buildRpm("fc24")                                                               
+	}
+
+	node {
+	//	buildDeb("ubuntu-16.4")
+	}
+}
 
