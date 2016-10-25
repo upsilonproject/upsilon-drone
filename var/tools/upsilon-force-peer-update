@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-from upsiloncommon import *
+from upsilonCommon import http, config
 
-parser = commonArgumentParser()
+parser = config.commonArgumentParser()
 args = parser.parse_args();
 
-client = getHttpClient(args.ssl, args.address, args.port);
-resp = getHttpContent(client, "/peerUpdate")
+client = http.getHttpClient(args.ssl, args.address, args.port);
+resp = http.getHttpContent(client, "/peerUpdate")
 
 print resp

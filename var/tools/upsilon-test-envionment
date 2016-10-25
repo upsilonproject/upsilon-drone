@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-from upsiloncommon import *
+from upsilonCommon import config, http
 import os
 import subprocess
 from subprocess import call
 import argparse
+import sys
 
 print "This script certifies an installation of upsilon. "
 
@@ -83,7 +84,7 @@ if not isInsideContainer():
 test("Upsilon legacy share directory does not exist", not os.path.isdir("/usr/share/upsilon/"))
 test("Upsilon legacy conf directory does not exist", not os.path.isdir("/etc/upsilon/"))
 
-httpClient = getHttpClient(args.ssl, args.address, args.port)
+httpClient = http.getHttpClient(args.ssl, args.address, args.port)
 
 try: 
 	req = httpClient.request("GET", "/");
@@ -106,8 +107,8 @@ if not isInsideContainer():
 	test("upsilon-node manpage exists", callret("man upsilon-node") == 0)
 	test("upsilon manpage does not exist", callret("man upsilon") != 0)
 
-	test("log exists", os.path.isfile("/var/log/upsilon-node.log"))
-	test("log is not empty", os.path.getsize("/var/log/upsilon-node.log"))
+	if test("log exists", os.path.isfile("/var/log/upsilon-node.log")):
+		test("log is not empty", os.path.getsize("/var/log/upsilon-node.log"))
 
 testsComplete();
 

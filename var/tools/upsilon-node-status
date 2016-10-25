@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from upsiloncommon import *
+from upsilonCommon import config, http
 import sys
 from lxml import etree
 from prettytable import PrettyTable
@@ -12,11 +12,11 @@ def bool2string(string, txt_true = "True", txt_false = "False"):
 	else:
 		return txt_false
 
-parser = commonArgumentParser()
+parser = config.commonArgumentParser()
 args = parser.parse_args();
 
-client = getHttpClient(args.ssl, args.address, args.port, args.timeout);
-resp = getHttpContent(client, "/internalStatus")
+client = http.getHttpClient(args.ssl, args.address, args.port, args.timeout);
+resp = http.getHttpContent(client, "/internalStatus")
 
 xml = etree.XML(resp)
 
