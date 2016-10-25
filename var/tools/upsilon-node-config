@@ -4,7 +4,8 @@ import shutil
 import time
 from sys import exit
 import argparse
-from upsiloncommon import *
+from upsilon import *
+from upsilon.logger import *
 
 try:
 	from dialog import *

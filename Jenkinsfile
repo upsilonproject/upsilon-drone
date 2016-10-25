@@ -50,38 +50,44 @@ def buildDeb(dist) {
 
                                                                                    
 }
-                                                                                   
+
 node {
-	stage "Prep"
+	stage("Prep") {                                                                                
+		deleteDir()
+		checkout scm
+	}
 
-	deleteDir()
-	def gradle = tool 'gradle'
+	stage("Compile") {
+		def gradle = tool 'gradle'
 
-	checkout scm
+		sh "${gradle}/bin/gradle distZip"
 
-	stage "Compile"
-	sh "${gradle}/bin/gradle distZip"
-
-	stash includes:"build/distributions/*.zip", name: "binaries"
+		stash includes:"build/distributions/*.zip", name: "binaries"
+	}
 }
 
 node {
-	stage "Smoke"
-	echo "Smokin' :)"
+	stage("Smoke") {
+		echo "Smokin' :)"
+	}
 }
 
-stage "Package"
+stage("Package") {
+	node {                                                                             
+		buildRpm("el7")                                                                
+	}                                                                                  
+																					   
+	node {                                                                             
+		buildRpm("el6")                                                                
+	}                                                                                  
+																					   
+	node {                                                                             
+		buildRpm("fc24")                                                               
+	}
 
-node {                                                                             
-    buildRpm("el7")                                                                
-}                                                                                  
-                                                                                   
-node {                                                                             
-    buildRpm("el6")                                                                
-}                                                                                  
-                                                                                   
-node {                                                                             
-    buildRpm("fc24")                                                               
+	node {
+	//	buildDeb("ubuntu-16.4")
+	}
 }
 
 node {
@@ -91,5 +97,3 @@ node {
 node {
 //	buildDeb("ubuntu-16.4")
 }
-
-
