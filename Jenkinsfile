@@ -29,7 +29,7 @@ def buildDockerContainer() {
 	tag = sh script: 'buildid -k tag', returnStdout: true
 	println "tag: ${tag}"
 
-	sh "docker build -t upsilonproject/node:${tag} ."
+	sh "docker build -t 'upsilonproject/node:${tag}' ."
 	sh "docker save upsilonproject/node:${tag} > upsilon-node-docker-${tag}.tgz"
 
 	archive "upsilon-node-docker-${tag}.tgz"
