@@ -25,5 +25,5 @@ public abstract class GlobalConstants {
 	public static final boolean DEF_DAEMON_REST_ENABLED = true;
 	public static final boolean DEF_DAEMON_AMQP_ENABLED = true;
 	public static final Duration CONFIG_WATCHER_DELAY = Duration.ofSeconds(2);
-	public static final String DEF_AMQP_HOST = "localhost";
+	public static final String DEF_AMQP_HOST = "upsilon";
 }

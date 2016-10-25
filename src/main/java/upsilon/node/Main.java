@@ -177,9 +177,15 @@ public class Main implements UncaughtExceptionHandler {
 
 	private void parseInitialConfiguration() throws Exception {
 		XmlConfigurationValidator validator = null;
-		
+
 		try {
 			final UPath mainConfigPath = new UPath(ResourceResolver.getInstance().getConfigDir(), "config.xml");
+
+			if (!mainConfigPath.exists()) {
+				Main.LOG.info("Configuration file does not exist, configuration will only be possible via AMQP. ");
+				return;
+			}
+
 			validator = new XmlConfigurationValidator(mainConfigPath, false);
 			
 			Main.configurationLoader.load("config.xml", validator.getValidatedConfiguration(), true);
