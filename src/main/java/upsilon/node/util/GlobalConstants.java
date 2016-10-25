@@ -21,7 +21,7 @@ public abstract class GlobalConstants {
 	public static final Duration DEF_TIMEOUT = Duration.ofSeconds(3);
 
 	public static final int DEF_REST_PORT = 4000; 
-	public static final boolean DEF_CRYPTO_ENABLED = true;
+	public static final boolean DEF_CRYPTO_ENABLED = false;
 	public static final boolean DEF_DAEMON_REST_ENABLED = true;
 	public static final boolean DEF_DAEMON_AMQP_ENABLED = true;
 	public static final Duration CONFIG_WATCHER_DELAY = Duration.ofSeconds(2);
