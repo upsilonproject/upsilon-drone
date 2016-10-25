@@ -27,11 +27,12 @@ def buildDockerContainer() {
 	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/Dockerfile" "upsilon-node-*/.buildid" -d . '
 
 	tag = sh script: 'buildid -k tag', returnStatus: true
+	println "tag: ${tag}"
 
 	sh "docker build -t upsilonproject/node:${tag} ."
 	sh "docker save upsilonproject/node:${tag} > upsilon-node-docker-${tag}.tgz"
 
-	archive 'upsilon-node-docker.tgz'
+	archive "upsilon-node-docker-${tag}.tgz"
 }
                                                                                    
 def buildRpm(dist) {                                                               
