@@ -24,8 +24,13 @@ def prepareEnv() {
 def buildDockerContainer() {
 	prepareEnv()
 
+	tag = sh 'buildid -k tag'
+
 	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/Dockerfile" "upsilon-node-*/.buildid" -d . '
-	sh 'docker build -t upsilon/node .'
+	sh "docker build -t upsilonproject/node:${tag} ."
+	sh "docker save upsilonproject/node:${tag} > upsilon-node-docker.tgz"
+
+	archive 'upsilon-node-docker.tgz'
 }
                                                                                    
 def buildRpm(dist) {                                                               
@@ -61,6 +66,8 @@ node {
 		def gradle = tool 'gradle'
 
 		sh "${gradle}/bin/gradle distZip"
+
+		archive 'build/distributions/*.zip'
 
 		stash includes:"build/distributions/*.zip", name: "binaries"
 	}
