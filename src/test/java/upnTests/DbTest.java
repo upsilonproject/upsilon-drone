@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import junit.framework.Assert;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,8 +33,15 @@ public class DbTest {
 		int port = 3306;
 		String dbname = System.getProperty("TEST_DB_NAME", "upsilon");
 
-		db = new Database(hostname, username, password, port, dbname);
-		db.connect();
+		try {
+			db = new Database(hostname, username, password, port, dbname);
+			db.connect();
+		} catch (Exception e) {
+			System.out.println("Cannot connect to DB, skipping DB tests");
+			Assume.assumeTrue(false);
+			
+			e.printStackTrace(); 
+		}
 	}
 
 	@Before
