@@ -26,8 +26,7 @@ def buildDockerContainer() {
 
 	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/Dockerfile" "upsilon-node-*/.buildid" -d . '
 
-	tag = sh script: 'buildid -k tag', returnStdout: true
-	tag = tag.strip()
+	tag = sh script: 'buildid -pk tag', returnStdout: true
 
 	println "tag: ${tag}"
 
