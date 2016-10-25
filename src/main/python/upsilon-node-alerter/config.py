@@ -4,7 +4,7 @@ import argparse
 global args
 
 argParser = argparse.ArgumentParser();
-argParser.add_argument("--amqpHost")
+argParser.add_argument("-s", "--amqpHost")
 args = argParser.parse_args()
 
 
