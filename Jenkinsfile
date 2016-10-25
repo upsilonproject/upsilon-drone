@@ -10,6 +10,7 @@ properties(
 )                                                                                  
 
 def prepareEnv() {
+    deleteDir()                                                                    
     unstash 'binaries'                                                             
                                                                                    
     env.WORKSPACE = pwd()                                                          
@@ -19,10 +20,15 @@ def prepareEnv() {
     sh 'mkdir -p SPECS SOURCES'                                                    
     sh "cp build/distributions/*.zip SOURCES/upsilon-node.zip"                                  
 }
+
+def buildDockerContainer() {
+	prepareEnv()
+
+	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/Dockerfile" "upsilon-node-*/.buildid" -d . '
+	sh 'docker build -t upsilon/node .'
+}
                                                                                    
 def buildRpm(dist) {                                                               
-    deleteDir()                                                                    
-
 	prepareEnv()
                                                                                                                                                                       
     sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/upsilon-node.spec" "upsilon-node-*/.upsilon-node.rpmmacro" -d SPECS/'
@@ -34,8 +40,6 @@ def buildRpm(dist) {
 }                    
 
 def buildDeb(dist) {
-	deleteDir()
-	
 	prepareEnv()
 	
 	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/deb/" -d . '
@@ -78,6 +82,10 @@ node {
                                                                                    
 node {                                                                             
     buildRpm("fc24")                                                               
+}
+
+node {
+	buildDockerContainer()
 }
 
 node {
