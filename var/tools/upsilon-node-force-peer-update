@@ -1,17 +1,11 @@
 #!/usr/bin/python
 
-<<<<<<< HEAD:var/tools/upsilon-force-peer-update
 from upsilon import http, config
 
 parser = config.commonArgumentParser()
 args = parser.parse_args();
 
-<<<<<<< HEAD:var/tools/upsilon-force-peer-update
-client = http.getHttpClient(args.ssl, args.address, args.port);
+client = http.getHttpClient(args.ssl, args.server, args.port);
 resp = http.getHttpContent(client, "/peerUpdate")
-=======
-client = getHttpClient(args.ssl, args.server, args.port);
-resp = getHttpContent(client, "/peerUpdate")
->>>>>>> 103b1fa06cd1fee85abfda07ac2e62111c188bbd:var/tools/upsilon-node-force-peer-update
 
 print resp
