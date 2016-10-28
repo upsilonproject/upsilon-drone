@@ -67,10 +67,9 @@ node {
 
 		sh "${gradle}/bin/gradle distZip distTar"
 
-		archive 'build/distributions/*.zip'
-		archive 'build/distributions/*.tar'
+		archive 'build/distributions/**'
 
-		stash includes: ["build/distributions/*.zip", "build/distributions/*.tar"] , name: "binaries"
+		stash includes: ["build/distributions/**"] , name: "binaries"
 	}
 }
 
