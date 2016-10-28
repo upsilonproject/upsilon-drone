@@ -53,10 +53,7 @@ def buildDeb(dist) {
 	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/deb/" -d . '
     sh "find ${env.WORKSPACE}"                                                     
 
-	sh "cd /var/pkg/deb/; dpkg-buildpackage"
-
-
-                                                                                   
+	sh "dpkg-buildpackage -d "
 }
 
 node {
@@ -105,5 +102,5 @@ node {
 }
 
 node {
-//	buildDeb("ubuntu-16.4")
+	buildDeb("ubuntu-16.4")
 }
