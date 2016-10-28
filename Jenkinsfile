@@ -69,7 +69,7 @@ node {
 
 		archive 'build/distributions/**'
 
-		stash includes: ["build/distributions/**"] , name: "binaries"
+		stash includes: "build/distributions/**" , name: "binaries"
 	}
 }
 
