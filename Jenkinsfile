@@ -65,11 +65,12 @@ node {
 	stage("Compile") {
 		def gradle = tool 'gradle'
 
-		sh "${gradle}/bin/gradle distZip"
+		sh "${gradle}/bin/gradle distZip distTar"
 
 		archive 'build/distributions/*.zip'
+		archive 'build/distributions/*.tar'
 
-		stash includes:"build/distributions/*.zip", name: "binaries"
+		stash includes: ["build/distributions/*.zip", "build/distributions/*.tar"] , name: "binaries"
 	}
 }
 
@@ -95,12 +96,8 @@ stage("Package") {
 	node {
 	//	buildDeb("ubuntu-16.4")
 	}
-}
 
-node {
-	buildDockerContainer()
-}
-
-node {
-	buildDeb("ubuntu-16.4")
+	node {
+		buildDockerContainer()
+	}
 }
