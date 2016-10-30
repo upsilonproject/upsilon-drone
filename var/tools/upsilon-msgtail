@@ -34,6 +34,8 @@ def onMessage(chan, method, properties, body):
 	if args.body:
 		print body
 	print "---"
+
+	chan.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 #	print chan, method, properties, body
 
 parser = config.commonArgumentParser();
