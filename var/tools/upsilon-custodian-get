@@ -3,16 +3,38 @@
 from upsilon import amqp, config
 import pika
 import sys
+import json
+from prettytable import PrettyTable
 
 def onMessage(channel, method, properties, body):
-    print body, properties
+    global args
+
+    if properties.headers["status"] == "found":
+        if args.format == "":
+            table = PrettyTable(['key', 'value'])
+            
+            struct = json.loads(body)
+
+            for key, value in struct[0].iteritems():
+                table.add_row([key, value])
+
+            print table
+        else:
+            print body
+    else:
+        print "status:", properties.headers['status']
 
     channel.basic_ack(delivery_tag = method.delivery_tag)
     sys.exit(0)
 
 parser = config.commonArgumentParser()
 parser.add_argument('itemType')
+<<<<<<< HEAD
 parser.add_argument('query')
+=======
+parser.add_argument('id', type = int)
+parser.add_argument('-f', '--format', default = '')
+>>>>>>> d641d20efcc3f53e111ffcb7d3720b55acd4ca13
 args = parser.parse_args()
 
 conn = amqp.Connection(args.server, callback = onMessage)
@@ -25,9 +47,14 @@ newReq = args.itemType + "/" + str(args.id)
 headers = {}
 headers["upsilon-msg-type"] = "GET_ITEM"
 headers["itemType"] = args.itemType;
+<<<<<<< HEAD
 headers["itemQuery"] = args.query
+=======
+headers["itemId"] = args.id
+headers['result-format'] = args.format
+>>>>>>> d641d20efcc3f53e111ffcb7d3720b55acd4ca13
 
 props = pika.BasicProperties(headers = headers)
-conn.channel.basic_publish(exchange = "ex_upsilon", routing_key = 'upsilon.custodian.gets', properties = props)
+conn.channel.basic_publish(exchange = "ex_upsilon", routing_key = 'upsilon.custodian.requests', properties = props, body = "")
 
 conn.startConsuming()
