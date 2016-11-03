@@ -12,7 +12,7 @@ def onMessage(channel, method, properties, body):
 
 parser = config.commonArgumentParser()
 parser.add_argument('itemType')
-parser.add_argument('id', type = int)
+parser.add_argument('query')
 args = parser.parse_args()
 
 conn = amqp.Connection(args.server, callback = onMessage)
@@ -25,7 +25,7 @@ newReq = args.itemType + "/" + str(args.id)
 headers = {}
 headers["upsilon-msg-type"] = "GET_ITEM"
 headers["itemType"] = args.itemType;
-headers["itemId"] = args.id
+headers["itemQuery"] = args.query
 
 props = pika.BasicProperties(headers = headers)
 conn.channel.basic_publish(exchange = "ex_upsilon", routing_key = 'upsilon.custodian.gets', properties = props)
