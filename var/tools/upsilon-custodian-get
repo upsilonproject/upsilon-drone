@@ -43,7 +43,7 @@ newReq = args.itemType + "/" + str(args.id)
 headers = {}
 headers["upsilon-msg-type"] = "GET_ITEM"
 headers["itemType"] = args.itemType;
-headers["itemId"] = args.id
+headers["itemQuery"] = args.id
 headers['result-format'] = args.format
 
 props = pika.BasicProperties(headers = headers)
