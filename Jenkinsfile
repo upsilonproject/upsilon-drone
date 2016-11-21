@@ -24,6 +24,9 @@ def prepareEnv() {
 def buildDockerContainer() {
 	prepareEnv()
 
+	unstash 'el7'
+	sh 'mv RPMS/noarch/*.rpm RPMS/noarch/upsilon-node.rpm'
+
 	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/Dockerfile" "upsilon-node-*/.buildid" -d . '
 
 	tag = sh script: 'buildid -pk tag', returnStdout: true
@@ -45,6 +48,7 @@ def buildRpm(dist) {
     sh "rpmbuild -ba SPECS/upsilon-node.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
                                                                                    
     archive 'RPMS/noarch/*.rpm'                                                    
+	stash includes: "RPMS/noarch/*.rpm", name: dist
 }                    
 
 def buildDeb(dist) {

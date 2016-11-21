@@ -1,6 +1,4 @@
 FROM centos:7
-RUN yum install unzip -y
-ADD SOURCES/upsilon-node.zip /opt/
-RUN unzip /opt/upsilon-node.zip -d /opt/
-RUN mv /opt/upsilon-node-* /opt/upsilon-node
-ENTRYPOINT /opt/upsilon-node/share/upsilon-node/bin/upsilon-node
+ADD RPMS/noarch/upsilon-node.rpm /opt/
+RUN rpm -U /opt/upsilon-node.rpm
+ENTRYPOINT /usr/share/upsilon-node/bin/upsilon-node
