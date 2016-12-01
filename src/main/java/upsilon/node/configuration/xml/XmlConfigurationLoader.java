@@ -171,10 +171,11 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 
 	public FileChangeWatcher load(String remoteId, final UPath path, final boolean watch, final boolean isAux) throws Exception {
 		ValidatedConfiguration vcfg = null;
-		XmlConfigurationValidator validator = null;
+		XmlConfigurationValidator validator = new XmlConfigurationValidator(path, isAux);
 
-		validator = new XmlConfigurationValidator(path, isAux);
-		vcfg = validator.getValidatedConfiguration();
+		try {
+			validator.parse();
+		} catch (Exception e) {}
 
 		final ConfigStatus configStatus = this.getConfigStatus(path.getAbsolutePath());
 		configStatus.setRemoteId(remoteId);
@@ -196,7 +197,7 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 			}
 		}
 
-		return this.load(remoteId, vcfg, watch, isAux);
+		return this.load(remoteId, validator.getValidatedConfiguration(), watch, isAux);
 	}
 
 	public FileChangeWatcher load(final UPath path, final boolean watch, final boolean isAux) throws Exception {
