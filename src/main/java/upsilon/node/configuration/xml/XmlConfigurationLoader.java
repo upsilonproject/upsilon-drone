@@ -197,7 +197,11 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 			}
 		}
 
-		return this.load(remoteId, validator.getValidatedConfiguration(), watch, isAux);
+		if (configStatus.isParseClean()) {
+			return this.load(remoteId, validator.getValidatedConfiguration(), watch, isAux);
+		} else {
+			throw new Exception("Won't load a config that has parse errors; " + configStatus.getSourceTag());
+		}
 	}
 
 	public FileChangeWatcher load(final UPath path, final boolean watch, final boolean isAux) throws Exception {
