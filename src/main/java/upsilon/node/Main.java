@@ -204,7 +204,7 @@ public class Main implements UncaughtExceptionHandler {
 
 	private void parseIncludeDirectory() {
 		try {
-			UPath includesDirectory = new UPath(ResourceResolver.getInstance().getConfigDir(), "includes.d");
+			UPath includesDirectory = new UPath(ResourceResolver.getInstance().getConfigDir(), "includes.d/");
 
 			if (includesDirectory.exists()) {
 				new DirectoryWatcher(includesDirectory, Main.configurationLoader);
