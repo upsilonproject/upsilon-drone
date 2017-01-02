@@ -202,15 +202,15 @@ public class Main implements UncaughtExceptionHandler {
 		}
 	}
 
-	private void parseIncludeDirectory() {
+	private void parseStartupDirectory(String startupConfigDirectoryName) {
 		try {
-			UPath includesDirectory = new UPath(ResourceResolver.getInstance().getConfigDir(), "includes.d/");
+			UPath startupConfigDirectory = new UPath(ResourceResolver.getInstance().getConfigDir(), startupConfigDirectoryName);
 
-			if (includesDirectory.exists()) {
-				new DirectoryWatcher(includesDirectory, Main.configurationLoader);
+			if (startupConfigDirectory.exists()) {
+				new DirectoryWatcher(startupConfigDirectory, Main.configurationLoader);
 			}
 		} catch (Exception e) {
-			Main.LOG.warn("Could not start monitoring include directory", e);
+			Main.LOG.warn("Could not start monitoring startup config directory", e);
 		}
 	}
 	
@@ -235,7 +235,8 @@ public class Main implements UncaughtExceptionHandler {
 
 		this.parseConfigurationEnvironmentVariables();
 		this.parseInitialConfiguration();
-		this.parseIncludeDirectory();
+		this.parseStartupDirectory("includes.d/");
+		this.parseStartupDirectory("remotes.d/");
 
 		if (Configuration.instance.daemonRestEnabled) {
 			this.startDaemon(new DaemonRest());
