@@ -201,6 +201,18 @@ public class Main implements UncaughtExceptionHandler {
 			throw new Exception("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
 		}
 	}
+
+	private void parseIncludeDirectory() {
+		try {
+			UPath includesDirectory = new UPath(ResourceResolver.getInstance().getConfigDir(), "includes.d");
+
+			if (includesDirectory.exists()) {
+				new DirectoryWatcher(includesDirectory, Main.configurationLoader);
+			}
+		} catch (Exception e) {
+			Main.LOG.warn("Could not start monitoring include directory", e);
+		}
+	}
 	
 	private void parseConfigurationEnvironmentVariables() {
 		if (!Util.isBlank(System.getenv("UPSILON_CONFIG_SYSTEM_AMQPHOST"))) {
@@ -223,6 +235,7 @@ public class Main implements UncaughtExceptionHandler {
 
 		this.parseConfigurationEnvironmentVariables();
 		this.parseInitialConfiguration();
+		this.parseIncludeDirectory();
 
 		if (Configuration.instance.daemonRestEnabled) {
 			this.startDaemon(new DaemonRest());
