@@ -53,6 +53,7 @@ cp etc/config.xml.sample %{buildroot}/etc/upsilon-node/
 cp etc/logging.syslog.xml %{buildroot}/etc/upsilon-node/logging.xml
 
 mkdir -p %{buildroot}/etc/upsilon-node/includes.d/
+mkdir -p %{buildroot}/etc/upsilon-node/remotes.d/
 
 %if 0%{?rhel} == 6
 mkdir -p %{buildroot}/etc/init.d/
@@ -85,7 +86,8 @@ cp etc/manpage/*.gz %{buildroot}/usr/share/man1/
 %attr(644, upsilon, upsilon) /etc/upsilon-node/*
 %config(noreplace) /etc/upsilon-node/config.xml.sample
 %config(noreplace) /etc/upsilon-node/logging.xml
-/etc/upsilon-node/includes.d/
+%attr(755, upsilon, upsilon) /etc/upsilon-node/includes.d/
+%attr(755, upsilon, upsilon) /etc/upsilon-node/remotes.d/
 %config(noreplace) /etc/logrotate.d/upsilon-node
 %config(noreplace) /etc/yum.repos.d/upsilon-node.repo
 %config(noreplace) /etc/rsyslog.d/upsilon-node

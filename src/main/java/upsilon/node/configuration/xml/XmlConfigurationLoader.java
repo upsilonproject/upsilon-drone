@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
@@ -246,8 +248,23 @@ public class XmlConfigurationLoader implements DirectoryWatcher.Listener, FileCh
 
 	@Override
 	public void onNewFile(final File f) {
+		String remoteId = "local";
+
+		if (f.getPath().toString().contains("remotes.d")) {
+			String pattern = ".+-(\\d+)\\.xml";
+
+			Pattern p = Pattern.compile(pattern);
+			Matcher m = p.matcher(f.getName());
+
+			if (m.find()) {
+				remoteId = m.group(1);
+
+				XmlConfigurationLoader.LOG.info("Found local config file " + f.getName() + " with remote ID of " + remoteId);
+			}
+		}
+
 		try {
-			this.load("local", new UPath(f), true, true);
+			this.load(remoteId, new UPath(f), true, true);
 		} catch (final Exception e) {
 			XmlConfigurationLoader.LOG.warn("Informed of new file in a directory, but the configuration loader encountered an exception: " + e.getMessage());
 		}

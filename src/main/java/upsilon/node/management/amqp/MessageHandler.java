@@ -125,7 +125,7 @@ public class MessageHandler {
 
 			if (Main.instance.node.getIdentifier().equals(nodeIdentifier)) {
 				String configIdentifier = headers.get("remote-config-source-identifier").toString();
-				UPath configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + configIdentifier + ".xml");
+				UPath configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + "remotes.d" + File.separator + configIdentifier + ".xml");
 					   
 				FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
 				configWriter.write(body);  

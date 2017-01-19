@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+from upsilon import amqp, config
+
+parser = config.commonArgumentParser();
+parser.add_argument("message");
+args = parser.parse_args();
+
+conn = amqp.Connection(args.server, "dummy");
+
+message = amqp.UpsilonMessage("NOTIFICATION");
+message.body = args.message
+message.routingKey = "upsilon.notifications"
+
+conn.publishMessage(message)
+conn.close();

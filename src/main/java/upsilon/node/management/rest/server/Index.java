@@ -101,7 +101,7 @@ public class Index {
 			final Vector<String> threads = new Vector<String>();
 
 			for (final Thread t : Thread.getAllStackTraces().keySet()) {
-				threads.add(t.getName());
+				threads.add(t.getName() + ", id:" + t.getId());
 			}
 
 			Collections.sort(threads);
