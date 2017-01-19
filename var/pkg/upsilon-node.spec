@@ -79,7 +79,7 @@ cp etc/manpage/*.gz %{buildroot}/usr/share/man1/
 %doc /usr/share/doc/upsilon-node/README.md
 /usr/share/upsilon-node/bin/*
 /usr/share/upsilon-node/lib/*
-/usr/share/upsilon-node/home/
+%attr(700, upsilon, upsilon)/usr/share/upsilon-node/home/
 /sbin/*
 %attr(755, upsilon, upsilon) /etc/upsilon-node/
 %attr(644, upsilon, upsilon) /etc/upsilon-node/*
