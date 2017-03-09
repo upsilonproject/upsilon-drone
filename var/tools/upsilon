@@ -1,0 +1,122 @@
+#!/usr/bin/python
+
+from argparse import ArgumentParser, _SubParsersAction
+from upsilon import amqp, config, logger
+import pika
+
+class Helper(object):
+    args = None
+    chan = None
+
+class ExtensibleArgumentParser():
+    typeParsers = {}
+
+    ap = config.commonArgumentParser()
+    
+    def __init__(self):
+        self.subparsers = self.ap.add_subparsers(dest = "action")
+
+    def addType(self, name):
+        typeParser = self.subparsers.add_parser(name)
+        sub = typeParser.add_subparsers(dest = "action_" + name)
+
+        self.typeParsers[name] = {
+            "parser": typeParser,
+            "subParser": sub,
+            "subParserVerbs": {}
+        }
+
+    def addVerb(self, typeParser, verb, callback, argument = False):
+        p = self.typeParsers[typeParser]["subParser"].add_parser(verb)
+
+        if argument:
+            p.add_argument("value")
+
+        self.typeParsers[typeParser]['subParserVerbs'][verb] = { 
+            "parser": p,
+            "callback": callback
+        }
+
+        return p
+
+    def addVerbWithArgument(self, typeParser, verb, callback):
+        self.addVerb(typeParser, verb, callback, True)
+
+    def exec_args(self, args, chan):
+        action = args.action
+
+        argsD = vars(args)
+        verb = argsD["action_" + args.action];
+        cb = self.typeParsers[args.action]['subParserVerbs'][verb]['callback']
+
+        helper = Helper()
+        helper.args = args;
+        helper.chan = chan
+
+        cb(helper)
+
+    def parse_args(self):
+        return self.ap.parse_args()
+
+def getNode(helper):
+    print "get node", helper.args.value
+
+    msg = amqp.UpsilonMessage("GET_ITEM")
+    msg.headers['itemType'] = 'node'
+    msg.headers['itemQuery'] = helper.args.value
+    msg.routingKey = "upsilon.custodian.requests"
+
+    helper.chan.publishMessage(msg)
+    msg = helper.chan.consumeUntilMessage("GET_ITEM_RESULT")
+
+    print msg.body
+
+def listNodes(helper):
+    msg = amqp.UpsilonMessage("GET_LIST")
+    msg.routingKey = "upsilon.custodian.requests"
+
+    helper.chan.publishMessage(msg)
+    helper.chan.consumeUntilMessage("GET_ITEM_RESULT")
+
+    print "list nodes"
+
+def getService(helper):
+    print "get service", helper.args.value
+
+    msg = amqp.UpsilonMessage("GET_ITEM")
+    msg.headers['itemType'] = 'service'
+    msg.headers['itemQuery'] = helper.args.value
+    msg.routingKey = "upsilon.custodian.requests"
+
+    helper.chan.publishMessage(msg)
+    msg = helper.chan.consumeUntilMessage("GET_ITEM_RESULT")
+
+    print msg.body
+
+def listServices(helper):
+    print "list services"
+
+eap = ExtensibleArgumentParser()
+
+eap.addType("node")
+eap.addVerb("node", "list", listNodes)
+eap.addVerbWithArgument("node", "get", getNode)
+
+eap.addType("service")
+eap.addVerb("service", "list", listServices)
+eap.addVerbWithArgument("service", "get", getService)
+
+args = eap.parse_args()
+
+try: 
+    conn = amqp.Connection(args.server, consumeTimeout = args.timeout)
+    conn.bind("upsilon.custodian.results")
+
+    eap.exec_args(args, conn);
+except amqp.ConsumeTimeout:
+    logger.error("Consume timeout")
+except KeyboardInterrupt:
+    print ""
+    logger.error("Ctrl+C")
+except pika.exceptions.ConnectionClosed:
+    logger.error("Connection closed") 
