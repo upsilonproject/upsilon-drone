@@ -12,7 +12,7 @@ URL:		http://upsilon-project.co.uk
 Source0:	upsilon-node.zip
 
 BuildRequires:	java
-Requires:	java python upsilon-pycommon
+Requires:	java python upsilon-pycommon python2-pika
 
 %description
 Monitoring software
