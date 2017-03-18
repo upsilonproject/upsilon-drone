@@ -1,9 +1,9 @@
 #!groovy                                                                           
-                                                                                   
+
 properties(                                                                        
     [                                                                              
         [                                                                          
-            $class: 'jenkins.model.BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '10', artifactNumToKeepStr: '10'],
+            $class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '10', artifactNumToKeepStr: '10'],
             $class: 'CopyArtifactPermissionProperty', projectNames: '*'            
         ]                                                                          
     ]                                                                              
