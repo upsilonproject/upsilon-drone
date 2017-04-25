@@ -5,7 +5,9 @@ import java.util.GregorianCalendar;
 
 import junit.framework.Assert;
 
-import org.joda.time.Duration;
+import java.time.Duration;
+import static java.time.temporal.ChronoUnit.SECONDS;  
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -19,7 +21,7 @@ public class FlexiTimerTest {
 
 	@Test
 	public void testBadResult() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(100), Duration.ofSeconds(10), "");
 
 		Assert.assertEquals(0, ft.getConsequtiveCount());
  
@@ -32,7 +34,7 @@ public class FlexiTimerTest {
 	@Ignore
 	public void testDateBasedTimers() {
 		long remaining;
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(100), Duration.ofSeconds(10), "");
 
 		Calendar before = new GregorianCalendar(2012, 1, 2, 6, 1, 1);
 		Calendar after = new GregorianCalendar(2012, 1, 3, 6, 1, 1);
@@ -53,14 +55,14 @@ public class FlexiTimerTest {
 	@Test
 	@Ignore
 	public void testDateTimer() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(1), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(1), Duration.ofSeconds(100), Duration.ofSeconds(10), "");
 
 		Assert.assertFalse(ft.isTouchedPassed());
 		
 		ft.touch();
 		Assert.assertEquals(1, ft.getSecondsRemaining());
  
-		Util.lazySleep(Duration.millis(10)); 
+		Util.lazySleep(Duration.ofMillis(10));  
 
 		Assert.assertTrue(ft.isTouchedPassed());
 		 
@@ -78,58 +80,58 @@ public class FlexiTimerTest {
  
 	@Test
 	public void testServiceDelay() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(100), Duration.ofSeconds(10), "");
 
 		Assert.assertEquals(0, ft.getConsequtiveCount());
-		Assert.assertEquals(10, ft.getCurrentDelay().getStandardSeconds());
+		Assert.assertEquals(10, ft.getCurrentDelay().get(SECONDS));
  
 		ft.submitResult(ResultKarma.GOOD);
 		
 		Assert.assertEquals(1, ft.getConsequtiveCount());
-		Assert.assertEquals(20, ft.getCurrentDelay().getStandardSeconds());
+		Assert.assertEquals(20, ft.getCurrentDelay().get(SECONDS));
 	} 
 
 	@Test
 	public void testTimerDelaysAfterBadResults() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(100), Duration.standardSeconds(10), "test timer delays after bad results");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(100), Duration.ofSeconds(10), "test timer delays after bad results");
 
-		Assert.assertEquals(10, ft.getCurrentDelay().getStandardSeconds()); // initial
+		Assert.assertEquals(10, ft.getCurrentDelay().get(SECONDS)); // initial
 																			// delay
 		ft.submitResult(ResultKarma.GOOD);
-		Assert.assertEquals(20, ft.getCurrentDelay().getStandardSeconds()); // one
+		Assert.assertEquals(20, ft.getCurrentDelay().get(SECONDS)); // one
 																			// good
 																			// result
 
 		ft.submitResult(ResultKarma.BAD);
-		Assert.assertEquals(10, ft.getCurrentDelay().getStandardSeconds()); // reset
+		Assert.assertEquals(10, ft.getCurrentDelay().get(SECONDS)); // reset
 																			// result
 																			// with
 									 										// bad
 
 		ft.submitResult(ResultKarma.GOOD, 7);
-		Assert.assertEquals(70, ft.getCurrentDelay().getStandardSeconds()); // 7
+		Assert.assertEquals(70, ft.getCurrentDelay().get(SECONDS)); // 7
 																			// good
 																			// results
 	}
 
 	@Test
 	public void testTimerDelaysAfterGoodResults() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(30), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(30), Duration.ofSeconds(10), "");
 
-		Assert.assertEquals(10, ft.getCurrentDelay().getStandardSeconds());
+		Assert.assertEquals(10, ft.getCurrentDelay().get(SECONDS));
 		ft.submitResult(ResultKarma.GOOD, 999);
-		Assert.assertEquals(30, ft.getCurrentDelay().getStandardSeconds());
+		Assert.assertEquals(30, ft.getCurrentDelay().get(SECONDS));
 	} 
 
 	@Test
 	public void testTimerSetters() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.ofSeconds(10), Duration.ofSeconds(100), Duration.ofSeconds(10), "");
 
-		ft.setMin(Duration.standardSeconds(10));
-		Assert.assertEquals(10, ft.getMinimumDelay().getStandardSeconds());
+		ft.setMin(Duration.ofSeconds(10));
+		Assert.assertEquals(10, ft.getMinimumDelay().get(SECONDS));
 
-		ft.setMax(Duration.standardSeconds(100));
-		Assert.assertEquals(100, ft.getMaximumDelay().getStandardSeconds());
+		ft.setMax(Duration.ofSeconds(100));
+		Assert.assertEquals(100, ft.getMaximumDelay().get(SECONDS));
 
 		ft.setName("test1");
 		Assert.assertEquals("test1", ft.getName());

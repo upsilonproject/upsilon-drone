@@ -1,6 +1,6 @@
 package upnTests.configurationChanged;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,12 +35,12 @@ public class ServiceInheritance {
 
 		Assert.assertEquals("baseService", baseService.getIdentifier());
 		Assert.assertNotSame(GlobalConstants.DEF_TIMEOUT, baseService.getTimeout());
-		Assert.assertEquals(Duration.standardSeconds(5), baseService.getTimeout());
+		Assert.assertEquals(Duration.ofSeconds(5), baseService.getTimeout());
 
 		Assert.assertTrue(Configuration.instance.services.containsId("childService"));
 		final StructureService childService = Configuration.instance.services.get("childService");
 		Assert.assertEquals(2, Configuration.instance.services.size());
 
-		Assert.assertEquals(Duration.standardSeconds(5), childService.getTimeout());
-	}
+		Assert.assertEquals(Duration.ofSeconds(5), childService.getTimeout());
+	} 
 }

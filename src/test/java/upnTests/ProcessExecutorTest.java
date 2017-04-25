@@ -7,7 +7,7 @@ import java.util.concurrent.TimeoutException;
 
 import junit.framework.Assert;
 
-import org.joda.time.Duration;
+import java.time.Duration;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class ProcessExecutorTest {
 
 		final StructureService dummyService = new StructureService();
 		dummyService.setCommandWithOnlyPositionalArgs(cmd);
-		dummyService.setTimeout(Duration.standardSeconds(3));
+		dummyService.setTimeout(Duration.ofSeconds(3));
 
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
 		rpe.execAsync();
@@ -82,7 +82,7 @@ public class ProcessExecutorTest {
 		final StructureService dummyService = new StructureService();
 		dummyService.setIdentifier("Dummy Service");
 		dummyService.setCommandWithOnlyPositionalArgs(cmd);
-		dummyService.setTimeout(Duration.standardSeconds(3));
+		dummyService.setTimeout(Duration.ofSeconds(3));
 
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
 		rpe.execAsync();
@@ -106,8 +106,8 @@ public class ProcessExecutorTest {
 
 		final StructureService dummyService = new StructureService();
 		dummyService.setIdentifier("Dummy Service");
-		dummyService.setCommandWithOnlyPositionalArgs(cmd);
-		dummyService.setTimeout(Duration.standardSeconds(3));
+		dummyService.setCommandWithOnlyPositionalArgs(cmd); 
+		dummyService.setTimeout(Duration.ofSeconds(3));
 
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
 		rpe.execAsync();
