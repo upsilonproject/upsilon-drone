@@ -1,6 +1,4 @@
 #!/bin/bash
 /usr/bin/java \
 	-Djava.net.preferIPv4Stack=true \
-	-Dnetworkaddress.cache.ttl=0 \
-	-Dnetworkaddress.cache.negative.ttl=0 \
 	-cp '/usr/share/upsilon-node/lib/*' upsilon.node.Main

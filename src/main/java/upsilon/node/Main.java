@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.security.Security;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -76,6 +77,15 @@ public class Main implements UncaughtExceptionHandler {
 		}
 
 		Main.instance.startup();
+	}
+
+	private void setupDnsCaching() {
+		Main.LOG.info("Before dns setup; networkaddress.cache[.negative].ttl = " + Security.getProperty("networkaddress.cache.ttl") + " / " + Security.getProperty("networkaddress.cache.negative.ttl"));
+
+        Security.setProperty("networkaddress.cache.ttl" , "0");   
+        Security.setProperty("networkaddress.cache.negative.ttl" , "0");
+		
+		Main.LOG.info("After dns setup; networkaddress.cache[.negative].ttl = " + Security.getProperty("networkaddress.cache.ttl") + " / " + Security.getProperty("networkaddress.cache.negative.ttl"));
 	}
 
 	private static void setupLogging() {
@@ -237,6 +247,8 @@ public class Main implements UncaughtExceptionHandler {
 		this.parseInitialConfiguration();
 		this.parseStartupDirectory("includes.d/");
 		this.parseStartupDirectory("remotes.d/");
+		
+		this.setupDnsCaching();
 
 		if (Configuration.instance.daemonRestEnabled) {
 			this.startDaemon(new DaemonRest());
