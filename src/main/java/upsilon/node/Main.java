@@ -82,8 +82,8 @@ public class Main implements UncaughtExceptionHandler {
 	private void setupDnsCaching() {
 		Main.LOG.info("Before dns setup; networkaddress.cache[.negative].ttl = " + Security.getProperty("networkaddress.cache.ttl") + " / " + Security.getProperty("networkaddress.cache.negative.ttl"));
 
-        Security.setProperty("networkaddress.cache.ttl" , "0");   
-        Security.setProperty("networkaddress.cache.negative.ttl" , "0");
+        Security.setProperty("networkaddress.cache.ttl" , "60");   
+        Security.setProperty("networkaddress.cache.negative.ttl" , "60");
 		
 		Main.LOG.info("After dns setup; networkaddress.cache[.negative].ttl = " + Security.getProperty("networkaddress.cache.ttl") + " / " + Security.getProperty("networkaddress.cache.negative.ttl"));
 	}
