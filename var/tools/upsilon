@@ -3,6 +3,9 @@
 from argparse import ArgumentParser, _SubParsersAction
 from upsilon import amqp, config, logger
 import pika
+import yaml
+import json
+from prettytable import PrettyTable
 
 class Helper(object):
     args = None
@@ -73,12 +76,19 @@ def getNode(helper):
 
 def listNodes(helper):
     msg = amqp.UpsilonMessage("GET_LIST")
+    msg.headers['itemType'] = 'node'
     msg.routingKey = "upsilon.custodian.requests"
 
     helper.chan.publishMessage(msg)
-    helper.chan.consumeUntilMessage("GET_ITEM_RESULT")
+    msg = helper.chan.consumeUntilMessage("GET_LIST_RESULT")
 
-    print "list nodes"
+    nodeList = json.loads(msg.body)
+
+    tbl = PrettyTable(["ID", "Identifier", "Type", "Version"]);
+    for node in nodeList:
+        tbl.add_row([node['nodeId'], node['identifier'], node['serviceType'], node['instanceApplicationVersion']])
+
+    print tbl
 
 def getService(helper):
     print "get service", helper.args.value
