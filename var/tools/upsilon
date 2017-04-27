@@ -5,9 +5,10 @@ from upsilon import amqp, config, logger
 import pika
 import yaml
 import json
+import os
 from prettytable import PrettyTable
 
-class Helper(object):
+class PluginHelper(object):
     args = None
     chan = None
 
@@ -52,7 +53,7 @@ class ExtensibleArgumentParser():
         verb = argsD["action_" + args.action];
         cb = self.typeParsers[args.action]['subParserVerbs'][verb]['callback']
 
-        helper = Helper()
+        helper = PluginHelper()
         helper.args = args;
         helper.chan = chan
 
@@ -61,60 +62,23 @@ class ExtensibleArgumentParser():
     def parse_args(self):
         return self.ap.parse_args()
 
-def getNode(helper):
-    print "get node", helper.args.value
+def includePluginDirectory(dirName):
+    global eap
 
-    msg = amqp.UpsilonMessage("GET_ITEM")
-    msg.headers['itemType'] = 'node'
-    msg.headers['itemQuery'] = helper.args.value
-    msg.routingKey = "upsilon.custodian.requests"
+    #logger.debug("Looking for plugins in directory: " + dirName)
 
-    helper.chan.publishMessage(msg)
-    msg = helper.chan.consumeUntilMessage("GET_ITEM_RESULT")
+    if not os.path.isdir(dirName):
+        return
 
-    print msg.body
-
-def listNodes(helper):
-    msg = amqp.UpsilonMessage("GET_LIST")
-    msg.headers['itemType'] = 'node'
-    msg.routingKey = "upsilon.custodian.requests"
-
-    helper.chan.publishMessage(msg)
-    msg = helper.chan.consumeUntilMessage("GET_LIST_RESULT")
-
-    nodeList = json.loads(msg.body)
-
-    tbl = PrettyTable(["ID", "Identifier", "Type", "Version"]);
-    for node in nodeList:
-        tbl.add_row([node['nodeId'], node['identifier'], node['serviceType'], node['instanceApplicationVersion']])
-
-    print tbl
-
-def getService(helper):
-    print "get service", helper.args.value
-
-    msg = amqp.UpsilonMessage("GET_ITEM")
-    msg.headers['itemType'] = 'service'
-    msg.headers['itemQuery'] = helper.args.value
-    msg.routingKey = "upsilon.custodian.requests"
-
-    helper.chan.publishMessage(msg)
-    msg = helper.chan.consumeUntilMessage("GET_ITEM_RESULT")
-
-    print msg.body
-
-def listServices(helper):
-    print "list services"
+    for fname in os.listdir(dirName):
+        if fname[-2:] == "py":
+            execfile(dirName + "/" + fname)
 
 eap = ExtensibleArgumentParser()
 
-eap.addType("node")
-eap.addVerb("node", "list", listNodes)
-eap.addVerbWithArgument("node", "get", getNode)
-
-eap.addType("service")
-eap.addVerb("service", "list", listServices)
-eap.addVerbWithArgument("service", "get", getService)
+includePluginDirectory("/usr/lib/python2.7/site-packages/upsilon-client-plugins")
+includePluginDirectory("/sbin/upsilon-client-plugins/")
+includePluginDirectory("upsilon-client-plugins")
 
 args = eap.parse_args()
 
