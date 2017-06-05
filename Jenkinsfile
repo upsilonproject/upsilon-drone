@@ -17,34 +17,34 @@ def prepareEnv() {
     sh "find ${env.WORKSPACE}"                                                     
                                                                                    
     sh 'mkdir -p SPECS SOURCES'                                                    
-    sh "cp build/distributions/*.zip SOURCES/upsilon-node.zip"                                  
+    sh "cp build/distributions/*.zip SOURCES/upsilon-drone.zip"                                  
 }
 
 def buildDockerContainer() {
 	prepareEnv()
 
 	unstash 'el7'
-	sh 'mv RPMS/noarch/*.rpm RPMS/noarch/upsilon-node.rpm'
+	sh 'mv RPMS/noarch/*.rpm RPMS/noarch/upsilon-drone.rpm'
 
-	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/Dockerfile" "upsilon-node-*/.buildid" -d . '
+	sh 'unzip -jo SOURCES/upsilon-drone.zip "upsilon-drone-*/var/pkg/Dockerfile" "upsilon-drone-*/.buildid" -d . '
 
 	tag = sh script: 'buildid -pk tag', returnStdout: true
 
 	println "tag: ${tag}"
 
-	sh "docker build -t 'upsilonproject/node:${tag}' ."
-	sh "docker save upsilonproject/node:${tag} > upsilon-node-docker-${tag}.tgz"
+	sh "docker build -t 'upsilonproject/drone:${tag}' ."
+	sh "docker save upsilonproject/drone:${tag} > upsilon-drone-docker-${tag}.tgz"
 
-	archive "upsilon-node-docker-${tag}.tgz"
+	archive "upsilon-drone-docker-${tag}.tgz"
 }
                                                                                    
 def buildRpm(dist) {                                                               
 	prepareEnv()
                                                                                                                                                                       
-    sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/upsilon-node.spec" "upsilon-node-*/.upsilon-node.rpmmacro" -d SPECS/'
+    sh 'unzip -jo SOURCES/upsilon-drone.zip "upsilon-drone-*/var/pkg/upsilon-drone.spec" "upsilon-drone-*/.upsilon-drone.rpmmacro" -d SPECS/'
     sh "find ${env.WORKSPACE}"                                                     
                                                                                    
-    sh "rpmbuild -ba SPECS/upsilon-node.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
+    sh "rpmbuild -ba SPECS/upsilon-drone.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
                                                                                    
     archive 'RPMS/noarch/*.rpm'                                                    
 	stash includes: "RPMS/noarch/*.rpm", name: dist
@@ -53,7 +53,7 @@ def buildRpm(dist) {
 def buildDeb(dist) {
 	prepareEnv()
 	
-	sh 'unzip -jo SOURCES/upsilon-node.zip "upsilon-node-*/var/pkg/deb/" -d . '
+	sh 'unzip -jo SOURCES/upsilon-drone.zip "upsilon-drone-*/var/pkg/deb/" -d . '
     sh "find ${env.WORKSPACE}"                                                     
 
 	sh "dpkg-buildpackage -d "
