@@ -42,7 +42,7 @@ public abstract class ResourceResolver {
 		if (os.contains("Windows")) {
 			f = new File(System.getenv("PROGRAMDATA"), "/upsilon-node/");
 		} else if (os.contains("Linux")) {
-			f = new File("/etc/upsilon-node/");
+			f = new File("/etc/upsilon-drone/");
 
 			if (!f.exists()) {
 				if (!f.mkdirs()) {
