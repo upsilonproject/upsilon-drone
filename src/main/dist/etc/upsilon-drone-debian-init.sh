@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# upsilon-node        Startup script for upsilon-node.
+# upsilon-drone        Startup script for upsilon-drone.
 #
 # chkconfig: - 80 80
 # description: Upsilon is a distributed, flexible and extensible \
 # system monitoring application
 ### BEGIN INIT INFO
-# Provides: $upsilon-node
+# Provides: $upsilon-drone
 # Required-Start: $local_fs $network
 # Required-Stop: $local_fs 
 # Default-Start: - 
@@ -18,28 +18,28 @@
 ### END INIT INFO
 
 checkpid() {
-	PID=`ps aux | grep upsilon-node | grep java | head -1 | awk '{print $2}'`
+	PID=`ps aux | grep upsilon-drone | grep java | head -1 | awk '{print $2}'`
 }
 
 RETVAL=0
 prog=upsilon
-cmdline="/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-node/upsilon-node.jar"
+cmdline="/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-drone/upsilon-drone.jar"
 
 start() {
 	if [[ -z "$PID" ]]; then
 		echo -n "Upsilon is starting... "
-		nohup $cmdline | logger -t upsilon-node &
+		nohup $cmdline | logger -t upsilon-drone &
 
 		sleep 2
 		checkpid
 
 		if [[ -z "$PID" ]]; then
 			echo "Failed. Try looking in the following logs;";
-			echo "    /var/log/upsilon-node.log (rsyslog)"
+			echo "    /var/log/upsilon-drone.log (rsyslog)"
 			echo "    /var/log/messages (normal syslog)"
 			echo " "
 			echo "If you cannot find anything in the logs, run:"
-			echo "    java -jar /usr/share/upsilon-node/upsilon-node.jar"
+			echo "    java -jar /usr/share/upsilon-drone/upsilon-drone.jar"
 		else
 			echo "OK! PID: $PID"
 		fi
@@ -54,7 +54,7 @@ stop() {
 	if [[ -z "$PID" ]]; then
 		echo "Upsilon is not running."
 	else
-		PID=`ps aux | grep upsilon-node | grep -v grep | awk '{print $2}'`
+		PID=`ps aux | grep upsilon-drone | grep -v grep | awk '{print $2}'`
 
 		kill -9 $PID
 		echo -n $"Stopped upsilon ($PID). "

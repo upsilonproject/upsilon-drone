@@ -1,6 +1,6 @@
 <!--
 This is an EXAMPLE configuration file. You can use it as a template to create 
-your own /etc/upsilon-node/config.xml. 
+your own /etc/upsilon-drone/config.xml. 
 
 It requires that the check_ping command is installed in order to work. To find
 the package for your system please visit; 
@@ -14,7 +14,7 @@ You can find more information by looking around on the wiki. These are good
 starting places; 
 
 http://upsilon-project.co.uk/site/index.php/Config.xml
-http://upsilon-project.co.uk/site/index.php/Upsilon-node
+http://upsilon-project.co.uk/site/index.php/Upsilon-drone
 !-->
 <config>
 	<!--
@@ -24,7 +24,7 @@ http://upsilon-project.co.uk/site/index.php/Upsilon-node
     <system crypto = "false" amqpHost = "upsilon">
     	<!--
 	Remove this comment if you would like a local database.
-	Good for first time testing of upsilon-node.
+	Good for first time testing of upsilon-drone.
     	<database dbname = "upsilon" username = "upsilon" password = "databasepasswordforsqluser" port = "3306" hostname = "localhost" />
 	!-->
     </system>

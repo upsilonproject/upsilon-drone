@@ -1,13 +1,13 @@
 [Unit]
-Description=upsilon-node
+Description=upsilon-drone
 After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 User=upsilon
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=upsilon-node
-ExecStart=/usr/share/upsilon-node/bin/upsilon-node
+SyslogIdentifier=upsilon-drone
+ExecStart=/usr/share/upsilon-drone/bin/upsilon-drone
 
 [Install]  
 WantedBy=multi-user.target

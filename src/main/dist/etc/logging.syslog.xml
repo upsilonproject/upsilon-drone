@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-This is the logging configuration for upsilon-node
+This is the logging configuration for upsilon-drone
 
 Please note that this is mainly intended for developers, it is recommended that
 you use syslog to configure logging if you are unfamilier with the syntax of
 this file.
 
-See also: http://upsilon-project.co.uk/site/index.php/Upsilon-node_Logging
+See also: http://upsilon-project.co.uk/site/index.php/Upsilon-drone_Logging
 !-->
 <configuration>
 	<logger name = "sun.net.www.protocol" level = "WARN" />

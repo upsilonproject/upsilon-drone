@@ -1,4 +1,4 @@
 #!/bin/bash
 /usr/bin/java \
 	-Djava.net.preferIPv4Stack=true \
-	-cp '/usr/share/upsilon-node/lib/*' upsilon.node.Main
+	-cp '/usr/share/upsilon-drone/lib/*' upsilon.node.Main

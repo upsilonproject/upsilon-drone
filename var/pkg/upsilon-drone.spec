@@ -69,9 +69,6 @@ cp etc/upsilon.syslog.conf %{buildroot}/etc/rsyslog.d/upsilon-drone
 mkdir -p %{buildroot}/etc/logrotate.d/
 cp etc/upsilon-drone.logrotate %{buildroot}/etc/logrotate.d/upsilon-drone
 
-mkdir -p %{buildroot}/etc/yum.repos.d/
-cp etc/upsilon-drone-rpm-fedora.repo %{buildroot}/etc/yum.repos.d/upsilon-drone.repo
-
 mkdir -p %{buildroot}/usr/share/man1/
 cp etc/manpage/*.gz %{buildroot}/usr/share/man1/
 
@@ -89,7 +86,6 @@ cp etc/manpage/*.gz %{buildroot}/usr/share/man1/
 %attr(755, upsilon, upsilon) /etc/upsilon-drone/includes.d/
 %attr(755, upsilon, upsilon) /etc/upsilon-drone/remotes.d/
 %config(noreplace) /etc/logrotate.d/upsilon-drone
-%config(noreplace) /etc/yum.repos.d/upsilon-drone.repo
 %config(noreplace) /etc/rsyslog.d/upsilon-drone
 %doc /usr/share/man1/*.gz
 
