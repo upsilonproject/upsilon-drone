@@ -32,6 +32,11 @@ if [ "$1" -eq 0 ]; then
 	/usr/sbin/userdel upsilon
 fi
 
+%systemd_postun upsilon-drone.service
+
+%post 
+%systemd_post upsilon-drone.service
+
 %build
 # Docs
 mkdir -p %{buildroot}/usr/share/doc/upsilon-drone
