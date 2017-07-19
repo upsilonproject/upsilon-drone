@@ -33,6 +33,7 @@ def buildDockerContainer() {
 	println "tag: ${tag}"
 
 	sh "docker build -t 'upsilonproject/drone:${tag}' ."
+	sh "docker tag 'upsilonproject/drone:${tag}' 'upsilonproject/drone:latest' "
 	sh "docker save upsilonproject/drone:${tag} > upsilon-drone-docker-${tag}.tgz"
 
 	archive "upsilon-drone-docker-${tag}.tgz"
@@ -100,6 +101,6 @@ stage("Package") {
 	}
 
 	node {
-	//	buildDockerContainer()
+		buildDockerContainer()
 	}
 }
