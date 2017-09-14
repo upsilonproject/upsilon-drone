@@ -133,7 +133,7 @@ public class MessageHandler {
 				if (ResourceResolver.getInstance().getConfigDirAsUPath().isWriteable()) {
 					configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + "remotes.d" + File.separator + configIdentifier + ".xml");
 				} else {
-					configPath = new UPath(Files.createTempFile("upsilon-remoteConfig-" + configId, ".xml"));
+					configPath = new UPath(System.getProperty("java.io.tmpdir") + File.separator + configIdentifier + ".xml");
 				}
 					   
 				FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
