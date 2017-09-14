@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,14 +126,22 @@ public class MessageHandler {
 
 			if (Main.instance.node.getIdentifier().equals(nodeIdentifier)) {
 				String configIdentifier = headers.get("remote-config-source-identifier").toString();
-				UPath configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + "remotes.d" + File.separator + configIdentifier + ".xml");
+				String configId = headers.get("remote-config-id").toString();
+
+				UPath configPath;
+
+				if (ResourceResolver.getInstance().getConfigDirAsUPath().isWriteable()) {
+					configPath = new UPath(ResourceResolver.getInstance().getConfigDir() + File.separator + "remotes.d" + File.separator + configIdentifier + ".xml");
+				} else {
+					configPath = new UPath(Files.createTempFile("upsilon-remoteConfig-" + configId, ".xml"));
+				}
 					   
 				FileWriter configWriter = new FileWriter(configPath.getAbsolutePath());    
 				configWriter.write(body);  
 				configWriter.flush();    
 				configWriter.close(); 
 				
-				Main.instance.getConfigurationLoader().load(headers.get("remote-config-id").toString(), configPath, false, true);
+				Main.instance.getConfigurationLoader().load(configId, configPath, false, true);
 			} else {
 				LOG.debug("Irrelevant node config received for: " + nodeIdentifier);
 			}

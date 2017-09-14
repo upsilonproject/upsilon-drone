@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.node.Main;
+import upsilon.node.util.UPath;
 
 public abstract class ResourceResolver {
 	public static class ResourceResolverJar extends ResourceResolver {
@@ -25,12 +26,20 @@ public abstract class ResourceResolver {
 		return new ResourceResolverJar();
 	}
 
-	public File getConfigDir() {
-		if (Main.getConfigurationOverridePath() != null) {
-			return Main.getConfigurationOverridePath();
-		} else {
-			return this.getOsConfigDir();
+	public UPath getConfigDirAsUPath() {
+		try {
+			if (Main.getConfigurationOverridePath() != null) {
+				return new UPath(Main.getConfigurationOverridePath());
+			} else {
+				return new UPath(this.getOsConfigDir());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
+	}
+
+	public File getConfigDir() {
+		return this.getConfigDirAsUPath().toFile();
 	}
 
 	public abstract InputStream getInternalFromFilename(String filename) throws Exception;
