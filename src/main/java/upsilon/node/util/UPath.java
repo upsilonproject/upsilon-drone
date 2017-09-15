@@ -113,6 +113,14 @@ public class UPath {
 		}
 	}
 
+	public boolean isWriteable() {
+		if (!this.isLocal()) {
+			return false;
+		}  else {
+			return this.toFile().canWrite();
+		}
+	}
+
 	public boolean isFile() {
 		if (!this.isLocal()) {
 			return true; // There is always something at the end of a URL, even
@@ -146,7 +154,7 @@ public class UPath {
 		this.toFile().setLastModified(l);
 	}
 
-	private File toFile() {
+	public File toFile() {
 		final String s = this.url.getHost() + File.separator + this.url.getFile();
 		final File f = new File(s);
 
