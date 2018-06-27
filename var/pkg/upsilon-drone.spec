@@ -12,7 +12,7 @@ URL:		http://upsilon-project.co.uk
 Source0:	upsilon-drone.zip
 
 BuildRequires:	java
-Requires:	java python upsilon-pycommon python2-pika
+Requires:	java python upsilon-pycommon upsilon-serviceChecks python2-pika
 Conflicts: upsilon-node
 
 %description
