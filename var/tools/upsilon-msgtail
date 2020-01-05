@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 
 from upsilon import amqp, config
 
@@ -47,7 +47,7 @@ args = parser.parse_args();
 
 chan = amqp.newChannel(args.server, "msgtail")
 amqp.bindEverything(chan, queue = "msgtail")
-chan.basic_consume(onMessage, queue = "msgtail")
+chan.basic_consume(on_message_callback = onMessage, queue = "msgtail")
 
 try:
 	chan.start_consuming()
