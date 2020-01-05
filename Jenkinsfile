@@ -93,7 +93,7 @@ stage("Package") {
 	}                                                                                  
 																					   
 	node {                                                                             
-		buildRpm("fc24")                                                               
+		buildRpm("fedora")                                                               
 	}
 
 	node {
