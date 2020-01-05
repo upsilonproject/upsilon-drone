@@ -45,8 +45,6 @@ public class DaemonAmqpServiceUpdater extends Daemon {
 		headers.put("node-identifier", Main.instance.node.getIdentifier()); 
 		
 		Builder builder = MessageHandler.getBuilderFromHeaders(headers);
-		
-		builder.expiration("60000"); 
 
 		try { 
 			DaemonAmqpServiceUpdater.LOG.debug("Pushing service: " + service.getIdentifier());
