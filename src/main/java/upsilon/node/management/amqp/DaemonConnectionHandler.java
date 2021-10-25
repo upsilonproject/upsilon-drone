@@ -11,13 +11,13 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.LongString; 
-import com.rabbitmq.client.QueueingConsumer;
 
 import upsilon.node.Configuration;
 import upsilon.node.Daemon;
 import upsilon.node.Database;
 import upsilon.node.Main;
 import upsilon.node.util.Util;
+import upsilon.node.management.amqp.QueueingConsumer;
 
 public class DaemonConnectionHandler extends Daemon implements Runnable {
 	private static final transient Logger LOG = LoggerFactory.getLogger(DaemonConnectionHandler.class);
@@ -109,6 +109,10 @@ public class DaemonConnectionHandler extends Daemon implements Runnable {
 				if ((this.channel == null) || !this.channel.isOpen()) {
 					this.setStatus("Waiting for channel");
 					Thread.sleep(1000);
+					continue;
+				}
+
+				if (this.consumerRecv.isEmpty()) {
 					continue;
 				}
 

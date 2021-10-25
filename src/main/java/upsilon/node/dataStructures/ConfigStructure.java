@@ -1,6 +1,6 @@
 package upsilon.node.dataStructures;
 
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import upsilon.node.configuration.abstractDom.ConfigurationNode;
 

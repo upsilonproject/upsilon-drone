@@ -2,7 +2,7 @@ package upsilon.node.dataStructures;
 
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.time.Instant;
  

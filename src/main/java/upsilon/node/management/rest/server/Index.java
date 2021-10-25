@@ -22,11 +22,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.sun.jersey.core.util.Base64;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import upsilon.node.Configuration;
 import upsilon.node.Daemon;
@@ -118,31 +116,6 @@ public class Index {
 		public String getVm() {
 			return ManagementFactory.getRuntimeMXBean().getVmName() + " " + ManagementFactory.getRuntimeMXBean().getVmVersion();
 		}
-	}
-
-	@Path("/sslCert")
-	@GET
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getSslCert() {
-		final File keystore = new File(ResourceResolver.getInstance().getConfigDir(), "keyStore.jks");
-
-		try {
-			final FileInputStream fis = new FileInputStream(keystore);
-			final KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-			ks.load(fis, Configuration.instance.passwordKeystore.toCharArray());
-
-			final Certificate c = ks.getCertificate("upsilon.teratan.net");
-
-			final String base64cert = new String(Base64.encode(c.getEncoded()));
-			System.out.println(base64cert);
-
-			fis.close();
-			return Response.status(Status.OK).entity(c.getEncoded()).header("Content-Disposition", "attachment; filename=upsilon.crt").build();
-		} catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	@Path("/internalStatus")

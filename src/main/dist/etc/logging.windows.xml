@@ -12,7 +12,6 @@ See also: http://upsilon-project.co.uk/site/index.php/Upsilon-drone_Logging
 	<logger name = "sun.net.www.protocol" level = "WARN" />
     <logger name = "ch.qos.logback" level = "WARN" />
     <logger name = "javax.management" level = "WARN" />
-    <logger name = "com.sun.jersey" level = "WARN" />
      
     <!-- set webserver and general SSL messages on -->    
     <logger name = "org.glassfish.grizzly.http.server" level = "WARN" /> 
