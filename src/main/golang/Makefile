@@ -1,2 +1,2 @@
 default:
-	go build -o upsilon-drone cmd/upsilon-drone/main.go 
+	go build -ldflags="-X github.com/upsilonproject/upsilon-drone/internal/buildconstants.Timestamp=$(shell date +"%s")" -o upsilon-drone cmd/upsilon-drone/main.go 

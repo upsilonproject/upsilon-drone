@@ -6,23 +6,23 @@ import (
 	ans "github.com/apenella/go-ansible"
 )
 
-type MyExecutor struct {}
+type MyExecutor struct{}
 
 func (e *MyExecutor) Execute(command string, args []string, prefix string) error {
-	fmt.Println("Exec", command);
+	fmt.Println("Exec", command)
 
-	return nil;
+	return nil
 }
 
 func runAnsible() {
-	playbook := &ans.AnsiblePlaybookCmd {
-		Playbook: "foo.yml",
-		ConnectionOptions: &ans.AnsiblePlaybookConnectionOptions { Connection: "local" },
-		Options: &ans.AnsiblePlaybookOptions {
+	playbook := &ans.AnsiblePlaybookCmd{
+		Playbook:          "foo.yml",
+		ConnectionOptions: &ans.AnsiblePlaybookConnectionOptions{Connection: "local"},
+		Options: &ans.AnsiblePlaybookOptions{
 			Inventory: "localhost,",
 		},
-//		Exec: &MyExecutor{},
+		//		Exec: &MyExecutor{},
 	}
 
-	playbook.Run();
+	playbook.Run()
 }

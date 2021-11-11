@@ -2,39 +2,46 @@ package amqp
 
 import (
 	log "github.com/sirupsen/logrus"
-	"time"
 	"github.com/streadway/amqp"
+	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
 )
 
+var (
+	conn    *amqp.Connection
+	channel *amqp.Channel
+)
+
+func GetChannel() (*amqp.Channel, error) {
+	var err error
+
+	if channel == nil {
+		cfg := amqp.Config {
+			Properties: amqp.Table {
+				"connection_name": "upsilon-drone " + buildconstants.Timestamp,
+			},
+		}
+
+		conn, err = amqp.DialConfig("amqp://guest:guest@upsilon.teratan.net:5672", cfg)
+
+		if err != nil {
+			return nil, err
+		}
+
+		//defer conn.Close()
+
+		if err != nil {
+			log.Warnf("Could not get chan: %s", err)
+		}
+
+		channel, err = conn.Channel()
+	}
+
+	return channel, err
+}
+
 func StartServerListener() {
-	conn, err := amqp.Dial("amqp://guest:guest@upsilon.teratan.net:5672")
+	//c, err := GetChannel()
 
-	if err != nil {
-		log.Warnf("Could not establish initial connection: %s", err)
-	}
-
-	defer conn.Close()
-
-	c, err := conn.Channel()
-
-	if err != nil {
-		log.Warnf("Could not get chan: %s", err)
-	}
-	
-	msg := amqp.Publishing {
-		DeliveryMode: amqp.Persistent,
-		Timestamp: time.Now(),
-		ContentType: "text/plain",
-		Body: newMessageHeartbeat(),
-	}
-
-	err = c.Publish("logs", "info", false, false, msg)
-
-	if err != nil {
-		log.Warnf("Publish fail:", err)
-	}
+	log.Info("Started listening")
 }
 
-func newMessageHeartbeat() []byte {
-	return []byte("Hello world")
-}
