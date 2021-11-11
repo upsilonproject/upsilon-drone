@@ -4,11 +4,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 
-	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto" 
+	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	"github.com/upsilonproject/upsilon-drone/internal/config"
 
-	"time"
 	"os"
+	"time"
 )
 
 func StartHeartbeater() {
@@ -23,6 +23,7 @@ func heartbeat() {
 
 	if err != nil {
 		log.Warnf("Could not send heartbeat: %s", err)
+		return
 	}
 
 	msg := amqp.Publishing{
@@ -60,7 +61,7 @@ func getHostname() string {
 func newMessageHeartbeat() *pb.Heartbeat {
 	hb := &pb.Heartbeat{
 		UnixTimestamp: time.Now().Unix(),
-		Hostname: getHostname(),
+		Hostname:      getHostname(),
 	}
 
 	return hb

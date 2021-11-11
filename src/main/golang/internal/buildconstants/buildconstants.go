@@ -1,3 +1,3 @@
 package buildconstants
 
-var Timestamp string;
+var Timestamp string

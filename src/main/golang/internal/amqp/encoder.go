@@ -1,8 +1,8 @@
 package amqp
 
 import (
-	log "github.com/sirupsen/logrus"
 	"encoding/json"
+	log "github.com/sirupsen/logrus"
 )
 
 func encodeMessage(in interface{}) []byte {

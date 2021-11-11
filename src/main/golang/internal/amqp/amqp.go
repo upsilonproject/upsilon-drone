@@ -15,8 +15,8 @@ func GetChannel() (*amqp.Channel, error) {
 	var err error
 
 	if channel == nil {
-		cfg := amqp.Config {
-			Properties: amqp.Table {
+		cfg := amqp.Config{
+			Properties: amqp.Table{
 				"connection_name": "upsilon-drone " + buildconstants.Timestamp + " on " + getHostname(),
 			},
 		}
@@ -44,4 +44,3 @@ func StartServerListener() {
 
 	log.Info("Started listening")
 }
-

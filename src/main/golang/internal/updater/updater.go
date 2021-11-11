@@ -5,32 +5,28 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
-	"errors"
-	"path/filepath"
-	"os/exec"
 
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
 )
 
 const DRONE_PATH = "/usr/local/sbin/upsilon-drone"
+const DRONE_PATH_UPDATE = "/usr/local/sbin/upsilon-drone.update"
 
 func writeSystemdUnit() {
 	const UNIT_FILE_PATH = "/etc/systemd/system/upsilon-drone.service"
 
-	f, err := os.Open(UNIT_FILE_PATH)
+	f, err := os.OpenFile(UNIT_FILE_PATH, os.O_RDWR | os.O_CREATE, 0644)
 
 	defer f.Close()
 
-	if errors.Is(err, os.ErrNotExist) {
-		f, err = os.Create(UNIT_FILE_PATH)
-
-		if err != nil {
-			log.Errorf("Write systemd unit error: %s", err.Error())
-			return
-		}
+	if err != nil {
+		log.Errorf("Open systemd unit error: %s", err.Error())
+		return
 	}
 
 	currentContent, err := io.ReadAll(f)
@@ -56,9 +52,17 @@ WantedBy=multi-user.target
 	if string(currentContent) != approvedContent {
 		log.Warnf("Updating systemd unit file")
 
-		f.Write([]byte(approvedContent))
+		f.Truncate(0)
+		f.Seek(0, 0)
 
-		cmd := exec.Command("systemctl", "daemon-reload")
+		_, err := f.Write([]byte(approvedContent))
+
+		if err != nil {
+			log.Errorf("Error writing unit file: %v", err)
+		}
+
+		// Enable should do a daemon-reload
+		cmd := exec.Command("systemctl", "enable", "--now", "upsilon-drone")
 		cmd.Run()
 	}
 }
@@ -76,8 +80,6 @@ func getCurrentBinary() string {
 }
 
 func downloadUpdate() {
-	log.Infof("Downloading update")
-
 	url := "http://upsilon/upsilon-drone"
 
 	resp, err := http.Get(url)
@@ -94,7 +96,7 @@ func downloadUpdate() {
 
 	defer resp.Body.Close()
 
-	out, err := os.Create(DRONE_PATH + ".update")
+	out, err := os.Create(DRONE_PATH_UPDATE)
 
 	if err != nil {
 		log.Errorf("%v", err)
@@ -103,16 +105,11 @@ func downloadUpdate() {
 
 	defer out.Close()
 
-	io.Copy(out, resp.Body)
+	tryChmod(DRONE_PATH_UPDATE)
 
-	if err != nil {
-		log.Errorf("%v", err)
-		return
-	}
-	
-	tryChmod(DRONE_PATH + ".update")
+	writeSystemdUnit()
 
-	log.Info("Update complete")
+	log.Info("Update downloaded")
 }
 
 func getUpdatedTimestamp() int {
@@ -120,7 +117,7 @@ func getUpdatedTimestamp() int {
 
 	resp, err := http.Get(url)
 
-	if err  != nil {
+	if err != nil {
 		log.Errorf("%v", err)
 		return -1
 	}
@@ -138,44 +135,32 @@ func getUpdatedTimestamp() int {
 		log.Errorf("%v", err)
 		return -1
 	}
-	
+
 	return updateTimestamp
 }
 
 func copyFile(in, out string) (int64, error) {
-   i, e := os.Open(in)
-   if e != nil { return 0, e }
-   defer i.Close()
-   o, e := os.Create(out)
-   if e != nil { return 0, e }
-   defer o.Close()
+	log.Info("Copying " + in + " to " + out)
 
-   return o.ReadFrom(i)
-}
-
-func Install() {
-	currentbin := getCurrentBinary()
-
-	if currentbin != DRONE_PATH {
-		log.Warn("I am not in the right location. Copying myself to: " + DRONE_PATH + ".update")
-
-		_, err := copyFile(currentbin, DRONE_PATH + ".update")
-
-		if err != nil {
-			log.Errorf("Error copying myself: %v", err)
-			return;
-		}
+	i, e := os.Open(in)
+	if e != nil {
+		return 0, e
 	}
-	
-	tryChmod(DRONE_PATH)
-	writeSystemdUnit()
+	defer i.Close()
+	o, e := os.Create(out)
+	if e != nil {
+		return 0, e
+	}
+	defer o.Close()
+
+	return o.ReadFrom(i)
 }
 
 func tryChmod(path string) {
 	err := os.Chmod(path, 0777)
 
 	if err != nil {
-		log.Errorf("%v", err)
+		log.Warnf("Chmod error: %v", err)
 		return
 	}
 }
@@ -192,7 +177,6 @@ func Update() {
 	if updatedTimestamp > currentTimestamp {
 		log.Infof("Downloading Update")
 		downloadUpdate()
-		Install()
 		log.Fatalf("Exiting due to update")
 	} else {
 		log.Infof("No update required")
