@@ -15,3 +15,5 @@ gradle-app.setting
 **/*.orig
 **/*.swo
 **/*.swn
+/upsilon-drone
+gen

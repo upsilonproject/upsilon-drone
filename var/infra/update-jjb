@@ -1,1 +1,0 @@
-jenkins-jobs --conf jenkins_jobs.ini --flush-cache update jjb.yaml
