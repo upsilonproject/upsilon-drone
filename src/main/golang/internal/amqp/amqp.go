@@ -17,7 +17,7 @@ func GetChannel() (*amqp.Channel, error) {
 	if channel == nil {
 		cfg := amqp.Config {
 			Properties: amqp.Table {
-				"connection_name": "upsilon-drone " + buildconstants.Timestamp,
+				"connection_name": "upsilon-drone " + buildconstants.Timestamp + " on " + getHostname(),
 			},
 		}
 

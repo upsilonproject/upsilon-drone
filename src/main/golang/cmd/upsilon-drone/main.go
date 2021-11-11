@@ -29,10 +29,39 @@ var cmdVersion = &cobra.Command {
 	},
 }
 
+var cmdUpdate = &cobra.Command {
+	Use: "update",
+	Short: "Force update and exit",
+	Run: func(cmd *cobra.Command, args[] string) {
+		updater.Update()
+		os.Exit(0)
+	},
+}
+
+var cmdInstall = &cobra.Command {
+	Use: "install",
+	Short: "Install self and exit",
+	Run: func(cmd *cobra.Command, args[] string) {
+		updater.Install()
+		os.Exit(0)
+	},
+}
+
+func disableLogTimestamps() {
+	log.SetFormatter(&log.TextFormatter {
+		DisableColors: false,
+		DisableTimestamp: true,
+	})
+}
+
 func init() {
+	disableLogTimestamps()
+
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.AddCommand(cmdVersion)
+	rootCmd.AddCommand(cmdUpdate)
+	rootCmd.AddCommand(cmdInstall)
 }
 
 func initConfig() {
@@ -53,7 +82,7 @@ func mainDrone() {
 	}).Infof("upsilon-drone")
 
 	s := gocron.NewScheduler(time.UTC)
-	s.Every(4).Hours().Do(func() {
+	s.Every(15).Minutes().Do(func() {
 		go updater.Update()
 	})
 
