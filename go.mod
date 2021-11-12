@@ -9,6 +9,7 @@ require (
 	github.com/spf13/cobra v1.2.1 // indirect
 	github.com/spf13/viper v1.8.1 // indirect
 	github.com/streadway/amqp v1.0.0 // indirect
+	github.com/upsilonproject/upsilon-gocommon v0.0.0-20211112002009-555fc66d9a07 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.19.1 // indirect

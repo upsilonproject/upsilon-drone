@@ -78,8 +78,6 @@ func mainDrone() {
 
 	s.StartAsync()
 
-	go amqp.StartServerListener()
-
 	amqp.StartHeartbeater()
 }
 

@@ -7,6 +7,10 @@ import (
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	"github.com/upsilonproject/upsilon-drone/internal/config"
 
+	commonAmqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
+	
+	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
+
 	"os"
 	"time"
 )
@@ -19,7 +23,7 @@ func StartHeartbeater() {
 }
 
 func heartbeat() {
-	c, err := GetChannel()
+	c, err := commonAmqp.GetChannel("upsilon-drone" + buildconstants.Timestamp + " on " + getHostname())
 
 	if err != nil {
 		log.Warnf("Could not send heartbeat: %s", err)
@@ -30,7 +34,7 @@ func heartbeat() {
 		DeliveryMode: amqp.Persistent,
 		Timestamp:    time.Now(),
 		ContentType:  "text/plain",
-		Body:         encodeMessage(newMessageHeartbeat()),
+		Body:         commonAmqp.EncodeMessage(newMessageHeartbeat()),
 	}
 
 	err = c.Publish(
