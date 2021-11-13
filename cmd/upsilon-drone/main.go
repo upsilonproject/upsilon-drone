@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	commonAmqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
 	"github.com/upsilonproject/upsilon-drone/internal/updater"
@@ -72,11 +73,15 @@ func mainDrone() {
 	}).Infof("upsilon-drone")
 
 	s := gocron.NewScheduler(time.UTC)
-	s.Every(15).Minutes().Do(func() {
+	s.Every(3).Minutes().Do(func() {
 		go updater.Update()
 	})
 
 	s.StartAsync()
+
+	commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
+
+	go amqp.ListenForPings()
 
 	amqp.StartHeartbeater()
 }

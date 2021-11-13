@@ -6,3 +6,11 @@ message Heartbeat {
 	int64 UnixTimestamp = 1;
 	string Hostname = 2;
 }
+
+message PingRequest {
+
+}
+
+message PingResponse {
+	string Hostname = 1;
+}

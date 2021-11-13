@@ -103,6 +103,8 @@ func downloadUpdate() {
 		return
 	}
 
+	io.Copy(out, resp.Body)
+
 	defer out.Close()
 
 	tryChmod(DRONE_PATH_UPDATE)

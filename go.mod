@@ -15,3 +15,5 @@ require (
 	go.uber.org/zap v1.19.1 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 )
+
+replace github.com/upsilonproject/upsilon-gocommon => /home/xconspirisist/sandbox/Development/upsilon/upsilon-gocommon
