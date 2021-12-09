@@ -2,16 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-co-op/gocron"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	commonAmqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/amqp"
+	"github.com/upsilonproject/upsilon-drone/internal/config"
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
-	"github.com/upsilonproject/upsilon-drone/internal/updater"
+	"github.com/upsilonproject/upsilon-drone/internal/updater/v2"
 	"os"
-	"time"
 )
 
 var rootCmd = &cobra.Command{
@@ -46,39 +44,7 @@ func disableLogTimestamps() {
 	})
 }
 
-func init() {
-	disableLogTimestamps()
-
-	cobra.OnInitialize(initConfig)
-
-	rootCmd.AddCommand(cmdVersion)
-	rootCmd.AddCommand(cmdUpdate)
-}
-
-func initConfig() {
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("/etc/upsilon-drone/")
-	viper.SetConfigName("upsilon-drone")
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	if err := viper.ReadInConfig(); err == nil {
-		log.Errorf("Using config file:", viper.ConfigFileUsed())
-	}
-}
-
 func mainDrone() {
-	log.WithFields(log.Fields{
-		"timestamp": buildconstants.Timestamp,
-	}).Infof("upsilon-drone")
-
-	s := gocron.NewScheduler(time.UTC)
-	s.Every(3).Minutes().Do(func() {
-		go updater.Update()
-	})
-
-	s.StartAsync()
-
 	commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
 
 	go amqp.ListenForPings()
@@ -86,6 +52,20 @@ func mainDrone() {
 	amqp.StartHeartbeater()
 }
 
+func logBanner() {
+	log.WithFields(log.Fields{
+		"timestamp": buildconstants.Timestamp,
+	}).Infof("upsilon-drone")
+}
+
 func main() {
+	disableLogTimestamps()
+	logBanner()
+
+	cobra.OnInitialize(config.Refresh)
+
+	rootCmd.AddCommand(cmdVersion)
+	rootCmd.AddCommand(cmdUpdate)
+
 	cobra.CheckErr(rootCmd.Execute())
 }
