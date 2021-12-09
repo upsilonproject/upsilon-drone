@@ -1,6 +1,6 @@
-# upsilon-node
+# upsilon-drone
 
-This is the monitoring software that runs on the server.
+The drone monitors and runs services.
 
 http://upsilon-project.co.uk and http://upsilon-project.co.uk/site/index.php/Upsilon-node
 
