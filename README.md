@@ -1,24 +1,21 @@
-upsilon-node
-============
+# upsilon-node
 
 This is the monitoring software that runs on the server.
 
 http://upsilon-project.co.uk and http://upsilon-project.co.uk/site/index.php/Upsilon-node
 
-3.0.0
-=====
+## Version 3
 
-The second major version of Upsilon, written in Golang.
+The third major version of Upsilon, written in Golang.
 
 * Golang
 * Autoconfiguration whenever possible.
 
-2.0.0
-=====
+## Version 2
 
-The first real version of Upsilon, written in Java.
+The second (but first propper) version of Upsilon, written in Java.
 
-** Deprecated**
+**Deprecated**
 
 A short http://github.com/jamesread/TURTLES[TURTLES] list of interesting stuff learned;
 
@@ -43,3 +40,7 @@ A short http://github.com/jamesread/TURTLES[TURTLES] list of interesting stuff l
 * Java <-> XML Serialization
 * Java AMQP
 * Java SSL
+
+## Version 1
+
+Lost to time, but was a bunch of shell scripts built around Nagios. 
