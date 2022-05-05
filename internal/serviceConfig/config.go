@@ -1,4 +1,4 @@
-package config
+package serviceConfig
 
 import (
 	commonAmqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
@@ -15,6 +15,8 @@ type Config struct {
 	AmqpUser string
 	AmqpPass string
 	AmqpPort int
+
+	LogLevel string
 }
 
 func DefaultConfig() *Config {
@@ -23,6 +25,7 @@ func DefaultConfig() *Config {
 		AmqpUser: "guest",
 		AmqpPass: "guest",
 		AmqpPort: 5672,
+		LogLevel: "info",
 	}
 
 	return &cfg
@@ -45,6 +48,9 @@ func Refresh() {
 		commonAmqp.AmqpPort = RuntimeConfig.AmqpPort
 		commonAmqp.AmqpUser = RuntimeConfig.AmqpUser
 		commonAmqp.AmqpPass = RuntimeConfig.AmqpPass
+
+		lvl, _ := log.ParseLevel(RuntimeConfig.LogLevel)
+		log.SetLevel(lvl)
 	}
 }
 

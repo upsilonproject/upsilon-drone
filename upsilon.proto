@@ -14,3 +14,9 @@ message PingRequest {
 message PingResponse {
 	string Hostname = 1;
 }
+
+message UpdateRequest {}
+
+message GitPullRequest {
+	string GitUrl = 1;
+}

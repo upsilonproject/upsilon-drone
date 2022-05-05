@@ -3,7 +3,9 @@ package ansible
 import (
 	"fmt"
 
-	ans "github.com/apenella/go-ansible"
+	ansplay "github.com/apenella/go-ansible/pkg/playbook"
+	ansopts "github.com/apenella/go-ansible/pkg/options"
+	"context"
 )
 
 type MyExecutor struct{}
@@ -15,14 +17,14 @@ func (e *MyExecutor) Execute(command string, args []string, prefix string) error
 }
 
 func runAnsible() {
-	playbook := &ans.AnsiblePlaybookCmd{
-		Playbook:          "foo.yml",
-		ConnectionOptions: &ans.AnsiblePlaybookConnectionOptions{Connection: "local"},
-		Options: &ans.AnsiblePlaybookOptions{
+	playbook := &ansplay.AnsiblePlaybookCmd{
+		Playbooks:          []string{"foo.yml"},
+		ConnectionOptions: &ansopts.AnsibleConnectionOptions{Connection: "local"},
+		Options: &ansplay.AnsiblePlaybookOptions{
 			Inventory: "localhost,",
 		},
 		//		Exec: &MyExecutor{},
 	}
 
-	playbook.Run()
+	playbook.Run(context.Background())
 }

@@ -1,8 +1,6 @@
 package amqp
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
@@ -19,18 +17,7 @@ func StartHeartbeater() {
 }
 
 func heartbeat() {
-	c, err := amqp.GetChannel()
-
-	if err != nil {
-		log.Warnf("Could not send heartbeat: %s", err)
-		return
-	}
-
-	amqp.PublishPb(c, newMessageHeartbeat())
-
-	if err != nil {
-		log.Warnf("Publish fail:", err)
-	}
+	amqp.PublishPb(newMessageHeartbeat())
 }
 
 func getHostname() string {

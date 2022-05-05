@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/cobra"
 	commonAmqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/amqp"
-	"github.com/upsilonproject/upsilon-drone/internal/config"
+	"github.com/upsilonproject/upsilon-drone/internal/serviceConfig"
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
-	"github.com/upsilonproject/upsilon-drone/internal/updater/v2"
+	"github.com/upsilonproject/upsilon-drone/internal/updater"
 	"os"
 )
 
@@ -47,7 +47,10 @@ func disableLogTimestamps() {
 func mainDrone() {
 	commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
 
+	go updater.StartCron()
 	go amqp.ListenForPings()
+	go amqp.ListenForUpdateRequests()
+	go amqp.ListenForGitPulls()
 
 	amqp.StartHeartbeater()
 }
@@ -62,10 +65,19 @@ func main() {
 	disableLogTimestamps()
 	logBanner()
 
-	cobra.OnInitialize(config.Refresh)
-
 	rootCmd.AddCommand(cmdVersion)
 	rootCmd.AddCommand(cmdUpdate)
 
-	cobra.CheckErr(rootCmd.Execute())
+	cobra.OnInitialize(serviceConfig.Refresh)
+
+	exec, _ := os.Executable()
+
+	log.Infof("%v %v", exec, updater.DRONE_PATH)
+
+	if exec != updater.DRONE_PATH && os.Getenv("DRONE_ANYPATH") == "" {
+		log.Warnf("Executable running from non-standard path, and forcing update")
+		updater.Update()
+	} else {
+		cobra.CheckErr(rootCmd.Execute())
+	}
 }

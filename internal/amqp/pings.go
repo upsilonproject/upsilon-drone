@@ -7,16 +7,7 @@ import (
 )
 
 func ListenForPings() {
-	c, err := amqp.GetChannel()
-
-	if err != nil {
-		log.Warnf("%v", err);
-		return
-	}
-
-	log.Infof("Listening for ping")
-
-	amqp.Consume(c, "PingRequest", func(d amqp.Delivery) {
+	err := amqp.Consume("PingRequest", func(d amqp.Delivery) {
 		//hb := &pb.PingRequest{}
 		//log.Infof("%v", hb)
 		d.Message.Ack(true)
@@ -26,8 +17,10 @@ func ListenForPings() {
 		res := &pb.PingResponse{}
 		res.Hostname = getHostname()
 
-		amqp.PublishPb(c, res)
+		amqp.PublishPb(res)
 	})
 
-	log.Infof("Finished listening")
+	if err != nil {
+		log.Warnf("Could not setup Ping consumer: %v", err)
+	}
 }

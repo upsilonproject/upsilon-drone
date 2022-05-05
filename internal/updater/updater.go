@@ -10,8 +10,11 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
+	"errors"
 
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
+	"github.com/go-co-op/gocron"
 )
 
 const DRONE_PATH = "/usr/local/sbin/upsilon-drone"
@@ -168,6 +171,12 @@ func tryChmod(path string) {
 }
 
 func Update() {
+	if _, err := os.Stat(DRONE_PATH); errors.Is(err, os.ErrNotExist) {
+		log.Infof("Downloading update due to not existing locally")
+		downloadUpdate()
+		log.Fatalf("Exiting due to update")
+	}
+
 	currentTimestamp, _ := strconv.Atoi(buildconstants.Timestamp)
 	updatedTimestamp := getUpdatedTimestamp()
 
@@ -177,10 +186,18 @@ func Update() {
 	}).Infof("Version comparison")
 
 	if updatedTimestamp > currentTimestamp {
-		log.Infof("Downloading Update")
+		log.Infof("Downloading update due to newer timestamp")
 		downloadUpdate()
 		log.Fatalf("Exiting due to update")
 	} else {
 		log.Infof("No update required")
 	}
+}
+
+func StartCron() {
+	s := gocron.NewScheduler(time.UTC)
+	s.Every(15).Minutes().Do(func() {
+		Update()
+	})
+	s.StartAsync()
 }
