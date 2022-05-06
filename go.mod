@@ -22,4 +22,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-replace github.com/upsilonproject/upsilon-gocommon => /home/xconspirisist/sandbox/Development/upsilon/upsilon-gocommon
+replace github.com/upsilonproject/upsilon-gocommon => /home/jread/sandbox/Development/upsilon/upsilon-gocommon

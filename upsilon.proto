@@ -7,6 +7,14 @@ message Heartbeat {
 	string Hostname = 2;
 }
 
+message ExecutionResult {
+	int64 UnixTimestamp = 1;
+	string Stdout = 2;
+	string Stderr = 3;
+	string Runerr = 4;
+	string Name = 5;
+}
+
 message PingRequest {
 
 }

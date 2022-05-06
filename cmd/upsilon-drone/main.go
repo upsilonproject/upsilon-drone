@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	commonAmqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/amqp"
+	"github.com/upsilonproject/upsilon-drone/internal/fabricConfig"
 	"github.com/upsilonproject/upsilon-drone/internal/serviceConfig"
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
 	"github.com/upsilonproject/upsilon-drone/internal/updater"
@@ -51,6 +52,7 @@ func mainDrone() {
 	go amqp.ListenForPings()
 	go amqp.ListenForUpdateRequests()
 	go amqp.ListenForGitPulls()
+	go fabricConfig.Run("/etc/upsilon-drone-fabric/upsilon-config/")
 
 	amqp.StartHeartbeater()
 }
