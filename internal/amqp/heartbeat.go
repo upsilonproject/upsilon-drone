@@ -5,7 +5,7 @@ import (
 
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
-
+	log "github.com/sirupsen/logrus"
 	
 	"os"
 	"time"
@@ -16,6 +16,8 @@ func StartHeartbeater() {
 		heartbeat()
 		time.Sleep(10 * time.Second)
 	}
+
+	log.Warn("The heartbeater has stopped.")
 }
 
 func heartbeat() {

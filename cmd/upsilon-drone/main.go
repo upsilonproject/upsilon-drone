@@ -77,7 +77,7 @@ func main() {
 	log.Infof("%v %v", exec, updater.DRONE_PATH)
 
 	if exec != updater.DRONE_PATH && os.Getenv("DRONE_ANYPATH") == "" {
-		log.Warnf("Executable running from non-standard path, and forcing update")
+		log.Warnf("Executable is running from non-standard path, DRONE_ANYPATH is not set, so will force an update.")
 		updater.Update()
 	} else {
 		cobra.CheckErr(rootCmd.Execute())

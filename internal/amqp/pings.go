@@ -7,7 +7,7 @@ import (
 )
 
 func ListenForPings() {
-	err := amqp.Consume("PingRequest", func(d amqp.Delivery) {
+	amqp.Consume("PingRequest", func(d amqp.Delivery) {
 		//hb := &pb.PingRequest{}
 		//log.Infof("%v", hb)
 		d.Message.Ack(true)
@@ -19,8 +19,4 @@ func ListenForPings() {
 
 		amqp.PublishPb(res)
 	})
-
-	if err != nil {
-		log.Warnf("Could not setup Ping consumer: %v", err)
-	}
 }

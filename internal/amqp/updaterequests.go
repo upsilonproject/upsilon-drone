@@ -7,15 +7,11 @@ import (
 )
 
 func ListenForUpdateRequests() {
-	err := amqp.Consume("UpdateRequest", func(d amqp.Delivery) {
+	amqp.Consume("UpdateRequest", func(d amqp.Delivery) {
 		d.Message.Ack(true)
 		
 		log.Infof("Responding to update request")
 
 		updater.Update()
 	})
-
-	if err != nil {
-		log.Warnf("Could not setup UpdateRequest consumer: %v", err)
-	}
 }

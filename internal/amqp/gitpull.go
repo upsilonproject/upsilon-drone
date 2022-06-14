@@ -39,7 +39,7 @@ func gitPull(gitUrl string) {
 }
 
 func ListenForGitPulls() {
-	err := amqp.Consume("GitPullRequest", func(d amqp.Delivery) {
+	amqp.Consume("GitPullRequest", func(d amqp.Delivery) {
 		gp := &pb.GitPullRequest{}
 
 		amqp.Decode(d.Message.Body, &gp)
@@ -50,8 +50,4 @@ func ListenForGitPulls() {
 
 		d.Message.Ack(true)
 	})
-
-	if err != nil {
-		log.Warnf("Could not setup GitPull consumer: %v", err)
-	}
 }
