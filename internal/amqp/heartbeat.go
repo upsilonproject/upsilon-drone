@@ -4,6 +4,8 @@ import (
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
+	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
+
 	
 	"os"
 	"time"
@@ -34,6 +36,7 @@ func newMessageHeartbeat() *pb.Heartbeat {
 	hb := &pb.Heartbeat{
 		UnixTimestamp: time.Now().Unix(),
 		Hostname:      getHostname(),
+		Version: buildconstants.Timestamp,
 	}
 
 	return hb

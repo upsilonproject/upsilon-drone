@@ -5,6 +5,7 @@ option go_package = "gen/amqpproto";
 message Heartbeat {
 	int64 UnixTimestamp = 1;
 	string Hostname = 2;
+	string Version = 3;
 }
 
 message ExecutionResult {
