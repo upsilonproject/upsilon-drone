@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
+	"github.com/upsilonproject/upsilon-drone/internal/util"
 )
 
 func ListenForPings() {
@@ -15,7 +16,7 @@ func ListenForPings() {
 		log.Infof("Responding to ping")
 
 		res := &pb.PingResponse{}
-		res.Hostname = getHostname()
+		res.Hostname = util.GetHostname()
 
 		amqp.PublishPb(res)
 	})

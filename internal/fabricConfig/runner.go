@@ -4,9 +4,9 @@ import (
 	"gopkg.in/yaml.v2"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"os"
 	"github.com/go-co-op/gocron"
 	"github.com/upsilonproject/upsilon-drone/internal/easyexec"
+	"github.com/upsilonproject/upsilon-drone/internal/util"
 	"time"
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
@@ -21,50 +21,48 @@ func init() {
 	s.StartAsync()
 }
 
-func Run(path string) {
+func unmarshalConfig(path string) bool {
 	log.Infof("Running config: %v", path)
 
 	yamlFile, err := ioutil.ReadFile(path + "/config.yml")
 
 	if err != nil {
 		log.Errorf("Read file error: %v", err)
-		return
+		return false
 	}
 
 	err = yaml.Unmarshal(yamlFile, &cfg)
 
 	if err != nil {
-		log.Errorf("Unmarshal issue: %v", err)
+		util.SendEventErr("Unmarshal event error", err)
 	}
 
 	log.Infof("Got config: %v", cfg)
 
+	return true
+}
 
+func SetupConfig(path string) {
+	if unmarshalConfig(path) {
+		scheduleConfig()
+	}
+}
+
+func scheduleConfig() {
 	s.Clear()
 
-	hostname, _ := os.Hostname()
+	hostname := util.GetHostname()
 	
 	for _, group := range cfg.Groups{
-		skipGroup := true
-
 		if len(group.Hosts) == 0 {
-			skipGroup = false;
-		} else { 
-			for _, hn := range group.Hosts {
-				log.Infof("%v == %v", hn, hostname)
-
-				if hostname == hn {
-					skipGroup = false
-					break;
-				}
-			}
+			continue
 		}
 
-		if skipGroup {
+		if !util.SliceContainsElement(group.Hosts, "all") || !util.SliceContainsElement(group.Hosts, hostname) {
 			continue;
 		}
 
-		Schedule(&group)
+		scheduleCommandGroup(&group)
 	}
 }
 
@@ -76,7 +74,7 @@ func max(a int, b int) int {
 	}
 }
 
-func Schedule(cfg *CommandGroup) {
+func scheduleCommandGroup(cfg *CommandGroup) {
 	for i := 0; i < len(cfg.Commands); i++  {
 		cmd := cfg.Commands[i]
 		interval := max(1, cmd.Interval)
@@ -84,12 +82,25 @@ func Schedule(cfg *CommandGroup) {
 		log.Infof("Scheduling command %v with interval: %v", cmd.Name, interval)
 
 		s.Every(interval).Minutes().Do(func() {
-			Exec(&cmd)
+			execCommand(&cmd)
 		})
 	}
 }
 
-func Exec(cmd *Command) {
+func ExecCommandByName(name string) {
+	for _, group := range cfg.Groups {
+		// Deliberately don't check hostname here, execreqs ignore if a group
+		// is assigned to a host and use the command only
+
+		for _, command := range group.Commands {
+			if command.Name == name {
+				execCommand(&command)
+			}
+		}
+	}
+}
+
+func execCommand(cmd *Command) {
 	runerrString := ""
 
 	log.Infof("Executing: %v", cmd.Name)
@@ -102,6 +113,7 @@ func Exec(cmd *Command) {
 
 	res := &pb.ExecutionResult{
 		UnixTimestamp: time.Now().Unix(),
+		Hostname: util.GetHostname(),
 		Name: cmd.Name,
 		Runerr: runerrString,
 		Stdout: stdout,

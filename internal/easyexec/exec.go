@@ -25,7 +25,7 @@ func Exec(executable string, args []string) (string, string, error) {
 	return stdout.String(), stderr.String(), runerr
 }
 
-func ExecLog(executable string, args []string) {
+func ExecLog(executable string, args []string) (string, string, error) {
 	cwd, _ := os.Getwd()
 
 	log.Infof("cwd: %v", cwd)
@@ -42,4 +42,6 @@ func ExecLog(executable string, args []string) {
 	}
 
 	log.Infof("stdout: %v", stdout)
+
+	return stdout, stderr, runerr
 }

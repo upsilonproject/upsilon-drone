@@ -52,7 +52,9 @@ func mainDrone() {
 	go amqp.ListenForPings()
 	go amqp.ListenForUpdateRequests()
 	go amqp.ListenForGitPulls()
-	go fabricConfig.Run("/etc/upsilon-drone-fabric/upsilon-config/")
+	go amqp.ListenForExecutionRequests()
+	go fabricConfig.SetupConfig("/etc/upsilon-drone-fabric/upsilon-config/")
+	go amqp.SendStartup()
 
 	amqp.StartHeartbeater()
 }

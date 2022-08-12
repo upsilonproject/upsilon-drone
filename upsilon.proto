@@ -2,6 +2,10 @@ syntax = "proto3";
 
 option go_package = "gen/amqpproto";
 
+message Startup {
+	string Hostname = 1;
+}
+
 message Heartbeat {
 	int64 UnixTimestamp = 1;
 	string Hostname = 2;
@@ -14,6 +18,12 @@ message ExecutionResult {
 	string Stderr = 3;
 	string Runerr = 4;
 	string Name = 5;
+	string Hostname = 6;
+}
+
+message ExecutionRequest {
+	string Hostname = 1;
+	string CommandName = 2;
 }
 
 message PingRequest {
@@ -28,4 +38,9 @@ message UpdateRequest {}
 
 message GitPullRequest {
 	string GitUrl = 1;
+}
+
+message Event {
+	string Hostname = 1;
+	string Content = 2;
 }

@@ -5,9 +5,9 @@ import (
 
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
+	"github.com/upsilonproject/upsilon-drone/internal/util"
 	log "github.com/sirupsen/logrus"
 	
-	"os"
 	"time"
 )
 
@@ -24,20 +24,10 @@ func heartbeat() {
 	amqp.PublishPb(newMessageHeartbeat())
 }
 
-func getHostname() string {
-	hostname, err := os.Hostname()
-
-	if err != nil {
-		return "unknown"
-	}
-
-	return hostname
-}
-
 func newMessageHeartbeat() *pb.Heartbeat {
 	hb := &pb.Heartbeat{
 		UnixTimestamp: time.Now().Unix(),
-		Hostname:      getHostname(),
+		Hostname:      util.GetHostname(),
 		Version: buildconstants.Timestamp,
 	}
 

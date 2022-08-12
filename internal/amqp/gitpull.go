@@ -6,6 +6,7 @@ import (
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	"github.com/upsilonproject/upsilon-drone/internal/easyexec"
 	"github.com/upsilonproject/upsilon-drone/internal/fabricConfig"
+	"github.com/upsilonproject/upsilon-drone/internal/util"
 	"os"
 )
 
@@ -24,7 +25,12 @@ func gitPull(gitUrl string) {
 		}
 
 		repoUrl := "ssh://git@upsilon/opt/upsilon-config.git"
-		easyexec.ExecLog("git", []string { "clone", repoUrl})
+
+		stdout, _, runerr := easyexec.ExecLog("git", []string { "clone", repoUrl})
+
+		if runerr != nil {
+			util.SendEvent("gitclone: " + stdout)
+		}
 	} else {
 		err = os.Chdir(localDir + "/upsilon-config/")
 
@@ -32,10 +38,14 @@ func gitPull(gitUrl string) {
 			log.Errorf("%v", err)
 		}
 
-		easyexec.ExecLog("git", []string { "pull"})
+		stdout, _, runerr := easyexec.ExecLog("git", []string { "pull"})
+
+		if runerr != nil {
+			util.SendEvent("gitpull: " + stdout)
+		}
 	}
 
-	fabricConfig.Run(localDir + "/upsilon-config/")
+	fabricConfig.SetupConfig(localDir + "/upsilon-config/")
 }
 
 func ListenForGitPulls() {
