@@ -9,6 +9,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+
+func ExecShell(executable string) (string, string, error) {
+	return Exec("sh", []string { "-c", executable })
+}
+
 func Exec(executable string, args []string) (string, string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(10) * time.Second)
 	defer cancel()

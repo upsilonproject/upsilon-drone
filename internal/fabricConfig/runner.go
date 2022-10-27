@@ -8,6 +8,8 @@ import (
 	"github.com/upsilonproject/upsilon-drone/internal/easyexec"
 	"github.com/upsilonproject/upsilon-drone/internal/util"
 	"time"
+	"strings"
+
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 )
@@ -53,16 +55,22 @@ func scheduleConfig() {
 
 	hostname := util.GetHostname()
 	
+	log.Infof("Scheduling config for %v", hostname)
+	
 	for _, group := range cfg.Groups{
 		if len(group.Hosts) == 0 {
 			continue
 		}
 
-		if !util.SliceContainsElement(group.Hosts, "all") || !util.SliceContainsElement(group.Hosts, hostname) {
+		if !util.SliceContainsElement(group.Hosts, "all") && util.SliceContainsElement(group.Hosts, hostname) == false {
 			continue;
 		}
 
-		scheduleCommandGroup(&group)
+		log.Infof("Scheduling command group")
+
+		for _, mapping := range(group.Mappings) {
+			scheduleCommandMapping(&mapping)
+		}
 	}
 }
 
@@ -74,20 +82,25 @@ func max(a int, b int) int {
 	}
 }
 
-func scheduleCommandGroup(cfg *CommandGroup) {
-	for i := 0; i < len(cfg.Commands); i++  {
-		cmd := cfg.Commands[i]
-		interval := max(1, cmd.Interval)
+func scheduleCommandMapping(mapping *CommandMapping) {
+	arg := mapping.Arguments[0]
 
-		log.Infof("Scheduling command %v with interval: %v", cmd.Name, interval)
+	cmd := cfg.FindCommand(mapping.Command)
 
+	interval := max(1, mapping.Interval)
+
+	log.Infof("Scheduling command %v with interval: %v", cmd.Name, interval)
+
+	for i := 0; i < len(arg.Values); i++ {
+		av := arg.Values[i]
 		s.Every(interval).Minutes().Do(func() {
-			execCommand(&cmd)
+			execCommand(cmd, arg.Name, av)
 		})
 	}
 }
 
 func ExecCommandByName(name string) {
+	/*
 	for _, group := range cfg.Groups {
 		// Deliberately don't check hostname here, execreqs ignore if a group
 		// is assigned to a host and use the command only
@@ -98,14 +111,17 @@ func ExecCommandByName(name string) {
 			}
 		}
 	}
+	*/
 }
 
-func execCommand(cmd *Command) {
+func execCommand(cmd *Command, argName string, argVal string) {
 	runerrString := ""
 
-	log.Infof("Executing: %v", cmd.Name)
+	shellExec := strings.Replace(cmd.Exec, "{{ " + argName + " }}", argVal, 1)
 
-	stdout, stderr, runerr := easyexec.Exec(cmd.Exec, cmd.Args)
+	log.Infof("Executing: %v = %v", cmd.Name, shellExec)
+
+	stdout, stderr, runerr := easyexec.ExecShell(shellExec)
 
 	if runerr != nil {
 		runerrString = runerr.Error()
