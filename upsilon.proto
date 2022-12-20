@@ -19,6 +19,7 @@ message ExecutionResult {
 	string Runerr = 4;
 	string Name = 5;
 	string Hostname = 6;
+	int64 ExitCode = 7;
 }
 
 message ExecutionRequest {
@@ -38,6 +39,7 @@ message UpdateRequest {}
 
 message GitPullRequest {
 	string GitUrl = 1;
+	string GitUrlAlias = 2;
 }
 
 message Event {

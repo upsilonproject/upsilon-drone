@@ -23,6 +23,7 @@ type CommandGroup struct {
 type Command struct {
 	Name string
 	Exec string
+	Label string
 }
 
 type CommandMapping struct {

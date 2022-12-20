@@ -31,27 +31,35 @@ func DefaultConfig() *Config {
 	return &cfg
 }
 
+func updateAmqpConfigFromRuntime() {
+	commonAmqp.AmqpHost = RuntimeConfig.AmqpHost
+	commonAmqp.AmqpPort = RuntimeConfig.AmqpPort
+	commonAmqp.AmqpUser = RuntimeConfig.AmqpUser
+	commonAmqp.AmqpPass = RuntimeConfig.AmqpPass
+}
+
 func Refresh() {
-	if err := viper.ReadInConfig(); err == nil {
-		log.WithFields(log.Fields{
-			"cfgfile": viper.ConfigFileUsed(),
-		}).Infof("Using config file")
-	} else if err != nil {
+	updateAmqpConfigFromRuntime(); // that way, if config loading fails, we have safe defaults
+
+	if err := viper.ReadInConfig(); err != nil {
 		log.Warn(err)
+		return;
 	}
 
 	if err := viper.UnmarshalExact(&RuntimeConfig); err != nil {
 		log.Warn(err)
-	} else if err == nil {
-		// FIXME do this somewhere else
-		commonAmqp.AmqpHost = RuntimeConfig.AmqpHost
-		commonAmqp.AmqpPort = RuntimeConfig.AmqpPort
-		commonAmqp.AmqpUser = RuntimeConfig.AmqpUser
-		commonAmqp.AmqpPass = RuntimeConfig.AmqpPass
-
-		lvl, _ := log.ParseLevel(RuntimeConfig.LogLevel)
-		log.SetLevel(lvl)
+		return;
 	}
+
+	updateAmqpConfigFromRuntime();
+
+	lvl, _ := log.ParseLevel(RuntimeConfig.LogLevel)
+
+	log.SetLevel(lvl)
+
+	log.WithFields(log.Fields{
+		"cfgfile": viper.ConfigFileUsed(),
+	}).Debugf("Loaded service config")
 }
 
 func init() {

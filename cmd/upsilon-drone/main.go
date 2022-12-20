@@ -38,6 +38,24 @@ var cmdUpdate = &cobra.Command{
 	},
 }
 
+var cmdCheckFabricConfig = &cobra.Command{
+	Use: "check-fabric-config",
+	Short: "Check Config",
+	Run: func(cmd *cobra.Command, args []string) {
+		serviceConfig.Refresh()
+
+		path := "./"
+
+		if (len(args) == 1) {
+			path = args[0]
+		}
+
+		fabricConfig.UnmarshalConfig(path)
+
+		os.Exit(0)
+	},
+}
+
 func disableLogTimestamps() {
 	log.SetFormatter(&log.TextFormatter{
 		DisableColors:    false,
@@ -45,7 +63,30 @@ func disableLogTimestamps() {
 	})
 }
 
+func checkForceUpdate() {
+	actual, _ := os.Executable()
+
+	log.WithFields(log.Fields {
+		"expected": updater.DRONE_PATH,
+		"actual": actual,
+	}).Debugf("Path check")
+
+	if actual != updater.DRONE_PATH && os.Getenv("DRONE_ANYPATH") == "" {
+		log.Warnf("Executable is running from non-standard path, DRONE_ANYPATH is not set, so will force an update.")
+		updater.Update()
+		os.Exit(0)
+	}
+}
+
 func mainDrone() {
+	serviceConfig.Refresh()
+
+	log.WithFields(log.Fields{
+		"Build Timestamp": buildconstants.Timestamp,
+	}).Infof("upsilon-drone")
+
+	checkForceUpdate()
+
 	commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
 
 	go updater.StartCron()
@@ -59,29 +100,12 @@ func mainDrone() {
 	amqp.StartHeartbeater()
 }
 
-func logBanner() {
-	log.WithFields(log.Fields{
-		"timestamp": buildconstants.Timestamp,
-	}).Infof("upsilon-drone")
-}
-
 func main() {
 	disableLogTimestamps()
-	logBanner()
 
 	rootCmd.AddCommand(cmdVersion)
 	rootCmd.AddCommand(cmdUpdate)
+	rootCmd.AddCommand(cmdCheckFabricConfig)
 
-	cobra.OnInitialize(serviceConfig.Refresh)
-
-	exec, _ := os.Executable()
-
-	log.Infof("%v %v", exec, updater.DRONE_PATH)
-
-	if exec != updater.DRONE_PATH && os.Getenv("DRONE_ANYPATH") == "" {
-		log.Warnf("Executable is running from non-standard path, DRONE_ANYPATH is not set, so will force an update.")
-		updater.Update()
-	} else {
-		cobra.CheckErr(rootCmd.Execute())
-	}
+	cobra.CheckErr(rootCmd.Execute())
 }

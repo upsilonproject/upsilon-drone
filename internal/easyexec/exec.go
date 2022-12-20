@@ -10,11 +10,11 @@ import (
 )
 
 
-func ExecShell(executable string) (string, string, error) {
+func ExecShell(executable string) (string, string, error, int) {
 	return Exec("sh", []string { "-c", executable })
 }
 
-func Exec(executable string, args []string) (string, string, error) {
+func Exec(executable string, args []string) (string, string, error, int) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(10) * time.Second)
 	defer cancel()
 
@@ -27,16 +27,16 @@ func Exec(executable string, args []string) (string, string, error) {
 
 	runerr := cmd.Run()
 
-	return stdout.String(), stderr.String(), runerr
+	return stdout.String(), stderr.String(), runerr, int(cmd.ProcessState.ExitCode())
 }
 
-func ExecLog(executable string, args []string) (string, string, error) {
+func ExecLog(executable string, args []string) (string, string, error, int) {
 	cwd, _ := os.Getwd()
 
 	log.Infof("cwd: %v", cwd)
 	log.Infof("cmd: %v %v", executable, args)
 
-	stderr, stdout, runerr := Exec(executable, args)
+	stderr, stdout, runerr, code := Exec(executable, args)
 
 	if runerr != nil {
 		log.Errorf("err: %v", runerr)
@@ -48,5 +48,5 @@ func ExecLog(executable string, args []string) (string, string, error) {
 
 	log.Infof("stdout: %v", stdout)
 
-	return stdout, stderr, runerr
+	return stdout, stderr, runerr, code
 }

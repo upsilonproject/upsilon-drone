@@ -23,8 +23,8 @@ func init() {
 	s.StartAsync()
 }
 
-func unmarshalConfig(path string) bool {
-	log.Infof("Running config: %v", path)
+func UnmarshalConfig(path string) bool {
+	log.Infof("Running fabric config: %v", path)
 
 	yamlFile, err := ioutil.ReadFile(path + "/config.yml")
 
@@ -33,19 +33,19 @@ func unmarshalConfig(path string) bool {
 		return false
 	}
 
-	err = yaml.Unmarshal(yamlFile, &cfg)
+	err = yaml.UnmarshalStrict(yamlFile, &cfg)
 
 	if err != nil {
 		util.SendEventErr("Unmarshal event error", err)
 	}
 
-	log.Infof("Got config: %v", cfg)
+	log.Debugf("Got config: %+v", cfg)
 
 	return true
 }
 
 func SetupConfig(path string) {
-	if unmarshalConfig(path) {
+	if UnmarshalConfig(path) {
 		scheduleConfig()
 	}
 }
@@ -53,10 +53,15 @@ func SetupConfig(path string) {
 func scheduleConfig() {
 	s.Clear()
 
+	if cfg == nil {
+		log.Warnf("Config is empty. Not scheduling")
+		return
+	}
+
 	hostname := util.GetHostname()
-	
+
 	log.Infof("Scheduling config for %v", hostname)
-	
+
 	for _, group := range cfg.Groups{
 		if len(group.Hosts) == 0 {
 			continue
@@ -83,18 +88,24 @@ func max(a int, b int) int {
 }
 
 func scheduleCommandMapping(mapping *CommandMapping) {
-	arg := mapping.Arguments[0]
-
 	cmd := cfg.FindCommand(mapping.Command)
 
 	interval := max(1, mapping.Interval)
 
 	log.Infof("Scheduling command %v with interval: %v", cmd.Name, interval)
 
-	for i := 0; i < len(arg.Values); i++ {
-		av := arg.Values[i]
+	if len(mapping.Arguments) > 0 {
+		arg := mapping.Arguments[0]
+
+		for i := 0; i < len(arg.Values); i++ {
+			av := arg.Values[i]
+			s.Every(interval).Minutes().Do(func() {
+				execCommand(cmd, arg.Name, av)
+			})
+		}
+	} else {
 		s.Every(interval).Minutes().Do(func() {
-			execCommand(cmd, arg.Name, av)
+			execCommand(cmd, "ignoreme", "")
 		})
 	}
 }
@@ -117,11 +128,18 @@ func ExecCommandByName(name string) {
 func execCommand(cmd *Command, argName string, argVal string) {
 	runerrString := ""
 
+	if cmd.Label == "" {
+		cmd.Label = cmd.Name
+	}
+
 	shellExec := strings.Replace(cmd.Exec, "{{ " + argName + " }}", argVal, 1)
+	commandLabel := strings.Replace(cmd.Label, "{{ " + argName + " }}", argVal, 1)
+
+	shellExec = strings.Replace(shellExec, "PROBE:", "PYTHONPATH=/opt/upsilon/upsilon-pycommon/ python /opt/upsilon/upsilon-drone-probes/src/", 1)
 
 	log.Infof("Executing: %v = %v", cmd.Name, shellExec)
 
-	stdout, stderr, runerr := easyexec.ExecShell(shellExec)
+	stdout, stderr, runerr, exit := easyexec.ExecShell(shellExec)
 
 	if runerr != nil {
 		runerrString = runerr.Error()
@@ -130,10 +148,11 @@ func execCommand(cmd *Command, argName string, argVal string) {
 	res := &pb.ExecutionResult{
 		UnixTimestamp: time.Now().Unix(),
 		Hostname: util.GetHostname(),
-		Name: cmd.Name,
+		Name: commandLabel,
 		Runerr: runerrString,
 		Stdout: stdout,
 		Stderr: stderr,
+		ExitCode: int64(exit),
 	}
 
 

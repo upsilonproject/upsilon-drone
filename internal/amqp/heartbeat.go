@@ -1,13 +1,13 @@
 package amqp
 
 import (
+	buildconstants "github.com/upsilonproject/upsilon-drone/internal/buildconstants"
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
-
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
-	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
+
 	"github.com/upsilonproject/upsilon-drone/internal/util"
 	log "github.com/sirupsen/logrus"
-	
+
 	"time"
 )
 
