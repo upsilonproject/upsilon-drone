@@ -8,7 +8,7 @@ import (
 )
 
 func ListenForPings() {
-	amqp.Consume("PingRequest", func(d amqp.Delivery) {
+	amqp.ConsumeForever("PingRequest", func(d amqp.Delivery) {
 		//hb := &pb.PingRequest{}
 		//log.Infof("%v", hb)
 		d.Message.Ack(true)

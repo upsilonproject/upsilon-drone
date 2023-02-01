@@ -111,18 +111,11 @@ func scheduleCommandMapping(mapping *CommandMapping) {
 }
 
 func ExecCommandByName(name string) {
-	/*
-	for _, group := range cfg.Groups {
-		// Deliberately don't check hostname here, execreqs ignore if a group
-		// is assigned to a host and use the command only
+	cmd := cfg.FindCommand(name)
 
-		for _, command := range group.Commands {
-			if command.Name == name {
-				execCommand(&command)
-			}
-		}
+	if cmd != nil {
+		execCommand(cmd, "", "")
 	}
-	*/
 }
 
 func execCommand(cmd *Command, argName string, argVal string) {

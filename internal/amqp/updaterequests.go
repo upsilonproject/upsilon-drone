@@ -7,7 +7,7 @@ import (
 )
 
 func ListenForUpdateRequests() {
-	amqp.Consume("UpdateRequest", func(d amqp.Delivery) {
+	amqp.ConsumeForever("UpdateRequest", func(d amqp.Delivery) {
 		d.Message.Ack(true)
 		
 		log.Infof("Responding to update request")

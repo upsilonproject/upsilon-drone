@@ -27,6 +27,7 @@ func heartbeat() {
 func newMessageHeartbeat() *pb.Heartbeat {
 	hb := &pb.Heartbeat{
 		UnixTimestamp: time.Now().Unix(),
+		Type: "drone",
 		Hostname:      util.GetHostname(),
 		Version: buildconstants.Timestamp,
 	}

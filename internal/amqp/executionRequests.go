@@ -9,7 +9,7 @@ import (
 )
 
 func ListenForExecutionRequests() {
-	amqp.Consume("ExecutionRequest", func(d amqp.Delivery) {
+	amqp.ConsumeForever("ExecutionRequest", func(d amqp.Delivery) {
 		d.Message.Ack(true)
 
 		execReq := pb.ExecutionRequest{}

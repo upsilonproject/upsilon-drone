@@ -22,7 +22,7 @@ func updateProbes() {
 }
 
 func ListenForGitPulls() {
-	amqp.Consume("GitPullRequest", func(d amqp.Delivery) {
+	amqp.ConsumeForever("GitPullRequest", func(d amqp.Delivery) {
 		gp := &pb.GitPullRequest{}
 
 		amqp.Decode(d.Message.Body, &gp)
