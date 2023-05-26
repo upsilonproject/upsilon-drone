@@ -6,9 +6,11 @@ import (
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 
 	"github.com/upsilonproject/upsilon-drone/internal/util"
+	"github.com/upsilonproject/upsilon-drone/internal/fabricConfig"
 	log "github.com/sirupsen/logrus"
 
 	"time"
+	"fmt"
 )
 
 func StartHeartbeater() {
@@ -29,6 +31,7 @@ func newMessageHeartbeat() *pb.Heartbeat {
 		UnixTimestamp: time.Now().Unix(),
 		Type: "drone",
 		Hostname:      util.GetHostname(),
+		StatusLine: fmt.Sprintf("cfg: %+v", fabricConfig.ConfigStatus),
 		Version: buildconstants.Timestamp,
 	}
 

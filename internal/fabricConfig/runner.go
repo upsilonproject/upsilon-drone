@@ -1,6 +1,9 @@
 package fabricConfig
 
 import (
+	"crypto/sha1"
+	"io"
+	"encoding/hex"
 	"gopkg.in/yaml.v2"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -9,6 +12,8 @@ import (
 	"github.com/upsilonproject/upsilon-drone/internal/util"
 	"time"
 	"strings"
+	"fmt"
+	"os"
 
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
@@ -16,32 +21,71 @@ import (
 
 var cfg *FabricConfig;
 var s *gocron.Scheduler
+var ConfigStatus map[string]string
 
 func init() {
 	s = gocron.NewScheduler(time.UTC)
 	s.Clear()
 	s.StartAsync()
+
+	ConfigStatus = make(map[string]string, 0)
 }
 
 func UnmarshalConfig(path string) bool {
 	log.Infof("Running fabric config: %v", path)
 
+	ConfigStatus[path] = "new"
+
 	yamlFile, err := ioutil.ReadFile(path + "/config.yml")
 
 	if err != nil {
 		log.Errorf("Read file error: %v", err)
+		ConfigStatus[path] = "fread error"
 		return false
 	}
 
 	err = yaml.UnmarshalStrict(yamlFile, &cfg)
 
 	if err != nil {
+		ConfigStatus[path] = "unmarshal error"
 		util.SendEventErr("Unmarshal event error", err)
+		return false
 	}
 
 	log.Debugf("Got config: %+v", cfg)
+	ConfigStatus[path] = fmt.Sprintf("OK %v", hash_file_sha1(path))
 
 	return true
+}
+
+func hash_file_sha1(filePath string) (string) {
+	//Initialize variable returnMD5String now in case an error has to be returned
+	var returnSHA1String string
+	
+	//Open the filepath passed by the argument and check for any error
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "cant open"
+	}
+	
+	//Tell the program to call the following function when the current function returns
+	defer file.Close()
+	
+	//Open a new SHA1 hash interface to write to
+	hash := sha1.New()
+	
+	//Copy the file in the hash interface and check for any error
+	if _, err := io.Copy(hash, file); err != nil {
+		return "cant read"
+	}
+	
+	//Get the 20 bytes hash
+	hashInBytes := hash.Sum(nil)[:20]
+	
+	//Convert the bytes to a string
+	returnSHA1String = hex.EncodeToString(hashInBytes)
+	
+	return returnSHA1String
 }
 
 func SetupConfig(path string) {

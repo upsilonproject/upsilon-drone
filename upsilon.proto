@@ -11,6 +11,7 @@ message Heartbeat {
 	string Hostname = 2;
 	string Version = 3;
 	string Type = 4;
+	string StatusLine = 5;
 }
 
 message ExecutionResult {
