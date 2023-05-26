@@ -31,4 +31,3 @@ type CommandMapping struct {
 	Interval int
 	Arguments map[string]any
 }
-
