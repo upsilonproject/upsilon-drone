@@ -9,6 +9,8 @@ import (
 	"github.com/upsilonproject/upsilon-drone/internal/util"
 	"time"
 	"strings"
+	"reflect"
+	"fmt"
 
 	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
@@ -62,7 +64,7 @@ func scheduleConfig() {
 
 	log.Infof("Scheduling config for %v", hostname)
 
-	for _, group := range cfg.Groups{
+	for idx, group := range cfg.Groups{
 		if len(group.Hosts) == 0 {
 			continue
 		}
@@ -71,7 +73,7 @@ func scheduleConfig() {
 			continue;
 		}
 
-		log.Infof("Scheduling command group")
+		log.Infof("Scheduling command group %v", idx)
 
 		for _, mapping := range(group.Mappings) {
 			scheduleCommandMapping(&mapping)
@@ -87,25 +89,87 @@ func max(a int, b int) int {
 	}
 }
 
+func checkArgTypesAndFindList(arguments map[string]any) (string, []string) {
+	listArgName := ""
+
+	for name, val := range arguments {
+		typ := reflect.TypeOf(val).String()
+
+		switch typ {
+		case "[]interface {}":
+			if listArgName != "" {
+				log.Errorf("Cannot have two list args: %v and %v", listArgName, name)
+			} else {
+				listArgName = name
+			}
+			break
+		case "string": break
+		case "int": break
+		default:
+			log.Errorf("unsupported type for arg %v:%v", name, typ)
+		}
+	}
+
+	listArgValues := make([]string, 0)
+
+	for _, val := range arguments[listArgName].([]interface{}) {
+		listArgValues = append(listArgValues, val.(string))
+	}
+
+	return listArgName, listArgValues
+}
+
+func argumentsToExecutions(commandName string, arguments map[string]any) []map[string]string {
+	ret := make([]map[string]string, 0)
+
+	if len(arguments) == 0 {
+		ret = append(ret, make(map[string]string, 0))
+	} else {
+		listArgName, listArgValues := checkArgTypesAndFindList(arguments)
+
+		if len(listArgValues) == 0 {
+			permutation := make(map[string]string, 0)
+
+			for name, val := range arguments {
+				permutation[name] = val.(string)
+			}
+
+			ret = append(ret, permutation)
+		} else {
+			for _, laval := range listArgValues {
+				permutation := make(map[string]string, 0)
+
+				for name, val := range arguments {
+					if (name == listArgName) {
+						permutation[name] = laval
+					} else {
+						permutation[name] = fmt.Sprintf("%v", val)
+					}
+				}
+
+				ret = append(ret, permutation)
+			}
+		}
+	}
+
+	return ret;
+}
+
 func scheduleCommandMapping(mapping *CommandMapping) {
 	cmd := cfg.FindCommand(mapping.Command)
 
+	if mapping.Interval == 0 {
+		log.Infof("> Skipping schedule of command %v, interval = 0", cmd.Name)
+		return;
+	}
+
 	interval := max(1, mapping.Interval)
 
-	log.Infof("Scheduling command %v with interval: %v", cmd.Name, interval)
+	log.Infof("> Scheduling command %v with %v min interval, and %v static args", cmd.Name, interval, len(mapping.Arguments))
 
-	if len(mapping.Arguments) > 0 {
-		arg := mapping.Arguments[0]
-
-		for i := 0; i < len(arg.Values); i++ {
-			av := arg.Values[i]
-			s.Every(interval).Minutes().Do(func() {
-				execCommand(cmd, arg.Name, av)
-			})
-		}
-	} else {
+	for _, argmap := range argumentsToExecutions(mapping.Command, mapping.Arguments) {
 		s.Every(interval).Minutes().Do(func() {
-			execCommand(cmd, "ignoreme", "")
+			execCommand(cmd, argmap)
 		})
 	}
 }
@@ -114,21 +178,39 @@ func ExecCommandByName(name string) {
 	cmd := cfg.FindCommand(name)
 
 	if cmd != nil {
-		execCommand(cmd, "", "")
+		execCommandNoArgs(cmd)
+	} else {
+		util.SendEventErr("CommandByName not found: " + name, nil)
 	}
 }
 
-func execCommand(cmd *Command, argName string, argVal string) {
+func execCommandNoArgs(cmd *Command) {
+	execCommand(cmd, map[string]string {})
+}
+
+func execCommand(cmd *Command, arguments map[string]string) {
 	runerrString := ""
 
-	if cmd.Label == "" {
-		cmd.Label = cmd.Name
+	commandLabel := cmd.Label
+
+	if commandLabel == "" {
+		commandLabel = cmd.Name
 	}
 
-	shellExec := strings.Replace(cmd.Exec, "{{ " + argName + " }}", argVal, 1)
-	commandLabel := strings.Replace(cmd.Label, "{{ " + argName + " }}", argVal, 1)
-
+	shellExec := cmd.Exec
 	shellExec = strings.Replace(shellExec, "PROBE:", "PYTHONPATH=/opt/upsilon/upsilon-pycommon/ python /opt/upsilon/upsilon-drone-probes/src/", 1)
+
+	log.Infof("Command %v has %v arguments", cmd.Name, len(arguments))
+
+	for argName := range arguments {
+		argVal := arguments[argName]
+
+		log.Infof("arg %v = %v", argName, argVal)
+
+		shellExec = strings.Replace(shellExec, "{{ " + argName + " }}", argVal, 1)
+		commandLabel = strings.Replace(commandLabel, "{{ " + argName + " }}", argVal, 1)
+	}
+
 
 	log.Infof("Executing: %v = %v", cmd.Name, shellExec)
 

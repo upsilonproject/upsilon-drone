@@ -29,10 +29,5 @@ type Command struct {
 type CommandMapping struct {
 	Command string
 	Interval int
-	Arguments []ArgumentMapping
-}
-
-type ArgumentMapping struct {
-	Name string
-	Values []string
+	Arguments map[string]any
 }
