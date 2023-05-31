@@ -54,7 +54,7 @@ func UnmarshalConfig(path string) bool {
 	}
 
 	log.Debugf("Got config: %+v", cfg)
-	ConfigStatus[path] = fmt.Sprintf("OK %v", hash_file_sha1(path))
+	ConfigStatus[path] = fmt.Sprintf("OK %v", hash_file_sha1(path + "/config.yml"))
 
 	return true
 }
@@ -77,6 +77,7 @@ func hash_file_sha1(filePath string) (string) {
 	
 	//Copy the file in the hash interface and check for any error
 	if _, err := io.Copy(hash, file); err != nil {
+		log.Errorf("%v", err)
 		return "cant read"
 	}
 	
@@ -155,8 +156,10 @@ func checkArgTypesAndFindList(arguments map[string]any) (string, []string) {
 
 	listArgValues := make([]string, 0)
 
-	for _, val := range arguments[listArgName].([]interface{}) {
-		listArgValues = append(listArgValues, val.(string))
+	if listArgName != "" {
+		for _, val := range arguments[listArgName].([]interface{}) {
+			listArgValues = append(listArgValues, val.(string))
+		}
 	}
 
 	return listArgName, listArgValues
