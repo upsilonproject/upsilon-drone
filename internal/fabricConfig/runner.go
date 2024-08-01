@@ -33,7 +33,9 @@ func init() {
 }
 
 func UnmarshalConfig(path string) bool {
-	log.Infof("Running fabric config: %v", path)
+	log.WithFields(log.Fields {
+		"path": path,
+	}).Infof("Running fabric config")
 
 	ConfigStatus[path] = "new"
 
@@ -119,8 +121,12 @@ func scheduleConfig() {
 
 		log.Infof("Scheduling command group %v", idx)
 
-		for _, mapping := range(group.Mappings) {
+		for _, mapping := range(group.Commands) {
 			scheduleCommandMapping(&mapping)
+		}
+
+		for _, pipeline := range(group.Pipelines) {
+			scheduleCommandPipeline(&pipeline)
 		}
 	}
 }
@@ -165,7 +171,7 @@ func checkArgTypesAndFindList(arguments map[string]any) (string, []string) {
 	return listArgName, listArgValues
 }
 
-func argumentsToExecutions(commandName string, arguments map[string]any) []map[string]string {
+func argumentsToExecutions(arguments map[string]any) []map[string]string {
 	ret := make([]map[string]string, 0)
 
 	if len(arguments) == 0 {
@@ -198,9 +204,50 @@ func argumentsToExecutions(commandName string, arguments map[string]any) []map[s
 		}
 	}
 
-	log.Debugf("argsToExecs for command %v = %+v", commandName, ret)
+	log.Debugf("argsToExecs for command %+v", ret)
 
 	return ret;
+}
+
+func execPipeline(pipeline *CommandPipeline, argmap map[string]string) {
+	for _, commandMapping := range pipeline.Sequence {
+		cmd := cfg.FindCommand(commandMapping.Command)
+
+		argmap := argumentsToExecutions(commandMapping.Arguments)
+
+		if len(argmap) != 1 {
+			log.Errorf("Commands used in pipelines cannot have more than 1 argument map")
+			return
+		}
+
+		execCommand(cmd, argmap[0])
+	}
+
+	log.Infof("Exec pipeline %v %v", pipeline.Name, argmap)
+}
+
+func scheduleCommandPipeline(mapping *PipelineMapping) {
+	pl := cfg.FindPipeline(mapping.Pipeline)
+
+	if mapping.Interval == 0 {
+		log.Infof("> Skipping schedule of command %v, interval = 0", mapping.Pipeline)
+		return;
+	}
+
+	interval := max(1, mapping.Interval)
+
+	for _, argmap := range argumentsToExecutions(mapping.Arguments) {
+		am2 := argmap
+
+		for k, v := range am2 {
+			os.Setenv("UP_PL_ARG_" + k, v)
+		}
+
+		s.Every(interval).Minutes().Do(func() {
+			execPipeline(pl, am2)
+		})
+	}
+
 }
 
 func scheduleCommandMapping(mapping *CommandMapping) {
@@ -215,8 +262,7 @@ func scheduleCommandMapping(mapping *CommandMapping) {
 
 	log.Infof("> Scheduling command %v with %v min interval, and %v static args", cmd.Name, interval, len(mapping.Arguments))
 
-
-	for _, argmap := range argumentsToExecutions(mapping.Command, mapping.Arguments) {
+	for _, argmap := range argumentsToExecutions(mapping.Arguments) {
 		// Fixed an insidious bug with map references pointing to stale maps.
 		// That is probably because to goroutine created in Do() used to reference
 		// argmap, and that iterator was moving faster than the goroutine was being created.
@@ -245,6 +291,12 @@ func execCommandNoArgs(cmd *Command) {
 }
 
 func execCommand(cmd *Command, arguments map[string]string) {
+	runerrString := ""
+
+	for k, v := range arguments {
+		os.Setenv("UP_CMD_ARG_" + k, v)
+	}
+
 	commandLabel := cmd.Label
 
 	if commandLabel == "" {
@@ -269,8 +321,6 @@ func execCommand(cmd *Command, arguments map[string]string) {
 	log.Infof("Executing: %v = %v", cmd.Name, shellExec)
 
 	stdout, stderr, runerr, exit := easyexec.ExecShell(shellExec)
-
-	runerrString := ""
 
 	if runerr != nil {
 		runerrString = runerr.Error()

@@ -11,12 +11,22 @@ import (
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
 	"github.com/upsilonproject/upsilon-drone/internal/updater"
 	"os"
+	"time"
 )
 
 var rootCmd = &cobra.Command{
 	Use: "main",
 	Run: func(cmd *cobra.Command, args []string) {
-		mainDrone()
+		disableAmqp, _ := cmd.PersistentFlags().GetBool("disable-amqp")
+		disableUpdates, _ := cmd.PersistentFlags().GetBool("disable-updates")
+		offline, _ := cmd.PersistentFlags().GetBool("offline")
+
+		if offline {
+			disableAmqp = true
+			disableUpdates = true
+		}
+
+		mainDrone(disableAmqp, disableUpdates)
 	},
 }
 
@@ -78,26 +88,42 @@ func checkForceUpdate() {
 	}
 }
 
-func mainDrone() {
+func mainDrone(disableAmqp bool, disableUpdates bool) {
 	serviceConfig.Refresh()
 
 	log.WithFields(log.Fields{
 		"Build Timestamp": buildconstants.Timestamp,
 	}).Infof("upsilon-drone")
 
-	checkForceUpdate()
+	if disableUpdates {
+		log.Infof("Updates are disabled")
+	} else {
+		checkForceUpdate()
 
-	commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
+		go updater.StartCron()
+	}
 
-	go updater.StartCron()
-	go amqp.ListenForPings()
-	go amqp.ListenForUpdateRequests()
-	go amqp.ListenForGitPulls()
-	go amqp.ListenForExecutionRequests()
-	go fabricConfig.SetupConfig("/etc/upsilon-drone-fabric/upsilon-config/")
-	go amqp.SendStartup()
+	if disableAmqp {
+		log.Infof("AMQP is disabled, ping, requests, heartbeats etc will not work")
 
-	amqp.StartHeartbeater()
+		commonAmqp.Offline = true
+	} else {
+		commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
+
+		go amqp.ListenForPings()
+		go amqp.ListenForUpdateRequests()
+		go amqp.ListenForGitPulls()
+		go amqp.ListenForExecutionRequests()
+		go amqp.SendStartup()
+		go amqp.StartHeartbeater()
+	}
+
+	fabricConfig.SetupConfig("/etc/upsilon-drone-fabric/upsilon-config/")
+
+	for {
+		time.Sleep(1 * time.Second) // FIXME ugly hack
+	}
+
 }
 
 func main() {
@@ -106,6 +132,9 @@ func main() {
 	rootCmd.AddCommand(cmdVersion)
 	rootCmd.AddCommand(cmdUpdate)
 	rootCmd.AddCommand(cmdCheckFabricConfig)
+	rootCmd.PersistentFlags().Bool("disable-amqp", false, "disables AMQP")
+	rootCmd.PersistentFlags().Bool("disable-updates", false, "disables updates")
+	rootCmd.PersistentFlags().Bool("offline", false, "disable AMQP, Updates, etc")
 
 	cobra.CheckErr(rootCmd.Execute())
 }
