@@ -198,6 +198,8 @@ func argumentsToExecutions(commandName string, arguments map[string]any) []map[s
 		}
 	}
 
+	log.Debugf("argsToExecs for command %v = %+v", commandName, ret)
+
 	return ret;
 }
 
@@ -213,9 +215,17 @@ func scheduleCommandMapping(mapping *CommandMapping) {
 
 	log.Infof("> Scheduling command %v with %v min interval, and %v static args", cmd.Name, interval, len(mapping.Arguments))
 
+
 	for _, argmap := range argumentsToExecutions(mapping.Command, mapping.Arguments) {
+		// Fixed an insidious bug with map references pointing to stale maps.
+		// That is probably because to goroutine created in Do() used to reference
+		// argmap, and that iterator was moving faster than the goroutine was being created.
+		// ... maybe?!
+
+		reassignedArgmap := argmap
+
 		s.Every(interval).Minutes().Do(func() {
-			execCommand(cmd, argmap)
+			execCommand(cmd, reassignedArgmap)
 		})
 	}
 }
@@ -235,8 +245,6 @@ func execCommandNoArgs(cmd *Command) {
 }
 
 func execCommand(cmd *Command, arguments map[string]string) {
-	runerrString := ""
-
 	commandLabel := cmd.Label
 
 	if commandLabel == "" {
@@ -246,12 +254,12 @@ func execCommand(cmd *Command, arguments map[string]string) {
 	shellExec := cmd.Exec
 	shellExec = strings.Replace(shellExec, "PROBE:", "PYTHONPATH=/opt/upsilon/upsilon-pycommon/ python /opt/upsilon/upsilon-drone-probes/src/", 1)
 
-	log.Infof("Command %v has %v arguments", cmd.Name, len(arguments))
+	log.Infof("Command %v has %v arguments: %+v", cmd.Name, len(arguments), arguments)
 
 	for argName := range arguments {
 		argVal := arguments[argName]
 
-		log.Infof("arg %v = %v", argName, argVal)
+		log.Infof("Command %v arg %v = %v", cmd.Name, argName, argVal)
 
 		shellExec = strings.Replace(shellExec, "{{ " + argName + " }}", argVal, 1)
 		commandLabel = strings.Replace(commandLabel, "{{ " + argName + " }}", argVal, 1)
@@ -261,6 +269,8 @@ func execCommand(cmd *Command, arguments map[string]string) {
 	log.Infof("Executing: %v = %v", cmd.Name, shellExec)
 
 	stdout, stderr, runerr, exit := easyexec.ExecShell(shellExec)
+
+	runerrString := ""
 
 	if runerr != nil {
 		runerrString = runerr.Error()
@@ -277,8 +287,8 @@ func execCommand(cmd *Command, arguments map[string]string) {
 	}
 
 
-	log.Infof("stdout: %v", stdout)
-	log.Infof("stderr: %v", stderr)
+	log.Infof("stdout for %v: %v", cmd.Name, stdout)
+	log.Infof("stderr for %v: %v", cmd.Name, stderr)
 
 	if runerr != nil {
 		log.Errorf("runerr: %v", runerr)
