@@ -106,7 +106,7 @@ func mainDrone(disableAmqp bool, disableUpdates bool) {
 	if disableAmqp {
 		log.Infof("AMQP is disabled, ping, requests, heartbeats etc will not work")
 
-		commonAmqp.Offline = true
+//		commonAmqp.Offline = true
 	} else {
 		commonAmqp.ConnectionIdentifier = "upsilon-drone " + buildconstants.Timestamp
 
