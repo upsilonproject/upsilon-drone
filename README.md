@@ -2,7 +2,7 @@
 
 The drone monitors and runs services.
 
-http://upsilon-project.co.uk and http://upsilon-project.co.uk/site/index.php/Upsilon-node
+http://upsilon-project.co.uk and https://docs.upsilonproject.io/_drone.html
 
 ## Version 3
 
