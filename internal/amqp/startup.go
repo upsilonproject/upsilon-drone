@@ -1,7 +1,7 @@
 package amqp
 
 import (
-	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 
 	"github.com/upsilonproject/upsilon-drone/internal/util"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"

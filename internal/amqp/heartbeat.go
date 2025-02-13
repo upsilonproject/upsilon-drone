@@ -2,7 +2,7 @@ package amqp
 
 import (
 	buildconstants "github.com/upsilonproject/upsilon-drone/internal/buildconstants"
-	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 
 	"github.com/upsilonproject/upsilon-drone/internal/util"

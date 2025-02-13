@@ -5,7 +5,7 @@ import (
 	"github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	"github.com/upsilonproject/upsilon-drone/internal/fabricConfig"
 	"github.com/upsilonproject/upsilon-drone/internal/util"
-	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 )
 
 func ListenForExecutionRequests() {

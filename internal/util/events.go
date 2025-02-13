@@ -3,7 +3,7 @@ package util
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
-	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 	"fmt"
 )
 

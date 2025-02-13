@@ -16,7 +16,7 @@ import (
 	"reflect"
 	"fmt"
 
-	pb "github.com/upsilonproject/upsilon-drone/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 	amqp "github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 )
 
