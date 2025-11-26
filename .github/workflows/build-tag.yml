@@ -6,6 +6,10 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-tag:
     runs-on: ubuntu-latest
