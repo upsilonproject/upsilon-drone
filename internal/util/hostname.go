@@ -14,3 +14,12 @@ func GetHostname() string {
 	return hostname
 }
 
+// GetIdentifier returns the node identity used for AMQP routing and fabric
+// config host matching. UPSILON_IDENTIFIER overrides the OS hostname.
+func GetIdentifier() string {
+	if id := os.Getenv("UPSILON_IDENTIFIER"); id != "" {
+		return id
+	}
+
+	return GetHostname()
+}

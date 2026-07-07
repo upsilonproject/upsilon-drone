@@ -16,7 +16,7 @@ func ListenForExecutionRequests() {
 
 		amqp.Decode(d.Message.Body, &execReq)
 
-		if execReq.Hostname == util.GetHostname() {
+		if execReq.Hostname == util.GetIdentifier() {
 			log.Infof("Responding to execreq: %v", execReq.CommandName)
 
 			fabricConfig.ExecCommandByName(execReq.CommandName)

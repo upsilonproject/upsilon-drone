@@ -30,7 +30,7 @@ func newMessageHeartbeat() *pb.Heartbeat {
 	hb := &pb.Heartbeat{
 		UnixTimestamp: time.Now().Unix(),
 		Type: "drone",
-		Hostname:      util.GetHostname(),
+		Hostname:      util.GetIdentifier(),
 		StatusLine: fmt.Sprintf("cfg: %+v", fabricConfig.ConfigStatus),
 		Version: buildconstants.Timestamp,
 	}

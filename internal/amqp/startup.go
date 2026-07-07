@@ -9,7 +9,7 @@ import (
 
 func SendStartup() {
 	startup := &pb.Startup {
-		Hostname: util.GetHostname(),
+		Hostname: util.GetIdentifier(),
 	}
 
 	amqp.PublishPb(startup)
