@@ -117,31 +117,56 @@ func downloadUpdate() {
 	log.Info("Update downloaded")
 }
 
-func getUpdatedTimestamp() int {
+func getRemoteVersion() string {
 	url := "http://upsilon/upsilon-drone.timestamp"
 
 	resp, err := http.Get(url)
 
 	if err != nil {
 		log.Errorf("%v", err)
-		return -1
+		return ""
 	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		log.Errorf("timestamp http status code %v", resp.StatusCode)
-		return -1
+		return ""
 	}
 
-	body, _ := io.ReadAll(resp.Body)
-
-	updateTimestamp, err := strconv.Atoi(strings.Trim(string(body), "\n"))
-
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Errorf("%v", err)
-		return -1
+		return ""
 	}
 
-	return updateTimestamp
+	return strings.TrimSpace(string(body))
+}
+
+func versionUpdateAvailable(local, remote string) bool {
+	local = strings.TrimSpace(local)
+	remote = strings.TrimSpace(remote)
+
+	if remote == "" {
+		return false
+	}
+
+	if local == remote {
+		return false
+	}
+
+	localInt, localErr := strconv.Atoi(local)
+	remoteInt, remoteErr := strconv.Atoi(remote)
+
+	if localErr == nil && remoteErr == nil {
+		return remoteInt > localInt
+	}
+
+	return local != remote
+}
+
+func isNewerVersionAvailable() bool {
+	return versionUpdateAvailable(buildconstants.Timestamp, getRemoteVersion())
 }
 
 func copyFile(in, out string) (int64, error) {
@@ -177,15 +202,15 @@ func Update() {
 		log.Fatalf("Exiting due to update")
 	}
 
-	currentTimestamp, _ := strconv.Atoi(buildconstants.Timestamp)
-	updatedTimestamp := getUpdatedTimestamp()
+	local := strings.TrimSpace(buildconstants.Timestamp)
+	remote := getRemoteVersion()
 
 	log.WithFields(log.Fields{
-		"current": currentTimestamp,
-		"updated": updatedTimestamp,
+		"current": local,
+		"updated": remote,
 	}).Infof("Version comparison")
 
-	if updatedTimestamp > currentTimestamp {
+	if isNewerVersionAvailable() {
 		log.Infof("Downloading update due to newer timestamp")
 		downloadUpdate()
 		log.Fatalf("Exiting due to update")

@@ -16,7 +16,7 @@ func ListenForPings() {
 		log.Infof("Responding to ping")
 
 		res := &pb.PingResponse{}
-		res.Hostname = util.GetHostname()
+		res.Hostname = util.GetIdentifier()
 
 		amqp.PublishPb(res)
 	})

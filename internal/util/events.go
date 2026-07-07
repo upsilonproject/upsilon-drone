@@ -11,7 +11,7 @@ func SendEvent(msg string) {
 	log.Error(msg) // Log here, so that callers don't have to log also
 
 	event := &pb.Event {
-		Hostname: GetHostname(),
+		Hostname: GetIdentifier(),
 		Content: msg,
 	}
 

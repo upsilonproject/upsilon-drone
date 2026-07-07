@@ -55,6 +55,8 @@ func UnmarshalConfig(path string) bool {
 		return false
 	}
 
+	cfg.normalize()
+
 	log.Debugf("Got config: %+v", cfg)
 	ConfigStatus[path] = fmt.Sprintf("OK %v", hash_file_sha1(path + "/config.yml"))
 
@@ -93,9 +95,18 @@ func hash_file_sha1(filePath string) (string) {
 }
 
 func SetupConfig(path string) {
-	if UnmarshalConfig(path) {
-		scheduleConfig()
+	if !UnmarshalConfig(path) {
+		log.Infof("Local fabric config unavailable, fetching from %s", fabricConfigURL())
+		if err := FetchConfigFromHTTP(path); err != nil {
+			log.Warnf("HTTP fabric config fetch failed: %v", err)
+			return
+		}
+		if !UnmarshalConfig(path) {
+			return
+		}
 	}
+
+	scheduleConfig()
 }
 
 func scheduleConfig() {
@@ -106,7 +117,7 @@ func scheduleConfig() {
 		return
 	}
 
-	hostname := util.GetHostname()
+	hostname := util.GetIdentifier()
 
 	log.Infof("Scheduling config for %v", hostname)
 
@@ -328,7 +339,7 @@ func execCommand(cmd *Command, arguments map[string]string) {
 
 	res := &pb.ExecutionResult{
 		UnixTimestamp: time.Now().Unix(),
-		Hostname: util.GetHostname(),
+		Hostname: util.GetIdentifier(),
 		Name: commandLabel,
 		Runerr: runerrString,
 		Stdout: stdout,
