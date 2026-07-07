@@ -1,7 +1,7 @@
 package updater
 
 import (
-	log "github.com/sirupsen/logrus"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -10,11 +10,13 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
-	"errors"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/go-co-op/gocron"
 
 	"github.com/upsilonproject/upsilon-drone/internal/buildconstants"
-	"github.com/go-co-op/gocron"
 )
 
 const DRONE_PATH = "/usr/local/sbin/upsilon-drone"
@@ -114,6 +116,11 @@ func downloadUpdate() {
 
 	writeSystemdUnit()
 
+	if !applyPendingUpdate() {
+		log.Error("Update downloaded but could not be applied")
+		return
+	}
+
 	log.Info("Update downloaded")
 }
 
@@ -195,7 +202,37 @@ func tryChmod(path string) {
 	}
 }
 
+// applyPendingUpdate moves a downloaded binary into place. The update is staged
+// at DRONE_PATH_UPDATE; systemd's ExecStartPre also performs this move on service
+// start, but manual invocations (e.g. ./drone) need it applied here.
+func applyPendingUpdate() bool {
+	if _, err := os.Stat(DRONE_PATH_UPDATE); errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	log.Infof("Applying pending update: %s -> %s", DRONE_PATH_UPDATE, DRONE_PATH)
+
+	if err := os.Rename(DRONE_PATH_UPDATE, DRONE_PATH); err != nil {
+		log.Errorf("Apply update error: %v", err)
+		return false
+	}
+
+	tryChmod(DRONE_PATH)
+	return true
+}
+
+func reexecSelf() {
+	log.Infof("Re-executing updated binary: %s", DRONE_PATH)
+	if err := syscall.Exec(DRONE_PATH, os.Args, os.Environ()); err != nil {
+		log.Fatalf("Re-exec failed: %v", err)
+	}
+}
+
 func Update() {
+	if applyPendingUpdate() {
+		reexecSelf()
+	}
+
 	if _, err := os.Stat(DRONE_PATH); errors.Is(err, os.ErrNotExist) {
 		log.Infof("Downloading update due to not existing locally")
 		downloadUpdate()
